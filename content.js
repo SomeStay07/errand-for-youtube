@@ -196,7 +196,7 @@
 
   function keepRevealInPlace() {
     const button = document.getElementById("er-reveal");
-    if (!button || button.disabled) return;
+    if (!button || button.getAttribute("aria-disabled") === "true") return;
     const related = document.querySelector("ytd-watch-flexy #related");
     if (related) placeReveal(related);
   }
@@ -211,6 +211,7 @@
     document.getElementById("er-comments")?.remove();
     root.removeAttribute("data-er-reveal-comments");
     const { hide, strict, paused } = effective();
+    document.querySelector("ytd-comments#comments")?.removeAttribute("tabindex");
     if (root.dataset.erPage !== "watch" || !hide.comments || strict || paused) return;
     waitFor("ytd-comments#comments", (comments) => {
       document.getElementById("er-comments")?.remove();
@@ -222,6 +223,8 @@
           onclick: () => {
             root.setAttribute("data-er-reveal-comments", "");
             button.remove();
+            comments.setAttribute("tabindex", "-1");
+            comments.focus({ preventScroll: true });
           },
         },
         t("commentsButton"),
@@ -232,7 +235,8 @@
 
   function countdown(button) {
     let left = settings.revealSeconds;
-    button.disabled = true;
+    const total = left;
+    button.setAttribute("aria-disabled", "true");
     const tick = () => {
       if (!button.isConnected) return;
       if (left <= 0) {
@@ -240,6 +244,7 @@
         button.remove();
         return;
       }
+      if (left < total) button.removeAttribute("aria-live");
       button.textContent = t("revealCountdown", left);
       left -= 1;
       setTimeout(tick, 1000);
@@ -279,7 +284,10 @@
     }
     actions.push(el("button", { type: "button", onclick: dismiss }, t("endStay")));
     const question = text ? t("endQuestionWithIntent", text) : t("endQuestion");
-    player.append(el("div", { id: "er-end", role: "dialog", "aria-live": "polite", "aria-label": question }, el("p", {}, question), el("div", { class: "er-actions" }, ...actions)));
+    const prompt = el("div", { id: "er-end", role: "dialog", tabindex: "-1", "aria-label": question }, el("p", {}, question), el("div", { class: "er-actions" }, ...actions));
+    const focusable = L.canTakeFocus(document.activeElement, document.body, player);
+    player.append(prompt);
+    if (focusable) prompt.focus({ preventScroll: true });
   }
 
   function activeErrandId() {

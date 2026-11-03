@@ -269,6 +269,26 @@ function renderForm() {
   }
 }
 
+function setupLinks() {
+  $("rate").href = `${L.STORE_URL}/reviews`;
+  const copy = $("copyLink");
+  copy.href = L.STORE_URL;
+  let timer = 0;
+  copy.addEventListener("click", (event) => {
+    event.preventDefault();
+    navigator.clipboard.writeText(L.STORE_URL).then(
+      () => {
+        copy.textContent = t("copied");
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          copy.textContent = t("copyLink");
+        }, 2000);
+      },
+      () => chrome.tabs.create({ url: L.STORE_URL }),
+    );
+  });
+}
+
 function setupBackup() {
   $("export").addEventListener("click", () => {
     const blob = new Blob([JSON.stringify({ errand: 1, settings }, null, 2)], { type: "application/json" });
@@ -318,6 +338,7 @@ async function init() {
   $("strictOff").addEventListener("click", onStrictOffClick);
   renderForm();
   setupBackup();
+  setupLinks();
   renderStatus();
   renderStats(data.stats || {});
   await renderHealth();

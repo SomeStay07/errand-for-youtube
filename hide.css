@@ -253,7 +253,7 @@ html[data-er-page="watch"] #er-pill {
   margin: 24px 0 12px;
 }
 
-#er-reveal:disabled {
+#er-reveal[aria-disabled="true"] {
   cursor: default;
 }
 

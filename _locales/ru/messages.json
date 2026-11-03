@@ -184,7 +184,7 @@
     "message": "Shorts"
   },
   "shortsWatch": {
-    "message": "Как обычные видео"
+    "message": "В обычном плеере"
   },
   "shortsBlock": {
     "message": "Блокировать"
@@ -218,6 +218,15 @@
   },
   "reportProblem": {
     "message": "Сообщить о проблеме"
+  },
+  "rateErrand": {
+    "message": "Оценить Errand"
+  },
+  "copyLink": {
+    "message": "Скопировать ссылку на Errand"
+  },
+  "copied": {
+    "message": "Скопировано"
   },
   "reportThis": {
     "message": "Сообщить"
@@ -265,7 +274,7 @@
     "message": "Открыть YouTube"
   },
   "welcomePin": {
-    "message": "Закрепите Errand через значок пазла в панели. Настройки там же."
+    "message": "Закрепите Errand через значок пазла на панели. Там же настройки и \"Сообщить о проблеме\"."
   },
   "errandsSummary": {
     "message": "Сделано дел: $DONE$ · закрыли сразу: $CLOSED$",
@@ -307,10 +316,10 @@
     "message": "Журнал поломок"
   },
   "intentFooter": {
-    "message": "Это Errand. Поменять можно в меню расширения."
+    "message": "Это Errand. Чтобы это поменять, нажмите значок Errand справа от адресной строки. В Chrome он спрятан под значком пазла."
   },
   "lookAgain": {
-    "message": "Выбрать вид заново"
+    "message": "Выбрать вид YouTube"
   },
   "titleOn": {
     "message": "Errand включён"
@@ -341,7 +350,7 @@
     }
   },
   "strictOffUntil": {
-    "message": "Выключить до $TIME$",
+    "message": "Выключить строгий режим до $TIME$",
     "placeholders": {
       "time": {
         "content": "$1"

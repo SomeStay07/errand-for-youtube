@@ -101,7 +101,17 @@ const autoplay = await page.evaluate(() => document.querySelector(".ytp-autonav-
 await page.screenshot({ path: join(OUT, "3-watch.png") });
 
 await page.locator("#er-reveal").click();
-await pause(3000);
+await pause(1200);
+const revealState = () => page.evaluate(() => {
+  const button = document.getElementById("er-reveal");
+  return { disabled: button?.getAttribute("aria-disabled") ?? null, live: button?.getAttribute("aria-live") ?? null, text: button?.textContent ?? null, revealed: document.documentElement.hasAttribute("data-er-reveal") };
+});
+const during = await revealState();
+await page.locator("#er-reveal").click({ force: true });
+await pause(1800);
+const afterSecondClick = await revealState();
+check("O1 reveal: a click during the countdown does nothing", during.disabled === "true" && !during.revealed && !afterSecondClick.revealed && afterSecondClick.disabled === "true", JSON.stringify({ during, afterSecondClick }));
+check("O2 reveal: countdown is announced only on the first tick", during.live === null, JSON.stringify(during));
 await page.screenshot({ path: join(OUT, "3b-reveal-countdown.png") });
 
 const playable = await page.evaluate(() => Number.isFinite(document.querySelector("video.html5-main-video")?.duration));

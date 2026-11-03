@@ -335,3 +335,26 @@ test("presence checks run only for filters that are hiding", () => {
   assert.deepEqual(names("search", {}), ["results"]);
   assert.deepEqual(names("other", all), []);
 });
+
+test("store link points to Errand's Chrome Web Store item", () => {
+  assert.equal(L.STORE_URL, "https://chromewebstore.google.com/detail/jhpaobkpbnidoaemnkojmkmnddoegdhg");
+});
+
+test("manifest asks for storage and nothing else", () => {
+  const manifest = JSON.parse(require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "manifest.json"), "utf8"));
+  assert.deepEqual(manifest.permissions, ["storage"]);
+  assert.equal(manifest.optional_permissions, undefined);
+  assert.equal(manifest.host_permissions, undefined);
+});
+
+test("end prompt takes focus only from the page body or the player, never from a text field", () => {
+  const node = (inside, editable) => ({ closest: (sel) => (editable && sel.includes("input") ? {} : null), inside });
+  const body = { closest: () => null };
+  const player = { contains: (n) => Boolean(n.inside) };
+  assert.equal(L.canTakeFocus(null, body, player), true);
+  assert.equal(L.canTakeFocus(body, body, player), true);
+  assert.equal(L.canTakeFocus(node(true, false), body, player), true);
+  assert.equal(L.canTakeFocus(node(false, false), body, player), false);
+  assert.equal(L.canTakeFocus(node(false, true), body, player), false);
+  assert.equal(L.canTakeFocus(node(true, true), body, player), false);
+});

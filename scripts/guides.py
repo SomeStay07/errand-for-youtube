@@ -25,11 +25,11 @@ www.youtube.com##.ytp-fullscreen-grid"""
 TEXT = {
     "en": {
         "lang": "en", "home": "../", "cta": "Add to Chrome", "free": "Free and open source, no account needed. Errand makes no network requests.",
-        "updated": "Updated November 2026", "guides": "Guides", "faq": "Questions", "report": "Report a problem", "breakage": "Breakage log",
+        "updated": "Updated November 2026", "guides": "Guides", "faq": "Questions", "report": "Report a problem", "translate": "Help translate", "breakage": "Breakage log",
     },
     "ru": {
         "lang": "ru", "home": "../", "cta": "Установить в Chrome", "free": "Бесплатно, код открыт, аккаунт не нужен. Errand не делает запросов в сеть.",
-        "updated": "Обновлено в ноябре 2026", "guides": "Инструкции", "faq": "Вопросы", "report": "Сообщить о проблеме", "breakage": "Журнал поломок (англ.)",
+        "updated": "Обновлено в ноябре 2026", "guides": "Инструкции", "faq": "Вопросы", "report": "Сообщить о проблеме", "translate": "Помочь с переводом", "breakage": "Журнал поломок (англ.)",
     },
 }
 
@@ -351,7 +351,7 @@ def page_html(p):
       </section>
     </article>
   </main>
-  <footer><a href="{t['home']}">Errand</a> · <a href="{GH}">GitHub</a> · <a href="{GH}/issues">{t['report']}</a> · <a href="{SITE}/breakage/">{t['breakage']}</a></footer>
+  <footer><a href="{t['home']}">Errand</a> · <a href="{GH}">GitHub</a> · <a href="{GH}/issues">{t['report']}</a> · <a href="{GH}/issues">{t['translate']}</a> · <a href="{SITE}/breakage/">{t['breakage']}</a></footer>
 </body>
 </html>
 """

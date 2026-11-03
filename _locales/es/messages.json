@@ -219,6 +219,15 @@
   "reportProblem": {
     "message": "Informar de un problema"
   },
+  "rateErrand": {
+    "message": "Valorar Errand"
+  },
+  "copyLink": {
+    "message": "Copiar enlace de Errand"
+  },
+  "copied": {
+    "message": "Copiado"
+  },
   "reportThis": {
     "message": "Informar"
   },
@@ -265,7 +274,7 @@
     "message": "Abrir YouTube"
   },
   "welcomePin": {
-    "message": "Fija Errand desde el icono del puzle en la barra. Ahí están los ajustes."
+    "message": "Fija Errand desde el icono del puzle en la barra. Ahí están los ajustes e \"Informar de un problema\"."
   },
   "errandsSummary": {
     "message": "Hecho: $DONE$ · cerrado al acabar: $CLOSED$",
@@ -307,7 +316,7 @@
     "message": "Lista de fallos"
   },
   "intentFooter": {
-    "message": "Esto es Errand. Cámbialo en el menú de la extensión."
+    "message": "Esto es Errand. Para cambiarlo, pulsa el icono del puzle en la barra y luego Errand."
   },
   "lookAgain": {
     "message": "Elegir otro estilo"
@@ -341,7 +350,7 @@
     }
   },
   "strictOffUntil": {
-    "message": "Desactivar hasta las $TIME$",
+    "message": "Desactivar modo estricto hasta las $TIME$",
     "placeholders": {
       "time": {
         "content": "$1"

@@ -66,9 +66,12 @@ header {
   padding-bottom: 12px;
 }
 
-.hint,
-#status {
+.hint {
   color: var(--muted);
+}
+
+#status {
+  font-weight: 600;
 }
 
 .row {
@@ -112,7 +115,7 @@ select {
 }
 
 #strictOff {
-  margin-top: 8px;
+  margin: 0 0 12px;
 }
 
 .actions .button.disabled {
@@ -158,6 +161,8 @@ summary {
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  min-width: 28px;
+  padding: 4px 0;
   font-size: 11px;
   color: var(--muted);
 }
@@ -196,12 +201,6 @@ th {
   flex-wrap: wrap;
 }
 
-.actions #report {
-  flex-basis: 100%;
-  color: var(--accent);
-  text-decoration: none;
-}
-
 #health a {
   color: inherit;
   font-weight: 600;
@@ -220,12 +219,23 @@ th {
   cursor: pointer;
 }
 
-.link {
-  display: inline-block;
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+div.links {
   margin-top: 6px;
+}
+
+.links a {
+  margin: -4px 0;
+  padding: 4px 0;
   color: var(--accent);
   font-size: 12px;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .backup {

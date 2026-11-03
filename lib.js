@@ -156,6 +156,7 @@
   const REPO_URL = "https://github.com/SomeStay07/errand-for-youtube";
   const SITE_URL = "https://somestay07.github.io/errand-for-youtube";
   const BREAKAGE_URL = `${SITE_URL}/breakage/`;
+  const STORE_URL = "https://chromewebstore.google.com/detail/jhpaobkpbnidoaemnkojmkmnddoegdhg";
 
   const PRESETS = {
     ask: {
@@ -270,6 +271,12 @@
     return [head, ...recent].join("; ").slice(0, 600);
   }
 
+  function canTakeFocus(active, body, player) {
+    if (!active || active === body) return true;
+    if (active.closest("input, textarea, [contenteditable]")) return false;
+    return Boolean(player?.contains(active));
+  }
+
   function searchUrl(text) {
     return `/results?search_query=${encodeURIComponent(text)}`;
   }
@@ -342,6 +349,7 @@
     hiddenParts,
     activeIntent,
     searchUrl,
+    canTakeFocus,
     LOG_LIMIT,
     appendLog,
     formatDiagnostics,
@@ -349,6 +357,7 @@
     REPO_URL,
     SITE_URL,
     BREAKAGE_URL,
+    STORE_URL,
     PRESETS,
     applyPreset,
     presetOf,

@@ -17,6 +17,7 @@
   <div id="pause" hidden>
     <button type="button" id="pauseButton" aria-live="polite"></button>
   </div>
+  <button type="button" id="strictOff" aria-live="polite" hidden></button>
 
   <p id="health"></p>
 
@@ -36,7 +37,10 @@
         <option value="show" data-i18n="shortsShow"></option>
       </select>
     </label>
-    <a href="#" id="lookAgain" class="link" data-i18n="lookAgain"></a>
+    <div class="links">
+      <a href="#" id="lookAgain" data-i18n="lookAgain"></a>
+      <a id="report" target="_blank" rel="noopener" data-i18n="reportProblem"></a>
+    </div>
   </section>
 
   <section>
@@ -71,7 +75,6 @@
       </div>
       <div id="days"></div>
     </div>
-    <button type="button" id="strictOff" aria-live="polite" hidden></button>
   </section>
 
   <section id="week" hidden>
@@ -80,8 +83,9 @@
     <p class="hint" data-i18n="errandsHint"></p>
   </section>
 
-  <section class="actions">
-    <a id="report" class="button" target="_blank" rel="noopener" data-i18n="reportProblem"></a>
+  <section class="links">
+    <a id="rate" target="_blank" rel="noopener" data-i18n="rateErrand"></a>
+    <a id="copyLink" aria-live="polite" data-i18n="copyLink"></a>
   </section>
 
   <script src="lib.js"></script>

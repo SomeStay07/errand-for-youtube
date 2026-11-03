@@ -219,6 +219,15 @@
   "reportProblem": {
     "message": "Relatar um problema"
   },
+  "rateErrand": {
+    "message": "Avaliar o Errand"
+  },
+  "copyLink": {
+    "message": "Copiar link do Errand"
+  },
+  "copied": {
+    "message": "Copiado"
+  },
   "reportThis": {
     "message": "Relatar"
   },
@@ -265,7 +274,7 @@
     "message": "Abrir o YouTube"
   },
   "welcomePin": {
-    "message": "Fixe o Errand pelo ícone de quebra-cabeça na barra. As opções ficam lá."
+    "message": "Fixe o Errand pelo ícone de quebra-cabeça na barra. As configurações e \"Relatar um problema\" ficam lá."
   },
   "errandsSummary": {
     "message": "Feitos: $DONE$ · fechados no fim: $CLOSED$",
@@ -307,7 +316,7 @@
     "message": "Lista de falhas"
   },
   "intentFooter": {
-    "message": "Isto é o Errand. Mude no menu da extensão."
+    "message": "Isto é o Errand. Para mudar, clique no ícone de quebra-cabeça na barra e depois em Errand."
   },
   "lookAgain": {
     "message": "Escolher outro visual"
@@ -341,7 +350,7 @@
     }
   },
   "strictOffUntil": {
-    "message": "Desligar até $TIME$",
+    "message": "Desligar modo rígido até $TIME$",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -352,6 +361,6 @@
     "message": "Indisponível no modo rígido"
   },
   "welcomeReloadOpen": {
-    "message": "Recarregue as abas do YouTube que já estiverem abertas."
+    "message": "Recarregue as abas do YouTube já abertas."
   }
 }

@@ -219,6 +219,15 @@
   "reportProblem": {
     "message": "Problem melden"
   },
+  "rateErrand": {
+    "message": "Errand bewerten"
+  },
+  "copyLink": {
+    "message": "Errand-Link kopieren"
+  },
+  "copied": {
+    "message": "Kopiert"
+  },
   "reportThis": {
     "message": "Melden"
   },
@@ -265,7 +274,7 @@
     "message": "YouTube öffnen"
   },
   "welcomePin": {
-    "message": "Hefte Errand über das Puzzle-Symbol in der Leiste an. Dort sind die Einstellungen."
+    "message": "Pinne Errand übers Puzzle-Symbol in der Leiste an. Dort sind Einstellungen und \"Problem melden\"."
   },
   "errandsSummary": {
     "message": "Erledigt: $DONE$ · danach geschlossen: $CLOSED$",
@@ -307,10 +316,10 @@
     "message": "Bekannte Fehler"
   },
   "intentFooter": {
-    "message": "Das ist Errand. Ändern im Erweiterungsmenü."
+    "message": "Das ist Errand. Zum Ändern klick auf das Puzzle-Symbol in der Leiste, dann auf Errand."
   },
   "lookAgain": {
-    "message": "Stil neu wählen"
+    "message": "Aussehen neu wählen"
   },
   "titleOn": {
     "message": "Errand ist an"
@@ -341,7 +350,7 @@
     }
   },
   "strictOffUntil": {
-    "message": "Ausschalten bis $TIME$",
+    "message": "Strengen Modus aus bis $TIME$",
     "placeholders": {
       "time": {
         "content": "$1"

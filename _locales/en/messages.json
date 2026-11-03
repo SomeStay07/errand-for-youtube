@@ -219,6 +219,15 @@
   "reportProblem": {
     "message": "Report a problem"
   },
+  "rateErrand": {
+    "message": "Rate Errand"
+  },
+  "copyLink": {
+    "message": "Copy Errand link"
+  },
+  "copied": {
+    "message": "Copied"
+  },
   "reportThis": {
     "message": "Report it"
   },
@@ -265,7 +274,7 @@
     "message": "Open YouTube"
   },
   "welcomePin": {
-    "message": "Pin Errand from the puzzle icon in the toolbar. Settings live there."
+    "message": "Pin Errand from the puzzle icon in the toolbar. Settings and \"Report a problem\" live there."
   },
   "errandsSummary": {
     "message": "Errands done: $DONE$ · closed after: $CLOSED$",
@@ -307,10 +316,10 @@
     "message": "Known issues"
   },
   "intentFooter": {
-    "message": "This is Errand. Change it in the extension menu."
+    "message": "This is Errand. To change it, click the puzzle icon in the toolbar, then Errand."
   },
   "lookAgain": {
-    "message": "Choose a look again"
+    "message": "Choose another look"
   },
   "titleOn": {
     "message": "Errand is on"
@@ -341,7 +350,7 @@
     }
   },
   "strictOffUntil": {
-    "message": "Turn off until $TIME$",
+    "message": "Turn strict mode off until $TIME$",
     "placeholders": {
       "time": {
         "content": "$1"

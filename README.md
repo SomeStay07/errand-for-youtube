@@ -39,6 +39,8 @@ Errand makes no network requests and needs no account. Permissions: `www.youtube
 
 Something leaked through after a YouTube update? [Open an issue](https://github.com/SomeStay07/errand-for-youtube/issues) with a screenshot.
 
+Help translate: Errand is in English, Russian, Spanish, Brazilian Portuguese and German. To add a language or fix a string, [open an issue](https://github.com/SomeStay07/errand-for-youtube/issues).
+
 License: GPL-3.0.
 
 ---
@@ -50,3 +52,5 @@ YouTube всегда подсунет ещё одно видео. Errand пря�
 Бесплатно, код открыт, аккаунт не нужен. Запросов в сеть расширение не делает. Ставится из Chrome Web Store, в том числе в Яндекс Браузер, Brave и Vivaldi.
 
 [Установить из Chrome Web Store](https://github.com/SomeStay07/errand-for-youtube)
+
+Помочь с переводом: Errand есть на английском, русском, испанском, португальском (Бразилия) и немецком. Чтобы добавить язык или поправить строку, [напишите на GitHub](https://github.com/SomeStay07/errand-for-youtube/issues).
