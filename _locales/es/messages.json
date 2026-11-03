@@ -1,0 +1,242 @@
+{
+  "extName": {
+    "message": "Errand para YouTube: oculta Shorts, inicio y recomendaciones"
+  },
+  "extDescription": {
+    "message": "Oculta los Shorts, el inicio y las recomendaciones de YouTube. Di a qué vienes, míralo y cierra la pestaña. Gratis, sin rastreo."
+  },
+  "actionTitle": {
+    "message": "Ajustes de Errand"
+  },
+  "intentTitle": {
+    "message": "¿A qué vienes?"
+  },
+  "intentPlaceholder": {
+    "message": "Escribe lo que quieres ver"
+  },
+  "intentAria": {
+    "message": "Qué vienes a ver"
+  },
+  "linkSubscriptions": {
+    "message": "Suscripciones"
+  },
+  "linkWatchLater": {
+    "message": "Ver más tarde"
+  },
+  "linkHistory": {
+    "message": "Historial"
+  },
+  "pillLabel": {
+    "message": "Vienes por: $TEXT$",
+    "placeholders": {
+      "text": {
+        "content": "$1"
+      }
+    }
+  },
+  "pillClear": {
+    "message": "Borrar"
+  },
+  "revealButton": {
+    "message": "Mostrar recomendaciones"
+  },
+  "revealCountdown": {
+    "message": "¿Seguro que las quieres? Aparecen en $SECONDS$…",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "endQuestion": {
+    "message": "Se acabó. ¿Has encontrado lo que buscabas?"
+  },
+  "endQuestionWithIntent": {
+    "message": "¿Has encontrado lo que buscabas: «$TEXT$»?",
+    "placeholders": {
+      "text": {
+        "content": "$1"
+      }
+    }
+  },
+  "endClose": {
+    "message": "Cerrar pestaña"
+  },
+  "endBack": {
+    "message": "Volver a los resultados"
+  },
+  "endStay": {
+    "message": "Quedarme"
+  },
+  "statusNormal": {
+    "message": "Modo normal"
+  },
+  "statusStrictAlways": {
+    "message": "El modo estricto está siempre activado"
+  },
+  "statusStrictUntil": {
+    "message": "Modo estricto hasta las $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "sectionWeek": {
+    "message": "Últimos 7 días"
+  },
+  "summary": {
+    "message": "Total: $TOTAL$ · por inercia: $PERCENT$ %",
+    "placeholders": {
+      "total": {
+        "content": "$1"
+      },
+      "percent": {
+        "content": "$2"
+      }
+    }
+  },
+  "summaryEmpty": {
+    "message": "Aún no hay vídeos"
+  },
+  "healthOpenTab": {
+    "message": "Abre una pestaña de YouTube para comprobar los filtros"
+  },
+  "healthOk": {
+    "message": "Todos los filtros funcionan"
+  },
+  "healthBroken": {
+    "message": "YouTube ha cambiado algo. Falla: $NAMES$. Puede que algunos filtros no funcionen hasta la próxima actualización.",
+    "placeholders": {
+      "names": {
+        "content": "$1"
+      }
+    }
+  },
+  "healthPlayer": {
+    "message": "reproductor"
+  },
+  "healthRelated": {
+    "message": "recomendaciones"
+  },
+  "healthComments": {
+    "message": "comentarios"
+  },
+  "healthAutoplay": {
+    "message": "botón de reproducción automática"
+  },
+  "healthHome": {
+    "message": "página de inicio"
+  },
+  "healthResults": {
+    "message": "resultados de búsqueda"
+  },
+  "sectionHide": {
+    "message": "Página del vídeo"
+  },
+  "hideRelated": {
+    "message": "Ocultar recomendaciones"
+  },
+  "hideEndscreen": {
+    "message": "Ocultar sugerencias al final"
+  },
+  "hideComments": {
+    "message": "Ocultar comentarios"
+  },
+  "hideMetrics": {
+    "message": "Ocultar vistas, me gusta y suscriptores"
+  },
+  "hideThumbs": {
+    "message": "Atenuar miniaturas"
+  },
+  "optAutoplay": {
+    "message": "Desactivar la reproducción automática"
+  },
+  "optEndPrompt": {
+    "message": "Preguntar al acabar un vídeo"
+  },
+  "sectionStrict": {
+    "message": "Modo estricto"
+  },
+  "strictHint": {
+    "message": "Oculta el feed, los Shorts, las recomendaciones y los comentarios, sin botones para mostrarlos."
+  },
+  "strictWhen": {
+    "message": "Cuándo"
+  },
+  "modeAuto": {
+    "message": "Con horario"
+  },
+  "modeStrict": {
+    "message": "Siempre"
+  },
+  "modeRelaxed": {
+    "message": "Nunca"
+  },
+  "strictFrom": {
+    "message": "Desde"
+  },
+  "strictTo": {
+    "message": "Hasta"
+  },
+  "hideChat": {
+    "message": "Ocultar chat en directo"
+  },
+  "hideNotifications": {
+    "message": "Ocultar la campana"
+  },
+  "healthEndscreen": {
+    "message": "pantalla final"
+  },
+  "optHomeTarget": {
+    "message": "Inicio"
+  },
+  "homeAsk": {
+    "message": "La pregunta"
+  },
+  "commentsButton": {
+    "message": "Mostrar comentarios"
+  },
+  "optShortsMode": {
+    "message": "Shorts"
+  },
+  "shortsWatch": {
+    "message": "Como vídeos normales"
+  },
+  "shortsBlock": {
+    "message": "Bloquear"
+  },
+  "exportSettings": {
+    "message": "Exportar"
+  },
+  "importSettings": {
+    "message": "Importar"
+  },
+  "importFailed": {
+    "message": "No se ha podido leer el archivo"
+  },
+  "brandName": {
+    "message": "Errand"
+  },
+  "homeFeed": {
+    "message": "Feed de YouTube"
+  },
+  "shortsShow": {
+    "message": "Mostrar"
+  },
+  "sectionMore": {
+    "message": "Más"
+  },
+  "healthShorts": {
+    "message": "ocultar Shorts"
+  },
+  "extNameShort": {
+    "message": "Errand para YouTube: sin Shorts ni feed"
+  },
+  "reportProblem": {
+    "message": "Informar de un problema"
+  },
+  "reportThis": {
+    "message": "Informar"
+  }
+}

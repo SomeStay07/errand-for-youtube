@@ -1,0 +1,172 @@
+:root {
+  --bg: #f7f3ea;
+  --fg: #16302b;
+  --muted: #4d5f5a;
+  --line: #ddd5c4;
+  --accent: #16302b;
+  --accent-fg: #f4ebd9;
+  --dot: #f2a541;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #10221f;
+    --fg: #f4ebd9;
+    --muted: #b9c2bd;
+    --line: #2b4440;
+    --accent: #f2a541;
+    --accent-fg: #16302b;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 17px/1.6 -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+a {
+  color: inherit;
+}
+
+.top,
+main,
+footer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 20px;
+  text-decoration: none;
+}
+
+.top nav {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+section {
+  padding: 40px 0;
+  border-top: 1px solid var(--line);
+}
+
+.hero {
+  border-top: none;
+  padding-top: 32px;
+}
+
+h1 {
+  margin: 0 0 16px;
+  font-size: clamp(32px, 6vw, 52px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  margin: 0 0 16px;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+h3 {
+  margin: 24px 0 4px;
+  font-size: 18px;
+}
+
+p {
+  margin: 0 0 12px;
+}
+
+.lead {
+  max-width: 680px;
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.small {
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 24px 0 12px;
+}
+
+.button {
+  padding: 12px 20px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+
+.shot {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-top: 32px;
+  border-radius: 12px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 12px 24px;
+  margin: 0;
+}
+
+.features dt {
+  font-weight: 700;
+}
+
+.features dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .features {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .features dd {
+    margin-bottom: 12px;
+  }
+}
+
+footer {
+  padding-top: 32px;
+  padding-bottom: 48px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 15px;
+}

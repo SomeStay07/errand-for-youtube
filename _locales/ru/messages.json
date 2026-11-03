@@ -1,0 +1,242 @@
+{
+  "extName": {
+    "message": "Errand для YouTube: скрыть Shorts, ленту и рекомендации"
+  },
+  "extDescription": {
+    "message": "Скрывает Shorts (шортсы), главную ленту и рекомендации YouTube. Пишете, зачем пришли, смотрите и закрываете вкладку. Бесплатно."
+  },
+  "actionTitle": {
+    "message": "Настройки Errand"
+  },
+  "intentTitle": {
+    "message": "Зачем вы здесь?"
+  },
+  "intentPlaceholder": {
+    "message": "Что хотите посмотреть"
+  },
+  "intentAria": {
+    "message": "Зачем вы пришли"
+  },
+  "linkSubscriptions": {
+    "message": "Подписки"
+  },
+  "linkWatchLater": {
+    "message": "Смотреть позже"
+  },
+  "linkHistory": {
+    "message": "История"
+  },
+  "pillLabel": {
+    "message": "Цель: $TEXT$",
+    "placeholders": {
+      "text": {
+        "content": "$1"
+      }
+    }
+  },
+  "pillClear": {
+    "message": "Сбросить"
+  },
+  "revealButton": {
+    "message": "Показать рекомендации"
+  },
+  "revealCountdown": {
+    "message": "Точно нужно? Покажу через $SECONDS$…",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "endQuestion": {
+    "message": "Видео закончилось. Получилось найти, что хотели?"
+  },
+  "endQuestionWithIntent": {
+    "message": "Получилось найти «$TEXT$»?",
+    "placeholders": {
+      "text": {
+        "content": "$1"
+      }
+    }
+  },
+  "endClose": {
+    "message": "Закрыть вкладку"
+  },
+  "endBack": {
+    "message": "Назад к поиску"
+  },
+  "endStay": {
+    "message": "Остаться"
+  },
+  "statusNormal": {
+    "message": "Обычный режим"
+  },
+  "statusStrictAlways": {
+    "message": "Строгий режим включён всегда"
+  },
+  "statusStrictUntil": {
+    "message": "Строгий режим до $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "sectionWeek": {
+    "message": "За 7 дней"
+  },
+  "summary": {
+    "message": "Всего: $TOTAL$ · в сторону: $PERCENT$%",
+    "placeholders": {
+      "total": {
+        "content": "$1"
+      },
+      "percent": {
+        "content": "$2"
+      }
+    }
+  },
+  "summaryEmpty": {
+    "message": "Пока ничего не смотрели"
+  },
+  "healthOpenTab": {
+    "message": "Откройте вкладку YouTube, чтобы проверить фильтры"
+  },
+  "healthOk": {
+    "message": "Все фильтры работают"
+  },
+  "healthBroken": {
+    "message": "YouTube что-то поменял. Не работает: $NAMES$. До обновления часть фильтров может не срабатывать.",
+    "placeholders": {
+      "names": {
+        "content": "$1"
+      }
+    }
+  },
+  "healthPlayer": {
+    "message": "плеер"
+  },
+  "healthRelated": {
+    "message": "рекомендации"
+  },
+  "healthComments": {
+    "message": "комментарии"
+  },
+  "healthAutoplay": {
+    "message": "переключатель автовоспроизведения"
+  },
+  "healthHome": {
+    "message": "главная"
+  },
+  "healthResults": {
+    "message": "результаты поиска"
+  },
+  "sectionHide": {
+    "message": "Страница видео"
+  },
+  "hideRelated": {
+    "message": "Скрывать рекомендации"
+  },
+  "hideEndscreen": {
+    "message": "Скрывать подборку в конце"
+  },
+  "hideComments": {
+    "message": "Скрывать комментарии"
+  },
+  "hideMetrics": {
+    "message": "Скрывать просмотры, лайки, подписчиков"
+  },
+  "hideThumbs": {
+    "message": "Приглушать превью до наведения"
+  },
+  "optAutoplay": {
+    "message": "Выключать автовоспроизведение"
+  },
+  "optEndPrompt": {
+    "message": "Спрашивать в конце видео"
+  },
+  "sectionStrict": {
+    "message": "Строгий режим"
+  },
+  "strictHint": {
+    "message": "Прячет ленту, Shorts, рекомендации и комментарии, кнопок «показать» нет."
+  },
+  "strictWhen": {
+    "message": "Когда"
+  },
+  "modeAuto": {
+    "message": "По расписанию"
+  },
+  "modeStrict": {
+    "message": "Всегда"
+  },
+  "modeRelaxed": {
+    "message": "Никогда"
+  },
+  "strictFrom": {
+    "message": "С"
+  },
+  "strictTo": {
+    "message": "До"
+  },
+  "hideChat": {
+    "message": "Скрывать чат трансляций"
+  },
+  "hideNotifications": {
+    "message": "Скрывать колокольчик"
+  },
+  "healthEndscreen": {
+    "message": "конечная заставка"
+  },
+  "optHomeTarget": {
+    "message": "Главная"
+  },
+  "homeAsk": {
+    "message": "Вопрос"
+  },
+  "commentsButton": {
+    "message": "Показать комментарии"
+  },
+  "optShortsMode": {
+    "message": "Shorts"
+  },
+  "shortsWatch": {
+    "message": "Как обычные видео"
+  },
+  "shortsBlock": {
+    "message": "Блокировать"
+  },
+  "exportSettings": {
+    "message": "Экспорт"
+  },
+  "importSettings": {
+    "message": "Импорт"
+  },
+  "importFailed": {
+    "message": "Не получилось прочитать файл"
+  },
+  "brandName": {
+    "message": "Errand"
+  },
+  "homeFeed": {
+    "message": "Лента YouTube"
+  },
+  "shortsShow": {
+    "message": "Показывать"
+  },
+  "sectionMore": {
+    "message": "Ещё"
+  },
+  "healthShorts": {
+    "message": "скрытие Shorts"
+  },
+  "extNameShort": {
+    "message": "Errand для YouTube: без Shorts и ленты"
+  },
+  "reportProblem": {
+    "message": "Сообщить о проблеме"
+  },
+  "reportThis": {
+    "message": "Сообщить"
+  }
+}

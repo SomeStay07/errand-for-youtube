@@ -1,0 +1,288 @@
+html:not([data-er-show-home]) :is(
+  ytd-browse[page-subtype="home"],
+  ytd-guide-entry-renderer:has(a[href="/feed/trending"]),
+  ytd-guide-entry-renderer:has(a[href^="/feed/explore"]),
+  yt-searchbox:has(input[name="search_query"]:placeholder-shown) .ytSearchboxComponentSuggestionsContainer
+) {
+  display: none !important;
+}
+
+html:not([data-er-show-shorts]) :is(
+  ytd-reel-shelf-renderer,
+  ytd-rich-shelf-renderer[is-shorts],
+  ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),
+  grid-shelf-view-model:has(a[href^="/shorts/"]),
+  ytd-rich-item-renderer:has(a[href^="/shorts/"]),
+  ytd-rich-item-renderer[is-slim-media],
+  ytd-video-renderer:has(a[href^="/shorts/"]),
+  ytd-grid-video-renderer:has(a[href^="/shorts/"]),
+  ytm-shorts-lockup-view-model,
+  ytm-shorts-lockup-view-model-v2,
+  ytd-guide-entry-renderer:has(a[href^="/shorts"]),
+  ytd-guide-entry-renderer:has(a[title="Shorts"]),
+  ytd-mini-guide-entry-renderer:has(a[href^="/shorts"]),
+  ytd-mini-guide-entry-renderer[aria-label="Shorts"],
+  yt-tab-shape[tab-title="Shorts"],
+  [data-er-shorts]
+) {
+  display: none !important;
+}
+
+html:not([data-er-show-related]):not([data-er-reveal]) ytd-watch-flexy :is(#related, ytd-watch-next-secondary-results-renderer) {
+  display: none !important;
+}
+
+html[data-er-autoplay-off]:not([data-er-show-endscreen]) .html5-endscreen {
+  display: none !important;
+}
+
+html:not([data-er-show-endscreen]) :is(
+  .ytp-endscreen-content,
+  .ytp-suggestion-set,
+  .ytp-ce-element,
+  .ytp-fullscreen-grid,
+  .ytp-fullscreen-grid-stills-container,
+  .ytp-endscreen-previous,
+  .ytp-endscreen-next,
+  .ytp-videowall-still,
+  .ytp-modern-videowall-still
+) {
+  display: none !important;
+}
+
+html[data-er-autoplay-off]:not([data-er-playlist]) :is(.ytp-next-button, .ytp-autonav-endscreen-countdown-overlay) {
+  display: none !important;
+}
+
+html:not([data-er-show-related]):not([data-er-reveal]) :is(
+  ytd-radio-renderer,
+  ytd-rich-item-renderer:has(a[href*="start_radio=1"]),
+  yt-lockup-view-model:has(a[href*="start_radio=1"])
+) {
+  display: none !important;
+}
+
+html:not([data-er-show-comments]):not([data-er-reveal-comments]) :is(
+  ytd-comments#comments,
+  #comment-teaser,
+  ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"]
+) {
+  display: none !important;
+}
+
+html[data-er-hide-chat] :is(
+  #chat-container,
+  #teaser-carousel.ytd-watch-metadata
+) {
+  display: none !important;
+}
+
+html[data-er-hide-notifications] ytd-notification-topbar-button-renderer {
+  display: none !important;
+}
+
+html[data-er-hide-metrics] :is(
+  #owner-sub-count,
+  ytd-watch-info-text #info > span:first-child,
+  like-button-view-model :is(.yt-spec-button-shape-next__button-text-content, .ytSpecButtonShapeNextButtonTextContent),
+  ytd-video-meta-block #metadata-line > span:first-of-type,
+  .ytContentMetadataViewModelLeadingIcon,
+  .ytContentMetadataViewModelLeadingIcon + .ytContentMetadataViewModelMetadataText
+) {
+  visibility: hidden !important;
+}
+
+html[data-er-hide-thumbs] :is(ytd-thumbnail, yt-thumbnail-view-model) img {
+  filter: grayscale(1);
+  opacity: 0.35;
+  transition: filter 0.2s, opacity 0.2s;
+}
+
+html[data-er-hide-thumbs] :is(ytd-thumbnail, yt-thumbnail-view-model):hover img {
+  filter: none;
+  opacity: 1;
+}
+
+html {
+  --er-fg: #0f0f0f;
+  --er-muted: #606060;
+  --er-line: rgba(0, 0, 0, 0.18);
+  --er-accent: #065fd4;
+  --er-surface: #ffffff;
+  --er-chip: rgba(0, 0, 0, 0.05);
+}
+
+html[dark] {
+  --er-fg: #f1f1f1;
+  --er-muted: #aaaaaa;
+  --er-line: rgba(255, 255, 255, 0.24);
+  --er-accent: #3ea6ff;
+  --er-surface: #212121;
+  --er-chip: rgba(255, 255, 255, 0.1);
+}
+
+#er-intent {
+  display: none;
+}
+
+html[data-er-page="home"]:not([data-er-show-home]) #er-intent {
+  position: fixed;
+  inset: 56px 0 0 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: var(--er-fg);
+  font-family: Roboto, Arial, sans-serif;
+}
+
+#er-intent form {
+  pointer-events: auto;
+}
+
+#er-intent form {
+  width: min(560px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+}
+
+#er-intent h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+#er-intent input {
+  font: inherit;
+  font-size: 18px;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--er-line);
+  background: transparent;
+  color: inherit;
+  outline: none;
+}
+
+#er-intent input:focus {
+  border-color: var(--er-accent);
+}
+
+#er-intent nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 14px;
+}
+
+#er-intent nav a {
+  color: var(--er-muted);
+  text-decoration: none;
+}
+
+#er-intent nav a:hover {
+  color: inherit;
+}
+
+#er-pill {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 360px;
+  padding: 8px 8px 8px 14px;
+  border-radius: 999px;
+  background: var(--er-surface);
+  color: var(--er-fg);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  font: 13px Roboto, Arial, sans-serif;
+}
+
+html[data-er-page="watch"] #er-pill {
+  left: auto;
+  right: 16px;
+}
+
+#er-pill span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#er-pill button,
+#er-reveal,
+#er-end button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 999px;
+}
+
+#er-pill button {
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  color: inherit;
+  font-size: 16px;
+}
+
+#er-reveal,
+#er-comments {
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 10px 16px;
+  background: var(--er-chip);
+  color: var(--er-fg);
+  font: 14px Roboto, Arial, sans-serif;
+}
+
+#er-comments {
+  margin: 24px 0 12px;
+}
+
+#er-reveal:disabled {
+  cursor: default;
+}
+
+#er-end {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  font: 20px Roboto, Arial, sans-serif;
+  text-align: center;
+}
+
+#er-end p {
+  margin: 0 24px;
+}
+
+#er-end .er-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+#er-end button {
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 15px;
+}
+
+#er-end button.er-primary {
+  background: #fff;
+  color: #0f0f0f;
+}

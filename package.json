@@ -1,0 +1,9 @@
+{
+  "name": "errand-for-youtube",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test test/lib.test.js test/i18n.test.js",
+    "build": "node scripts/build.mjs"
+  }
+}

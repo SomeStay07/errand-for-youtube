@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Errand</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <img src="icons/icon-48.png" alt="" width="28" height="28">
+    <div>
+      <h1 data-i18n="brandName"></h1>
+      <p id="status"></p>
+    </div>
+  </header>
+
+  <p id="health"></p>
+
+  <section>
+    <label class="row"><span data-i18n="optHomeTarget"></span>
+      <select id="homeTarget">
+        <option value="ask" data-i18n="homeAsk"></option>
+        <option value="subs" data-i18n="linkSubscriptions"></option>
+        <option value="wl" data-i18n="linkWatchLater"></option>
+        <option value="feed" data-i18n="homeFeed"></option>
+      </select>
+    </label>
+    <label class="row"><span data-i18n="optShortsMode"></span>
+      <select id="shortsMode">
+        <option value="watch" data-i18n="shortsWatch"></option>
+        <option value="block" data-i18n="shortsBlock"></option>
+        <option value="show" data-i18n="shortsShow"></option>
+      </select>
+    </label>
+  </section>
+
+  <section>
+    <h2 data-i18n="sectionHide"></h2>
+    <div id="hide"></div>
+    <label class="row"><span data-i18n="optAutoplay"></span><input type="checkbox" id="stopAutoplay"></label>
+    <label class="row"><span data-i18n="optEndPrompt"></span><input type="checkbox" id="endPrompt"></label>
+    <details>
+      <summary data-i18n="sectionMore"></summary>
+      <div id="more"></div>
+    </details>
+  </section>
+
+  <section>
+    <h2 data-i18n="sectionStrict"></h2>
+    <p class="hint" data-i18n="strictHint"></p>
+    <label class="row"><span data-i18n="strictWhen"></span>
+      <select id="mode">
+        <option value="auto" data-i18n="modeAuto"></option>
+        <option value="strict" data-i18n="modeStrict"></option>
+        <option value="relaxed" data-i18n="modeRelaxed"></option>
+      </select>
+    </label>
+    <div id="schedule">
+      <div class="times">
+        <label><span data-i18n="strictFrom"></span><input type="time" id="strictStart"></label>
+        <label><span data-i18n="strictTo"></span><input type="time" id="strictEnd"></label>
+      </div>
+      <div id="days"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 data-i18n="sectionWeek"></h2>
+    <p id="summary"></p>
+  </section>
+
+  <section class="actions">
+    <a id="report" class="button" target="_blank" rel="noopener" data-i18n="reportProblem"></a>
+    <button type="button" id="export" data-i18n="exportSettings"></button>
+    <label class="button"><span data-i18n="importSettings"></span><input type="file" id="import" accept="application/json" hidden></label>
+  </section>
+
+  <script src="lib.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

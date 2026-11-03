@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://somestay07.github.io/errand-for-youtube/sitemap.xml

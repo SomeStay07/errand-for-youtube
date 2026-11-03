@@ -1,0 +1,52 @@
+{
+  "en": {
+    "tagline": "Watch what you came for.<br>Hides Shorts, the feed and recommendations.",
+    "screens": [
+      ["home.png", "Home asks what you came for. No feed."],
+      ["search.png", "Search results without Shorts."],
+      ["watch.png", "No recommendations column. Need it? Wait 10 seconds."],
+      ["end.png", "When the video ends, close the tab instead of starting another."],
+      ["popup.png", "Every switch in one menu. Nothing leaves your browser."]
+    ]
+  },
+  "ru": {
+    "tagline": "Смотрите то, за чем пришли.<br>Без Shorts, ленты и рекомендаций.",
+    "screens": [
+      ["home.png", "Главная спрашивает, зачем вы пришли. Ленты нет."],
+      ["search.png", "Поиск без Shorts."],
+      ["watch.png", "Рекомендаций нет. Нужны — подождите 10 секунд."],
+      ["end.png", "Видео закончилось — закройте вкладку, а не включайте следующее."],
+      ["popup.png", "Все настройки в одном меню. Данные не покидают браузер."]
+    ]
+  },
+  "es": {
+    "tagline": "Mira aquello a lo que vienes.<br>Oculta los Shorts, el feed y las recomendaciones.",
+    "screens": [
+      ["home.png", "Inicio te pregunta a qué vienes. Sin feed."],
+      ["search.png", "Resultados de búsqueda sin Shorts."],
+      ["watch.png", "Sin columna de recomendaciones. ¿La quieres? Espera 10 s."],
+      ["end.png", "Al acabar el vídeo, cierra la pestaña en vez de ver otro."],
+      ["popup.png", "Todos los ajustes en un menú. Nada sale de tu navegador."]
+    ]
+  },
+  "pt_BR": {
+    "tagline": "Assista ao que você veio ver.<br>Oculta os Shorts, o feed e as recomendações.",
+    "screens": [
+      ["home.png", "O Início pergunta o que você veio ver. Sem feed."],
+      ["search.png", "Resultados da pesquisa sem Shorts."],
+      ["watch.png", "Sem coluna de recomendações. Precisa? Espere 10 segundos."],
+      ["end.png", "Quando o vídeo acabar, feche a aba em vez de ver outro."],
+      ["popup.png", "Todas as opções em um menu. Nada sai do seu navegador."]
+    ]
+  },
+  "de": {
+    "tagline": "Schau, wofür du gekommen bist.<br>Blendet Shorts, Feed und Empfehlungen aus.",
+    "screens": [
+      ["home.png", "Die Startseite fragt, wofür du hier bist. Kein Feed."],
+      ["search.png", "Suchergebnisse ohne Shorts."],
+      ["watch.png", "Keine Empfehlungsspalte. Brauchst du sie? Warte 10 Sekunden."],
+      ["end.png", "Video zu Ende? Schließ den Tab, statt ein neues zu starten."],
+      ["popup.png", "Alle Schalter in einem Menü. Nichts verlässt deinen Browser."]
+    ]
+  }
+}

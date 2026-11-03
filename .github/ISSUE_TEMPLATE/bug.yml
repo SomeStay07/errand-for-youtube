@@ -1,0 +1,28 @@
+name: Something broke
+description: Something Errand should hide is back, or YouTube looks or works wrong.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What do you see?
+      description: A screenshot helps most. Blur anything personal.
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: home, search, watch, channel, subscriptions…
+  - type: input
+    id: filters
+    attributes:
+      label: Filters reported as broken
+  - type: input
+    id: version
+    attributes:
+      label: Errand version
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and language

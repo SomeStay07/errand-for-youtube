@@ -1,0 +1,203 @@
+:root {
+  --bg: #ffffff;
+  --fg: #0f0f0f;
+  --muted: #606060;
+  --line: #e5e5e5;
+  --accent: #065fd4;
+  --warn: #d93025;
+  --ok: #188038;
+  --drift: #e37400;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1f1f1f;
+    --fg: #f1f1f1;
+    --muted: #aaaaaa;
+    --line: #3a3a3a;
+    --accent: #8ab4f8;
+    --warn: #f28b82;
+    --ok: #81c995;
+    --drift: #fdd663;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 340px;
+  margin: 0;
+  padding: 16px;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.4 system-ui, -apple-system, Roboto, sans-serif;
+}
+
+h1 {
+  margin: 0;
+  font-size: 18px;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+p {
+  margin: 4px 0 0;
+}
+
+section {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+}
+
+.hint,
+#status {
+  color: var(--muted);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+  cursor: pointer;
+}
+
+input[type="number"] {
+  width: 56px;
+}
+
+input,
+select {
+  font: inherit;
+  accent-color: var(--accent);
+}
+
+#health {
+  margin: 0 0 12px;
+}
+
+.times {
+  display: flex;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.times label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+details {
+  margin-top: 4px;
+}
+
+summary {
+  padding: 4px 0;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+#days {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 6px;
+}
+
+#days label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+table {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+td,
+th {
+  padding: 2px 0;
+  text-align: right;
+  font-weight: 400;
+}
+
+td:first-child,
+th:first-child {
+  text-align: left;
+  color: var(--muted);
+}
+
+th {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actions {
+  flex-wrap: wrap;
+}
+
+.actions #report {
+  flex-basis: 100%;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+#health a {
+  color: inherit;
+  font-weight: 600;
+}
+
+.actions button,
+.actions .button {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.ok {
+  color: var(--ok);
+}
+
+.warn {
+  color: var(--warn);
+}
+
+.drift {
+  color: var(--drift);
+}
