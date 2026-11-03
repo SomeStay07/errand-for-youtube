@@ -30,6 +30,8 @@ let settings = L.mergeSettings();
 let pausedUntil = null;
 let pauseStartsAt = null;
 let pauseTimer = 0;
+let strictOffAt = null;
+let strictTimer = 0;
 
 const $ = (id) => document.getElementById(id);
 
@@ -83,6 +85,44 @@ function renderStatus() {
   $("status").textContent = text;
   $("schedule").hidden = settings.mode !== "auto";
   renderPause();
+  renderStrictLock();
+}
+
+function renderStrictLock() {
+  const locked = L.isStrict(settings, new Date());
+  for (const node of [$("mode"), $("strictStart"), $("strictEnd"), $("import"), ...$("days").querySelectorAll("input")]) {
+    node.disabled = locked;
+  }
+  const importLabel = $("import").closest("label");
+  importLabel.classList.toggle("disabled", locked);
+  if (locked) {
+    importLabel.title = t("importLocked");
+    importLabel.setAttribute("aria-description", t("importLocked"));
+  } else {
+    importLabel.removeAttribute("title");
+    importLabel.removeAttribute("aria-description");
+  }
+  const button = $("strictOff");
+  button.hidden = !locked;
+  clearTimeout(strictTimer);
+  if (locked && L.strictExit(settings, strictOffAt, new Date()) === "waiting") {
+    button.textContent = t("strictOffCountdown", Math.max(1, Math.ceil((strictOffAt - Date.now()) / 1000)));
+    strictTimer = setTimeout(renderStatus, 250);
+    return;
+  }
+  button.textContent = settings.mode === "auto" ? t("strictOffUntil", settings.strictEnd) : t("strictOffButton");
+  if (settings.mode === "auto") strictTimer = setTimeout(renderStatus, 60_000 - (Date.now() % 60_000) + 50);
+}
+
+function onStrictOffClick() {
+  if (L.strictExit(settings, strictOffAt, new Date()) === "waiting") {
+    chrome.storage.local.remove("strictOffAt");
+    strictOffAt = null;
+  } else if (L.isStrict(settings, new Date())) {
+    strictOffAt = Date.now() + L.PAUSE_WAIT_S * 1000;
+    chrome.storage.local.set({ strictOffAt });
+  }
+  renderStatus();
 }
 
 function renderPause() {
@@ -118,11 +158,22 @@ function onPauseClick() {
   renderStatus();
 }
 
+function syncSchedule(next) {
+  for (const key of ["mode", "strictStart", "strictEnd", "strictDays", "strictSkipUntil"]) settings[key] = next[key];
+  for (const key of ["mode", "strictStart", "strictEnd"]) $(key).value = settings[key];
+  const boxes = $("days").querySelectorAll("input");
+  weekdayOrder().forEach((day, i) => {
+    if (boxes[i]) boxes[i].checked = settings.strictDays.includes(day);
+  });
+}
+
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "local") return;
   if (changes.pausedUntil) pausedUntil = changes.pausedUntil.newValue ?? null;
   if (changes.pauseStartsAt) pauseStartsAt = changes.pauseStartsAt.newValue ?? null;
-  if (changes.pausedUntil || changes.pauseStartsAt) renderStatus();
+  if (changes.strictOffAt) strictOffAt = changes.strictOffAt.newValue ?? null;
+  if (changes.settings?.newValue) syncSchedule(L.mergeSettings(changes.settings.newValue));
+  if (changes.pausedUntil || changes.pauseStartsAt || changes.strictOffAt || changes.settings) renderStatus();
 });
 
 function renderStats(stats) {
@@ -229,6 +280,7 @@ function setupBackup() {
   if (firefoxPopup) {
     $("import").closest("label").addEventListener("click", (event) => {
       event.preventDefault();
+      if ($("import").disabled) return;
       chrome.tabs.create({ url: chrome.runtime.getURL("popup.html?tab") });
     });
   }
@@ -248,11 +300,12 @@ function setupBackup() {
 
 async function init() {
   localize();
-  const data = await chrome.storage.local.get(["settings", "stats", "log", "pausedUntil", "pauseStartsAt"]);
+  const data = await chrome.storage.local.get(["settings", "stats", "log", "pausedUntil", "pauseStartsAt", "strictOffAt"]);
   diagnosticsLog = data.log || [];
   settings = L.mergeSettings(data.settings);
   pausedUntil = data.pausedUntil ?? null;
   pauseStartsAt = data.pauseStartsAt ?? null;
+  strictOffAt = data.strictOffAt ?? null;
   $("lookAgain").addEventListener("click", (event) => {
     event.preventDefault();
     chrome.tabs.create({ url: chrome.runtime.getURL("welcome.html") });
@@ -262,6 +315,7 @@ async function init() {
     pausedUntil = null;
   }
   $("pauseButton").addEventListener("click", onPauseClick);
+  $("strictOff").addEventListener("click", onStrictOffClick);
   renderForm();
   setupBackup();
   renderStatus();

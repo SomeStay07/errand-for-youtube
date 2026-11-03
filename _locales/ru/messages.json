@@ -3,7 +3,7 @@
     "message": "Errand для YouTube: скрыть Shorts, ленту и рекомендации"
   },
   "extDescription": {
-    "message": "Пишете, зачем пришли, смотрите и закрываете вкладку. Без Shorts (шортсов), главной ленты и рекомендаций YouTube. Бесплатно."
+    "message": "YouTube всегда подсунет ещё одно видео. Errand прячет Shorts и ленту и в конце видео предлагает закрыть вкладку. Бесплатно."
   },
   "actionTitle": {
     "message": "Настройки Errand"
@@ -250,7 +250,7 @@
     "message": "Shorts нет. Рекомендации и комментарии открываются по кнопке."
   },
   "welcomeEnd": {
-    "message": "Без автовоспроизведения. В конце видео можно сразу закрыть вкладку."
+    "message": "Когда видео заканчивается, следующее не включается, если это не плейлист. Errand спросит, нашлось ли нужное."
   },
   "welcomeShorts1": {
     "message": "Shorts скрыты на главной, в поиске, подписках и на каналах."
@@ -334,5 +334,27 @@
   },
   "titleBroken": {
     "message": "Errand: YouTube что-то поменял. Откройте, чтобы узнать что."
+  },
+  "strictOffButton": {
+    "message": "Выключить строгий режим"
+  },
+  "strictOffCountdown": {
+    "message": "Выключится через $SECONDS$…",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "strictOffUntil": {
+    "message": "Выключить до $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "importLocked": {
+    "message": "Недоступно в строгом режиме"
   }
 }

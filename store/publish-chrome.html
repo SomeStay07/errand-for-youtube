@@ -1,34 +1,30 @@
 <!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Errand. Публикация в Chrome Web Store</title>
 <style>body{font:15px/1.5 -apple-system,Arial,sans-serif;max-width:860px;margin:24px auto;padding:0 16px;color:#16302b;background:#f7f3ea}h2{margin-top:32px;border-top:1px solid #ddd5c4;padding-top:16px}.f{background:#fff;border:1px solid #ddd5c4;border-radius:10px;padding:10px 12px;margin:10px 0}.h{display:flex;justify-content:space-between;align-items:center;gap:12px}textarea{width:100%;box-sizing:border-box;margin-top:8px;font:13px/1.45 ui-monospace,Menlo,monospace;border:1px solid #e5dfd2;border-radius:6px;padding:8px}button{background:#16302b;color:#f4ebd9;border:0;border-radius:999px;padding:6px 14px;cursor:pointer;font:inherit}button.ok{background:#f2a541;color:#16302b}.n{color:#4d5f5a;font-size:13px}code{background:#fff;border:1px solid #e5dfd2;border-radius:6px;padding:1px 6px}</style></head>
 <body><h1>Errand. Публикация в Chrome Web Store</h1><p>Сгенерировано из <code>store/listing/*.md</code> скриптом <code>scripts/publish-kit.py</code>. Не править руками.</p>
-<h2>1. Пакет</h2><p>Новый элемент или новая версия → загрузить <code>dist/errand-chrome-&lt;версия&gt;.zip</code>. Название и краткое описание подтягиваются из пакета.</p><h2>2. Описание по языкам</h2><h3>English</h3><div class="f"><div class="h"><b>Описание: English</b><button data-i="0">Скопировать</button></div><textarea id="t0" readonly rows="18">You open YouTube for one video and the recommendations take the evening. With Errand, the home page asks what you came for instead of showing the feed. You type it, watch the video, and when it ends Errand asks if you got it and offers to close the tab.
+<h2>1. Пакет</h2><p>Новый элемент или новая версия → загрузить <code>dist/errand-chrome-&lt;версия&gt;.zip</code>. Название и краткое описание подтягиваются из пакета.</p><h2>2. Описание по языкам</h2><h3>English</h3><div class="f"><div class="h"><b>Описание: English</b><button data-i="0">Скопировать</button></div><textarea id="t0" readonly rows="18">That&#x27;s how one tutorial takes the whole evening. Like an errand: you go for one video and leave once you have it. It&#x27;s a distraction-free YouTube extension. Free and open source, and you don&#x27;t need an account. If you only want Shorts gone, pick &quot;Just hide Shorts&quot; on the first screen: the feed, recommendations, comments, autoplay and the end screen stay as they were.
 
-Shorts, the home feed and the recommendations column are hidden, so the next video isn&#x27;t one click away. It&#x27;s for study, work, a tutorial you need right now, or one video before bed.
-
-If you only want Shorts gone, pick &quot;Just hide Shorts&quot; on the first screen: the feed, recommendations and comments stay as they are.
-
-Free and open source, no account needed. The extension makes no network requests and sends nothing about what you watch anywhere.
+When your video ends, autoplay is off unless it&#x27;s a playlist. The end screen and end cards stay hidden, and so does the &quot;More videos&quot; grid in fullscreen. Errand asks &quot;Got what you came for?&quot; and offers Close tab.
 
 What changes
 
-• The home page shows one question instead of the feed: &quot;What are you here for?&quot; Type the answer and you land on search results. If you prefer, Home can open Subscriptions, Watch later or the usual feed.
-• Shorts disappear from home, search, subscriptions, channel pages and the sidebar. A Shorts link opens in the normal player, or doesn&#x27;t open at all if you choose that.
-• Video pages have no recommendations column (unless you chose &quot;Just hide Shorts&quot;). If you need it, press &quot;Show recommendations&quot; and wait 10 seconds. Comments open with a &quot;Show comments&quot; button.
-• When a video ends, nothing autoplays and there&#x27;s no wall of thumbnails. Errand asks if you found what you came for and offers Close tab. If you typed what you came for, &quot;Back to results&quot; returns you to the search. Playlists keep playing as usual.
-• Mixes, Trending and the suggestions under an empty search box are hidden too. In the menu you can also hide live chat, the notification bell, view, like and subscriber counts, and dim thumbnails until you hover.
-• Strict mode runs on a schedule, say weekdays 9 to 6. During those hours the &quot;show&quot; buttons are gone as well.
-• The menu shows the last 7 days: how many times you watched the video you came for to the end, and how many times you then closed the tab. The count stays in your browser.
-• &quot;Pause 15 min&quot; turns everything off after a 10-second wait and turns it back on by itself. Strict mode has no pause.
+• Home shows one question instead of the feed. Type the answer and you land on search results. Home can also open Watch later, the usual feed or Subscriptions (there without the &quot;Most relevant&quot; shelf).
+• Shorts disappear from home, search, subscriptions, channel pages and the sidebar. Their links open in the normal player, or don&#x27;t open at all if you choose that.
+• Video pages have no recommendations column. If you need it, press &quot;Show recommendations&quot; and wait 10 seconds. Comments open with a &quot;Show comments&quot; button.
+• If you typed what you came for, &quot;Back to results&quot; at the end takes you back to your search. Playlists play on as usual.
+• With the default look, Mixes and the suggestions under an empty search box are hidden too. The menu can also hide live chat, the notification bell and view, like and subscriber counts, or dim thumbnails until you hover.
+• Strict mode runs on a schedule, say weekdays 9 to 6, and removes the &quot;show&quot; buttons for those hours.
+• &quot;Pause 15 min&quot; turns everything off after a 10-second wait and comes back on by itself. Strict mode has no pause. Turning it off also takes a 10-second wait, and on a schedule it stays off only until those hours end.
+• The menu shows how many errands you finished in the last 7 days.
 
 If YouTube changes something, you&#x27;ll know
 
-Extensions like this usually break the same way. When YouTube changes its layout, Shorts creep back and the one-star reviews say &quot;stopped working after an update&quot;. On home, search and video pages Errand checks that it still finds what it hides and that no Shorts slipped through. If something changed, the icon shows &quot;!&quot; and the menu says what stopped working.
+Extensions like this usually break the same way. The layout changes, hidden things creep back, and the one-star reviews say &quot;stopped working after an update&quot;. On home, search and video pages Errand checks that it still finds what it hides and that no Shorts slipped through. If something changed, the icon shows &quot;!&quot; and the menu says what stopped working. Every breakage goes into a public log with the date it was found, fixed and live in the store: https://somestay07.github.io/errand-for-youtube/breakage/
 
 The ad-blocker warning usually appears when requests or ads get blocked. Errand blocks neither: it hides parts of the page and adds a few buttons of its own. Shorts, the feed and recommendations are hidden before the page draws, so they don&#x27;t flash.
 
 Privacy
 
-Settings and stats stay in your browser. Permissions: access to www.youtube.com, to hide things there, and storage, to remember your settings. Nothing else.
+Settings and stats stay in your browser. The extension makes no network requests, and there&#x27;s no AI in it. Permissions: access to www.youtube.com, to hide things there, and storage, to remember your settings. Nothing else.
 
 Code: https://github.com/SomeStay07/errand-for-youtube
 
@@ -38,34 +34,32 @@ Does it block ads? No. Use uBlock Origin for that; they work fine together.
 Do I need to sign in? No.
 Brave, Vivaldi, Yandex Browser? Install it from the Chrome Web Store.
 Phone? Not yet.
-Something leaked through? Open an issue on GitHub with a screenshot. Fixes after YouTube updates are what I work on first.</textarea></div><p class="n">Картинки: <code>store/images/en/</code></p><h3>Русский</h3><div class="f"><div class="h"><b>Описание: Русский</b><button data-i="1">Скопировать</button></div><textarea id="t1" readonly rows="18">Открываете YouTube ради одного видео и залипаете в рекомендациях на весь вечер. С Errand главная вместо ленты спрашивает, зачем вы пришли. Пишете ответ, смотрите нужное, и в конце видео Errand спросит, нашлось ли оно, и предложит закрыть вкладку.
+Something leaked through? Open an issue on GitHub with a screenshot. Fixes after updates are what I work on first.
 
-Shorts, лента на главной и колонка рекомендаций скрыты, и следующее видео не маячит перед глазами. Подходит для учёбы и работы, для инструкции, которая нужна прямо сейчас, и для одного видео перед сном.
+YouTube is a trademark of Google LLC. Errand is not affiliated with or endorsed by Google.</textarea></div><p class="n">Картинки: <code>store/images/en/</code></p><h3>Русский</h3><div class="f"><div class="h"><b>Описание: Русский</b><button data-i="1">Скопировать</button></div><textarea id="t1" readonly rows="18">Так одна инструкция растягивается на весь вечер. Errand по-английски значит &quot;сходить по делу&quot;: зашли за одним видео и ушли, когда его посмотрели. Бесплатно, код открыт, аккаунт не нужен. Если нужно убрать только шортсы, выберите на первом экране &quot;Просто убрать Shorts&quot;: лента, рекомендации, комментарии, автовоспроизведение и конечная заставка останутся как были.
 
-Если нужно убрать только Shorts, выберите на первом экране &quot;Просто убрать Shorts&quot;: лента, рекомендации и комментарии останутся как были.
-
-Бесплатно, код открыт, аккаунт не нужен. Расширение не делает запросов в сеть и никуда не отправляет, что вы смотрите.
+Когда видео заканчивается, следующее не включается, если это не плейлист. Конечной заставки нет, и в полноэкранном режиме сетка с другими видео тоже не появляется. Errand спросит, получилось ли найти, что хотели, и предложит закрыть вкладку.
 
 Что меняется
 
-• На главной вместо ленты один вопрос: &quot;Зачем вы здесь?&quot; Пишете ответ и попадаете в поиск. Можно настроить, чтобы главная сразу открывала подписки, &quot;Смотреть позже&quot; или обычную ленту.
+• На главной один вопрос вместо ленты. Пишете ответ и попадаете в поиск. Можно настроить, чтобы главная сразу открывала &quot;Смотреть позже&quot;, обычную ленту или подписки, причём без полки &quot;Самые актуальные&quot;.
 • Shorts пропадают с главной, из поиска, подписок, страниц каналов и меню. Ссылки на них открываются в обычном плеере или не открываются вовсе, как настроите.
-• На странице видео нет колонки рекомендаций (если вы не выбрали &quot;Просто убрать Shorts&quot;). Если она нужна, нажмите &quot;Показать рекомендации&quot; и подождите 10 секунд. Комментарии тоже открываются по кнопке.
-• Когда видео заканчивается, следующее не включается и стены превью нет. Errand спрашивает, нашлось ли нужное, и предлагает закрыть вкладку. Если вы писали, зачем пришли, кнопка &quot;Назад к поиску&quot; вернёт к результатам. Плейлисты играют как обычно.
-• Ещё скрыты миксы, &quot;В тренде&quot; и подсказки под пустой строкой поиска. В меню можно спрятать чат трансляций, колокольчик, счётчики просмотров, лайков и подписчиков, а превью приглушить до наведения.
-• Строгий режим включается по расписанию, например в будни с 9 до 18. В эти часы пропадают и кнопки &quot;показать&quot;.
-• В меню видно, что было за 7 дней: сколько раз вы досмотрели видео, ради которого пришли, и сколько раз после этого закрыли вкладку. Хранится только в браузере.
-• &quot;Пауза на 15 мин&quot; через 10 секунд выключает всё и потом сама включает обратно. В строгом режиме паузы нет.
+• На странице видео нет колонки рекомендаций. Если она нужна, нажмите &quot;Показать рекомендации&quot; и подождите 10 секунд. Комментарии тоже открываются по кнопке.
+• Если вы писали, зачем пришли, в конце видео кнопка &quot;Назад к поиску&quot; вернёт к результатам. Плейлисты играют как обычно.
+• С настройками по умолчанию ещё скрыты миксы и подсказки под пустой строкой поиска. В меню можно спрятать чат трансляций, колокольчик, счётчики просмотров, лайков и подписчиков или приглушить превью до наведения.
+• Строгий режим включается по расписанию, например в будни с 9 до 18, и на эти часы убирает кнопки &quot;показать&quot;.
+• &quot;Пауза на 15 мин&quot; через 10 секунд выключает всё и потом сама включает обратно. В строгом режиме паузы нет. Сам строгий режим тоже выключается через 10 секунд ожидания, а по расписанию только до конца строгих часов.
+• В меню видно, сколько дел вы довели до конца за 7 дней.
 
 Если YouTube что-то поменяет, вы узнаете
 
-Такие расширения обычно ломаются одинаково. Когда YouTube меняет вёрстку, Shorts возвращаются и в отзывах появляется &quot;после обновления не работает&quot;. На главной, в поиске и на странице видео Errand проверяет, на месте ли всё, что он прячет, и не проскочили ли шортсы. Если что-то поменялось, на иконке появится &quot;!&quot;, и в меню будет написано, что перестало работать.
+Такие расширения обычно ломаются одинаково. Меняется вёрстка, спрятанное возвращается, и в отзывах появляется &quot;после обновления не работает&quot;. На главной, в поиске и на странице видео Errand проверяет, находит ли он то, что прячет, и не проскочили ли шортсы. Если что-то поменялось, на иконке появится &quot;!&quot;, и в меню будет написано, что перестало работать. Каждая поломка попадает в открытый журнал с датами: когда нашли, когда починили и когда исправление вышло в магазине. Журнал на английском: https://somestay07.github.io/errand-for-youtube/breakage/
 
-Предупреждение про блокировщик рекламы обычно появляется, когда блокируются запросы или реклама. Errand ничего из этого не блокирует: он прячет элементы страницы и добавляет пару своих кнопок. Shorts, лента и рекомендации скрыты раньше, чем страница отрисуется, поэтому не мелькают.
+Предупреждение про блокировщик рекламы обычно появляется, когда блокируются запросы или реклама. Errand ничего из этого не блокирует: он прячет элементы страницы и добавляет пару своих кнопок. Shorts, лента и рекомендации скрыты ещё до отрисовки страницы, поэтому не мелькают.
 
 Приватность
 
-Настройки и статистика остаются в браузере. Разрешения: доступ к www.youtube.com, чтобы прятать там элементы, и хранилище, чтобы помнить настройки. Больше ничего.
+Настройки и статистика остаются в браузере. Расширение не делает запросов в сеть, и никакого ИИ в нём нет. Разрешения: доступ к www.youtube.com, чтобы прятать там элементы, и хранилище, чтобы помнить настройки. Больше ничего.
 
 Код: https://github.com/SomeStay07/errand-for-youtube
 
@@ -75,34 +69,32 @@ Shorts, лента на главной и колонка рекомендаци�
 Нужно входить в аккаунт? Нет.
 Яндекс Браузер, Brave, Vivaldi? Ставится из Chrome Web Store.
 На телефоне? Пока нет.
-Что-то снова пролезло? Напишите на GitHub и приложите скриншот. Поломки после обновлений YouTube я чиню первыми.</textarea></div><p class="n">Картинки: <code>store/images/ru/</code></p><h3>Español</h3><div class="f"><div class="h"><b>Описание: Español</b><button data-i="2">Скопировать</button></div><textarea id="t2" readonly rows="18">Entras en YouTube a por un vídeo y las recomendaciones se comen la tarde. Con Errand, el inicio te pregunta a qué vienes en lugar de mostrarte el feed. Lo escribes, ves el vídeo y, cuando termina, Errand te pregunta si encontraste lo que buscabas y te ofrece cerrar la pestaña.
+Что-то снова пролезло? Напишите на GitHub и приложите скриншот. Поломки после обновлений я чиню первыми.
 
-Los Shorts, el feed de inicio y la columna de recomendaciones están ocultos, así que el siguiente vídeo ya no está a un clic. Sirve para estudiar, para trabajar, para el tutorial que necesitas ahora o para un solo vídeo antes de dormir.
+YouTube принадлежит Google LLC. Errand не связан с Google, и компания его не одобряла.</textarea></div><p class="n">Картинки: <code>store/images/ru/</code></p><h3>Español</h3><div class="f"><div class="h"><b>Описание: Español</b><button data-i="2">Скопировать</button></div><textarea id="t2" readonly rows="18">Así es como un tutorial se come la tarde entera. En inglés, errand quiere decir &quot;recado&quot;: entras a por un vídeo, como quien baja a por el pan, y te vas cuando lo tienes. Es gratis y de código abierto, y no hace falta cuenta. Si solo quieres quitar los Shorts, elige &quot;Solo quitar Shorts&quot; en la primera pantalla: el feed, las recomendaciones, los comentarios, la reproducción automática y la pantalla final se quedan como estaban.
 
-Si solo quieres quitar los Shorts, elige &quot;Solo quitar Shorts&quot; en la primera pantalla: el feed, las recomendaciones y los comentarios se quedan como estaban.
-
-Gratis y de código abierto, sin cuenta. La extensión no hace peticiones de red y no envía a ningún sitio lo que ves.
+Cuando acaba tu vídeo, la reproducción automática está desactivada, salvo en listas de reproducción. No aparecen la pantalla final ni sus tarjetas, y en pantalla completa tampoco la cuadrícula de vídeos. Errand te pregunta si encontraste lo que buscabas y te ofrece cerrar la pestaña.
 
 Qué cambia
 
-• El inicio muestra una sola pregunta en lugar del feed: &quot;¿A qué vienes?&quot;. Escribe la respuesta y llegas a los resultados de búsqueda. Si lo prefieres, Inicio puede abrir Suscripciones, Ver más tarde o el feed de siempre.
-• Los Shorts desaparecen de Inicio, la búsqueda, Suscripciones, las páginas de canal y el menú lateral. Un enlace a un Short se abre en el reproductor normal o no se abre, si así lo eliges.
-• La página del vídeo no tiene columna de recomendaciones (salvo si elegiste &quot;Solo quitar Shorts&quot;). Si la necesitas, pulsa &quot;Mostrar recomendaciones&quot; y espera 10 segundos. Los comentarios se abren con un botón &quot;Mostrar comentarios&quot;.
-• Cuando acaba un vídeo, no empieza otro solo y no hay muro de miniaturas. Errand te pregunta si encontraste lo que buscabas y te ofrece cerrar la pestaña. Si escribiste a qué venías, &quot;Volver a los resultados&quot; te lleva de vuelta a la búsqueda. Las listas de reproducción siguen como siempre.
-• También se ocultan los Mixes, Tendencias y las sugerencias con el cuadro de búsqueda vacío. En el menú puedes ocultar además el chat en directo, la campana, los contadores de visualizaciones, &quot;me gusta&quot; y suscriptores, y atenuar las miniaturas hasta pasar el ratón.
-• El modo estricto funciona con horario, por ejemplo de lunes a viernes de 9 a 18. En esas horas desaparecen también los botones de &quot;mostrar&quot;.
-• El menú muestra los últimos 7 días: cuántas veces viste hasta el final el vídeo al que venías y cuántas veces cerraste la pestaña después. Se guarda en tu navegador.
-• &quot;Pausar 15 min&quot; lo desactiva todo tras 10 segundos de espera y vuelve a activarlo solo. En modo estricto no hay pausa.
+• Inicio muestra una sola pregunta en lugar del feed. Escribes la respuesta y llegas a los resultados de búsqueda. Inicio también puede abrir Ver más tarde, el feed de siempre o Suscripciones (allí sin la fila de vídeos más relevantes).
+• Los Shorts desaparecen de Inicio, la búsqueda, Suscripciones, las páginas de canal y el menú lateral. Sus enlaces se abren en el reproductor normal o no se abren, si así lo eliges.
+• La página del vídeo no tiene columna de recomendaciones. Si la necesitas, pulsa &quot;Mostrar recomendaciones&quot; y espera 10 segundos. Los comentarios se abren con un botón &quot;Mostrar comentarios&quot;.
+• Si escribiste a qué venías, al final &quot;Volver a los resultados&quot; te devuelve a tu búsqueda. Las listas de reproducción siguen como siempre.
+• Con los ajustes por defecto también se ocultan los Mixes y las sugerencias con el cuadro de búsqueda vacío. En el menú puedes ocultar además el chat en directo, la campana y los contadores de visualizaciones, &quot;me gusta&quot; y suscriptores, o atenuar las miniaturas hasta que pases el ratón por encima.
+• El modo estricto se activa según un horario, por ejemplo de lunes a viernes de 9 a 18, y en esas horas quita los botones de &quot;mostrar&quot;.
+• &quot;Pausar 15 min&quot; lo desactiva todo tras 10 segundos de espera y vuelve a activarlo solo. En modo estricto no hay pausa. Desactivar el modo estricto también lleva 10 segundos, y con horario solo queda desactivado hasta que acaban esas horas.
+• El menú muestra cuántos recados terminaste en los últimos 7 días.
 
 Si YouTube cambia algo, te enteras
 
-Las extensiones como esta suelen romperse igual. Cuando YouTube cambia el diseño, los Shorts vuelven y las reseñas de una estrella dicen &quot;dejó de funcionar tras una actualización&quot;. En Inicio, en la búsqueda y en la página del vídeo, Errand comprueba que sigue encontrando lo que oculta y que no se ha colado ningún Short. Si algo cambió, el icono muestra &quot;!&quot; y el menú te dice qué ha dejado de funcionar.
+Las extensiones como esta suelen romperse igual. Cambia el diseño, lo oculto vuelve a asomar y las reseñas de una estrella dicen &quot;dejó de funcionar tras una actualización&quot;. En Inicio, en la búsqueda y en la página del vídeo, Errand comprueba que sigue encontrando lo que oculta y que no se ha colado ningún Short. Si algo cambió, el icono muestra &quot;!&quot; y el menú te dice qué ha dejado de funcionar. Cada fallo se apunta en un registro público con la fecha en que se encontró, se arregló y llegó a la tienda (en inglés): https://somestay07.github.io/errand-for-youtube/breakage/
 
-El aviso de bloqueador de anuncios suele saltar cuando se bloquean peticiones o anuncios. Errand no bloquea nada: oculta partes de la página y añade algunos botones propios. Los Shorts, el feed y las recomendaciones se ocultan antes de que se dibuje la página, así que no aparecen ni un instante.
+El aviso de bloqueador de anuncios suele saltar cuando se bloquean peticiones o anuncios. Errand no bloquea ni lo uno ni lo otro: oculta partes de la página y añade algunos botones propios. Los Shorts, el feed y las recomendaciones se ocultan antes de que aparezca la página, así que no parpadean.
 
 Privacidad
 
-Los ajustes y las estadísticas se quedan en tu navegador. Permisos: acceso a www.youtube.com, para ocultar cosas ahí, y almacenamiento, para recordar tus ajustes. Nada más.
+Los ajustes y las estadísticas se quedan en tu navegador. La extensión no hace peticiones de red y no lleva IA. Permisos: acceso a www.youtube.com, para ocultar cosas ahí, y almacenamiento, para recordar tus ajustes. Nada más.
 
 Código: https://github.com/SomeStay07/errand-for-youtube
 
@@ -112,34 +104,32 @@ Preguntas
 ¿Tengo que iniciar sesión? No.
 ¿Brave, Vivaldi, Yandex Browser? Instálala desde Chrome Web Store.
 ¿Móvil? Todavía no.
-¿Se ha colado algo? Abre una incidencia en GitHub con una captura de pantalla. Arreglar lo que rompen las actualizaciones de YouTube es lo primero que hago.</textarea></div><p class="n">Картинки: <code>store/images/es/</code></p><h3>Português (Brasil)</h3><div class="f"><div class="h"><b>Описание: Português (Brasil)</b><button data-i="3">Скопировать</button></div><textarea id="t3" readonly rows="18">Você abre o YouTube por causa de um vídeo e as recomendações levam a noite inteira. Com o Errand, o Início pergunta o que você veio ver em vez de mostrar o feed. Você digita, assiste e, quando o vídeo acaba, o Errand pergunta se você achou o que queria e sugere fechar a aba.
+¿Se ha colado algo? Abre una incidencia en GitHub con una captura de pantalla. Lo que rompen las actualizaciones es lo primero que arreglo.
 
-Os Shorts, o feed do Início e a coluna de recomendações ficam ocultos, então o próximo vídeo não está a um clique. Serve para estudar, trabalhar, ver o tutorial de que você precisa agora ou só um vídeo antes de dormir.
+YouTube es una marca de Google LLC. Errand no tiene relación con Google ni cuenta con su aval.</textarea></div><p class="n">Картинки: <code>store/images/es/</code></p><h3>Português (Brasil)</h3><div class="f"><div class="h"><b>Описание: Português (Brasil)</b><button data-i="3">Скопировать</button></div><textarea id="t3" readonly rows="18">É assim que um tutorial come a noite inteira. Errand quer dizer &quot;recado&quot; em inglês: você entra por um vídeo, como quem dá um pulo na padaria, e vai embora quando já tem o que queria. É grátis e de código aberto, e não precisa de conta. Se você só quer tirar os Shorts, escolha &quot;Só esconder Shorts&quot; na primeira tela: o feed, as recomendações, os comentários, a reprodução automática e a tela final continuam como estavam.
 
-Se você só quer tirar os Shorts, escolha &quot;Só esconder Shorts&quot; na primeira tela: o feed, as recomendações e os comentários continuam como estão.
-
-Grátis e de código aberto, sem conta. A extensão não faz requisições de rede e não envia para lugar nenhum o que você assiste.
+Quando o seu vídeo acaba, a reprodução automática fica desligada, a não ser numa playlist. A tela final e os cards não aparecem, nem a grade de vídeos em tela cheia. O Errand pergunta se você achou o que veio buscar e sugere fechar a aba.
 
 O que muda
 
-• O Início mostra uma pergunta só em vez do feed: &quot;O que você veio ver?&quot;. Digite a resposta e você cai nos resultados da pesquisa. Se preferir, o Início pode abrir Inscrições, Assistir mais tarde ou o feed de sempre.
-• Os Shorts somem do Início, da pesquisa, das Inscrições, das páginas de canal e da barra lateral. Um link de Short abre no player normal ou nem abre, se você escolher assim.
-• A página do vídeo não tem coluna de recomendações (a não ser que você tenha escolhido &quot;Só esconder Shorts&quot;). Se precisar dela, clique em &quot;Mostrar recomendações&quot; e espere 10 segundos. Os comentários abrem com um botão &quot;Mostrar comentários&quot;.
-• Quando um vídeo acaba, outro não começa sozinho e não aparece parede de miniaturas. O Errand pergunta se você achou o que veio buscar e oferece fechar a aba. Se você digitou o que veio ver, &quot;Voltar aos resultados&quot; leva de volta à pesquisa. Playlists continuam tocando normalmente.
-• Também ficam ocultos os Mixes, Em alta e as sugestões com a caixa de pesquisa vazia. No menu dá para ocultar ainda o chat ao vivo, o sino de notificações, as contagens de visualizações, curtidas e inscritos, e esmaecer as miniaturas até passar o mouse.
-• O modo rígido funciona com horário, por exemplo de segunda a sexta, das 9h às 18h. Nesse horário os botões de &quot;mostrar&quot; também somem.
-• O menu mostra os últimos 7 dias: quantas vezes você assistiu até o fim o vídeo que veio ver e quantas vezes fechou a aba depois. Fica salva no seu navegador.
-• &quot;Pausar 15 min&quot; desliga tudo depois de 10 segundos de espera e liga de novo sozinho. No modo rígido não há pausa.
+• Início mostra uma pergunta só em vez do feed. Digite a resposta e você cai nos resultados da pesquisa. Início também pode abrir Assistir mais tarde, o feed de sempre ou Inscrições (lá sem a fileira de vídeos mais relevantes).
+• Os Shorts somem do Início, da pesquisa, das Inscrições, das páginas de canal e da barra lateral. Os links deles abrem no player normal ou nem abrem, se você escolher assim.
+• A página do vídeo não tem coluna de recomendações. Se precisar dela, clique em &quot;Mostrar recomendações&quot; e espere 10 segundos. Os comentários abrem com um botão &quot;Mostrar comentários&quot;.
+• Se você digitou o que veio ver, no fim &quot;Voltar aos resultados&quot; leva de volta à sua pesquisa. Playlists continuam tocando normalmente.
+• Com as configurações padrão, os Mixes e as sugestões com a caixa de pesquisa vazia também ficam ocultos. No menu dá para ocultar ainda o chat ao vivo, o sino de notificações e as contagens de visualizações, curtidas e inscritos, ou esmaecer as miniaturas até passar o mouse.
+• O modo rígido segue um horário, por exemplo de segunda a sexta, das 9h às 18h, e nesse período tira os botões de &quot;mostrar&quot;.
+• &quot;Pausar 15 min&quot; desliga tudo depois de 10 segundos de espera e liga de novo sozinho. No modo rígido não há pausa. Desligar o modo rígido também leva 10 segundos, e com horário ele fica desligado só até o fim daquele período.
+• O menu mostra quantos recados você concluiu nos últimos 7 dias.
 
 Se o YouTube mudar algo, você fica sabendo
 
-Extensões assim costumam quebrar do mesmo jeito. Quando o YouTube muda o layout, os Shorts voltam e as avaliações de uma estrela dizem &quot;parou de funcionar depois de uma atualização&quot;. Na página inicial, na pesquisa e na página do vídeo, o Errand confere se ainda encontra o que oculta e se nenhum Short escapou. Se algo mudou, o ícone mostra &quot;!&quot; e o menu diz o que parou de funcionar.
+Extensões assim costumam quebrar do mesmo jeito. O layout muda, o que estava oculto volta e as avaliações de uma estrela dizem &quot;parou de funcionar depois de uma atualização&quot;. No Início, na pesquisa e na página do vídeo, o Errand confere se ainda encontra o que oculta e se nenhum Short escapou. Se algo mudou, o ícone mostra &quot;!&quot; e o menu diz o que parou de funcionar. Cada falha entra num registro público com a data em que foi encontrada, corrigida e publicada na loja (em inglês): https://somestay07.github.io/errand-for-youtube/breakage/
 
-O aviso de bloqueador de anúncios costuma aparecer quando requisições ou anúncios são bloqueados. O Errand não bloqueia nada: ele oculta partes da página e adiciona alguns botões próprios. Os Shorts, o feed e as recomendações são ocultados antes de a página ser desenhada, então não piscam na tela.
+O aviso de bloqueador de anúncios costuma aparecer quando requisições ou anúncios são bloqueados. O Errand não bloqueia nenhum dos dois: ele oculta partes da página e adiciona alguns botões próprios. Shorts, feed e recomendações somem antes de a página aparecer, então não piscam.
 
 Privacidade
 
-Configurações e estatísticas ficam no seu navegador. Permissões: acesso a www.youtube.com, para ocultar coisas lá, e armazenamento, para lembrar suas configurações. Nada além disso.
+Configurações e estatísticas ficam no seu navegador. A extensão não faz requisições de rede e não tem IA. Permissões: acesso a www.youtube.com, para ocultar coisas lá, e armazenamento, para lembrar suas configurações. Nada além disso.
 
 Código: https://github.com/SomeStay07/errand-for-youtube
 
@@ -149,34 +139,32 @@ Bloqueia anúncios? Não. Para isso, use o uBlock Origin; os dois funcionam bem 
 Preciso fazer login? Não.
 Brave, Vivaldi, Yandex Browser? Instale pela Chrome Web Store.
 Celular? Ainda não.
-Alguma coisa escapou? Abra uma issue no GitHub com uma captura de tela. Consertar o que as atualizações do YouTube quebram vem sempre primeiro.</textarea></div><p class="n">Картинки: <code>store/images/pt_BR/</code></p><h3>Deutsch</h3><div class="f"><div class="h"><b>Описание: Deutsch</b><button data-i="4">Скопировать</button></div><textarea id="t4" readonly rows="18">Du öffnest YouTube für ein Video, und die Empfehlungen fressen den ganzen Abend. Mit Errand fragt die Startseite statt des Feeds, wofür du hier bist. Du tippst es ein, schaust das Video, und am Ende fragt Errand, ob du gefunden hast, was du wolltest, und bietet an, den Tab zu schließen.
+Alguma coisa escapou? Abra uma issue no GitHub com uma captura de tela. Consertar o que as atualizações quebram vem sempre primeiro.
 
-Shorts, der Startseiten-Feed und die Empfehlungsspalte sind ausgeblendet, also liegt das nächste Video nicht mehr nur einen Klick entfernt. Das passt zum Lernen, zur Arbeit, zum Tutorial, das du gerade brauchst, oder zu dem einen Video vor dem Schlafengehen.
+YouTube é uma marca da Google LLC. O Errand não tem vínculo com o Google nem é endossado por ele.</textarea></div><p class="n">Картинки: <code>store/images/pt_BR/</code></p><h3>Deutsch</h3><div class="f"><div class="h"><b>Описание: Deutsch</b><button data-i="4">Скопировать</button></div><textarea id="t4" readonly rows="18">So frisst ein Tutorial den ganzen Abend. &quot;Errand&quot; ist Englisch und heißt &quot;Besorgung&quot;: Du gehst für ein Video zu YouTube, so wie man kurz Brötchen holen geht, und bist wieder draußen, sobald du es hast. Kostenlos und Open Source, ohne Konto. Willst du nur die Shorts loswerden, wähl auf dem ersten Bildschirm &quot;Nur Shorts ausblenden&quot;: Feed, Empfehlungen, Kommentare, Autoplay und Endbildschirm bleiben dann, wie sie waren.
 
-Willst du nur die Shorts loswerden, wähl auf dem ersten Bildschirm &quot;Nur Shorts ausblenden&quot;: Feed, Empfehlungen und Kommentare bleiben, wie sie sind.
-
-Kostenlos und Open Source, ohne Konto. Die Erweiterung stellt keine Netzwerkanfragen und schickt nirgendwohin, was du schaust.
+Am Ende deines Videos ist Autoplay aus, außer in Playlists. Der Endbildschirm und seine eingeblendeten Videos bleiben weg, im Vollbild auch das Raster mit weiteren Videos. Errand fragt, ob du gefunden hast, was du gesucht hast, und bietet an, den Tab zu schließen.
 
 Was sich ändert
 
-• Die Startseite zeigt statt des Feeds eine einzige Frage: &quot;Wofür bist du hier?&quot; Tipp die Antwort ein und du landest bei den Suchergebnissen. Wenn du willst, öffnet die Startseite stattdessen Abos, Später ansehen oder den üblichen Feed.
-• Shorts verschwinden von der Startseite, aus der Suche, den Abos, von Kanalseiten und aus der Seitenleiste. Ein Shorts-Link öffnet sich im normalen Player oder gar nicht, wenn du das so einstellst.
-• Videoseiten haben keine Empfehlungsspalte (außer du hast &quot;Nur Shorts ausblenden&quot; gewählt). Wenn du sie brauchst, klick auf &quot;Empfehlungen anzeigen&quot; und warte 10 Sekunden. Kommentare öffnest du mit dem Button &quot;Kommentare anzeigen&quot;.
-• Am Ende eines Videos startet kein nächstes von selbst, und es gibt keine Wand aus Thumbnails. Errand fragt, ob du gefunden hast, wofür du gekommen bist, und bietet an, den Tab zu schließen. Hast du dein Ziel eingetippt, bringt dich &quot;Zurück zu den Ergebnissen&quot; wieder zur Suche. Playlists laufen wie gewohnt weiter.
-• Ebenfalls ausgeblendet: Mixes, Trends und Vorschläge bei leerem Suchfeld. Im Menü kannst du außerdem Livechat, die Benachrichtigungsglocke, Aufrufe-, Like- und Abonnentenzahlen ausblenden und Thumbnails bis zum Darüberfahren abdunkeln.
-• Der strenge Modus läuft nach Zeitplan, etwa werktags von 9 bis 18 Uhr. In dieser Zeit verschwinden auch die &quot;Anzeigen&quot;-Buttons.
-• Das Menü zeigt die letzten 7 Tage: wie oft du das Video, für das du gekommen bist, zu Ende geschaut hast, und wie oft du danach den Tab geschlossen hast. Die Zählung bleibt in deinem Browser.
-• &quot;15 Min. Pause&quot; schaltet nach 10 Sekunden Wartezeit alles aus und von selbst wieder ein. Im strengen Modus gibt es keine Pause.
+• Die Startseite zeigt statt des Feeds eine einzige Frage. Tipp die Antwort ein und du landest bei den Suchergebnissen. Die Startseite kann auch Später ansehen, den üblichen Feed oder die Abos öffnen (dort ohne die Reihe mit den relevantesten Videos).
+• Shorts verschwinden von der Startseite, aus der Suche, den Abos, von Kanalseiten und aus der Seitenleiste. Ihre Links öffnen sich im normalen Player oder gar nicht, wenn du das so einstellst.
+• Videoseiten haben keine Empfehlungsspalte. Wenn du sie brauchst, klick auf &quot;Empfehlungen anzeigen&quot; und warte 10 Sekunden. Kommentare öffnest du mit dem Button &quot;Kommentare anzeigen&quot;.
+• Hast du dein Ziel eingetippt, bringt dich am Ende &quot;Zurück zu den Ergebnissen&quot; wieder zur Suche. Playlists laufen wie gewohnt weiter.
+• Mit den Standardeinstellungen sind auch Mixes und die Vorschläge bei leerem Suchfeld ausgeblendet. Im Menü kannst du außerdem Livechat, die Benachrichtigungsglocke und Aufrufe-, Like- und Abonnentenzahlen ausblenden oder Thumbnails abdunkeln, bis du mit der Maus darüberfährst.
+• Der strenge Modus läuft nach Zeitplan, etwa werktags von 9 bis 18 Uhr, und nimmt in dieser Zeit die Buttons zum Wiedereinblenden weg.
+• &quot;15 Min. Pause&quot; schaltet nach 10 Sekunden Wartezeit alles aus und von selbst wieder ein. Im strengen Modus gibt es keine Pause. Auch der strenge Modus geht erst nach 10 Sekunden aus, und nach Zeitplan nur bis zum Ende dieser Stunden.
+• Das Menü zeigt, wie viele Besorgungen du in den letzten 7 Tagen erledigt hast.
 
 Wenn YouTube etwas ändert, merkst du es
 
-Erweiterungen wie diese gehen meist auf dieselbe Art kaputt. Wenn YouTube das Layout ändert, schleichen sich Shorts zurück und in den Ein-Stern-Bewertungen steht &quot;funktioniert seit dem Update nicht mehr&quot;. Auf der Startseite, in der Suche und auf Videoseiten prüft Errand, ob es noch findet, was es ausblendet, und ob kein Short durchgerutscht ist. Hat sich etwas geändert, zeigt das Icon ein &quot;!&quot; und das Menü sagt dir, was nicht mehr funktioniert.
+Erweiterungen wie diese gehen meist auf dieselbe Art kaputt. Das Layout ändert sich, Ausgeblendetes taucht wieder auf, und in den Ein-Stern-Bewertungen steht &quot;funktioniert seit dem Update nicht mehr&quot;. Auf der Startseite, in der Suche und auf Videoseiten prüft Errand, ob es noch findet, was es ausblendet, und ob Shorts durchgerutscht sind. Hat sich etwas geändert, zeigt das Icon ein &quot;!&quot; und das Menü sagt dir, was nicht mehr funktioniert. Jede Panne kommt in ein öffentliches Protokoll, mit dem Datum, an dem sie gefunden, behoben und im Store veröffentlicht wurde (auf Englisch): https://somestay07.github.io/errand-for-youtube/breakage/
 
-Die Werbeblocker-Warnung erscheint meist, wenn Anfragen oder Werbung blockiert werden. Errand blockiert nichts: Es blendet Seitenteile aus und fügt ein paar eigene Buttons hinzu. Shorts, Feed und Empfehlungen werden ausgeblendet, bevor die Seite gezeichnet wird, also blitzen sie nicht kurz auf.
+Die Werbeblocker-Warnung erscheint meist, wenn Anfragen oder Werbung blockiert werden. Errand blockiert weder das eine noch das andere: Es blendet Seitenteile aus und fügt ein paar eigene Buttons hinzu. Shorts, Feed und Empfehlungen sind ausgeblendet, bevor die Seite erscheint, also blitzen sie nicht auf.
 
 Datenschutz
 
-Einstellungen und Statistiken bleiben in deinem Browser. Berechtigungen: Zugriff auf www.youtube.com, um dort Dinge auszublenden, und Speicher, um deine Einstellungen zu merken. Sonst nichts.
+Einstellungen und Statistiken bleiben in deinem Browser. Die Erweiterung stellt keine Netzwerkanfragen und hat keine KI an Bord. Berechtigungen: Zugriff auf www.youtube.com, um dort Dinge auszublenden, und Speicher, um sich deine Einstellungen zu merken. Sonst nichts.
 
 Code: https://github.com/SomeStay07/errand-for-youtube
 
@@ -186,5 +174,7 @@ Blockiert es Werbung? Nein. Nimm dafür uBlock Origin; beide vertragen sich.
 Muss ich mich anmelden? Nein.
 Brave, Vivaldi, Yandex Browser? Installier es aus dem Chrome Web Store.
 Handy? Noch nicht.
-Ist etwas durchgerutscht? Eröffne ein Issue auf GitHub mit einem Screenshot. Fixes nach YouTube-Updates haben bei mir Vorrang.</textarea></div><p class="n">Картинки: <code>store/images/de/</code></p><h2>3. Общие поля</h2><div class="f"><div class="h"><b>Официальный сайт / главная</b><button data-i="5">Скопировать</button></div><textarea id="t5" readonly rows="2">https://somestay07.github.io/errand-for-youtube/</textarea></div><div class="f"><div class="h"><b>URL поддержки</b><button data-i="6">Скопировать</button></div><textarea id="t6" readonly rows="2">https://github.com/SomeStay07/errand-for-youtube/issues</textarea></div><h2>4. Конфиденциальность</h2><div class="f"><div class="h"><b>Единственная цель</b><button data-i="7">Скопировать</button></div><textarea id="t7" readonly rows="2">Errand reduces distraction on youtube.com. It hides Shorts, the home feed, recommendations and end-screen suggestions, replaces the home page with a &quot;What are you here for?&quot; search box, and offers to close the tab when a video ends. All features act only on www.youtube.com pages.</textarea></div><div class="f"><div class="h"><b>Обоснование: storage</b><button data-i="8">Скопировать</button></div><textarea id="t8" readonly rows="2">Saves the user&#x27;s settings, the optional goal typed on the home page (deleted after 3 hours), weekly counts of errands, a pause end time and a short local log of filters that stopped working, in local extension storage. Nothing is transmitted.</textarea></div><div class="f"><div class="h"><b>Обоснование: доступ к хосту</b><button data-i="9">Скопировать</button></div><textarea id="t9" readonly rows="2">The content script and CSS must run on YouTube pages to hide Shorts, the feed, recommendations and comments before the page draws, to add the extension&#x27;s own buttons (show recommendations, close tab), and to check that its filters still match YouTube&#x27;s layout. It runs on no other site; embeds are excluded.</textarea></div><div class="f"><div class="h"><b>URL политики</b><button data-i="10">Скопировать</button></div><textarea id="t10" readonly rows="2">https://github.com/SomeStay07/errand-for-youtube/blob/main/PRIVACY.md</textarea></div><p>Удалённый код: Нет. Данные: ни одной категории. Все три галочки.</p><h2>5. Распространение</h2><p>Бесплатно · Общедоступно · Все регионы.</p>
+Ist etwas durchgerutscht? Eröffne ein Issue auf GitHub mit einem Screenshot. Fixes nach Updates haben bei mir Vorrang.
+
+YouTube ist eine Marke der Google LLC. Errand steht in keiner Verbindung zu Google und wird nicht von Google unterstützt.</textarea></div><p class="n">Картинки: <code>store/images/de/</code></p><h2>3. Общие поля</h2><div class="f"><div class="h"><b>Официальный сайт / главная</b><button data-i="5">Скопировать</button></div><textarea id="t5" readonly rows="2">https://somestay07.github.io/errand-for-youtube/</textarea></div><div class="f"><div class="h"><b>URL поддержки</b><button data-i="6">Скопировать</button></div><textarea id="t6" readonly rows="2">https://github.com/SomeStay07/errand-for-youtube/issues</textarea></div><h2>4. Конфиденциальность</h2><div class="f"><div class="h"><b>Единственная цель</b><button data-i="7">Скопировать</button></div><textarea id="t7" readonly rows="2">Errand reduces distraction on youtube.com. It hides Shorts, the home feed, recommendations and end-screen suggestions, replaces the home page with a &quot;What are you here for?&quot; search box, and offers to close the tab when a video ends. All features act only on www.youtube.com pages.</textarea></div><div class="f"><div class="h"><b>Обоснование: storage</b><button data-i="8">Скопировать</button></div><textarea id="t8" readonly rows="2">Saves the user&#x27;s settings, the optional goal typed on the home page (deleted after 3 hours), daily counts of errands for the last 30 days, pause and strict-mode timer times, and a short local log of filters that stopped working, in local extension storage. Nothing is transmitted.</textarea></div><div class="f"><div class="h"><b>Обоснование: доступ к хосту</b><button data-i="9">Скопировать</button></div><textarea id="t9" readonly rows="2">The content script and CSS must run on YouTube pages to hide Shorts, the feed, recommendations and comments before the page draws, to add the extension&#x27;s own buttons (show recommendations, close tab), and to check that its filters still match YouTube&#x27;s layout. It runs on no other site; embeds are excluded.</textarea></div><div class="f"><div class="h"><b>URL политики</b><button data-i="10">Скопировать</button></div><textarea id="t10" readonly rows="2">https://github.com/SomeStay07/errand-for-youtube/blob/main/PRIVACY.md</textarea></div><p>Удалённый код: Нет. Данные: ни одной категории. Все три галочки.</p><h2>5. Распространение</h2><p>Бесплатно · Общедоступно · Все регионы.</p>
 <script>document.querySelectorAll("button[data-i]").forEach(b=>b.onclick=async()=>{const t=document.getElementById("t"+b.dataset.i);try{await navigator.clipboard.writeText(t.value)}catch{t.select();document.execCommand("copy")}b.textContent="Скопировано";b.classList.add("ok");setTimeout(()=>{b.textContent="Скопировать";b.classList.remove("ok")},1500)})</script></body></html>

@@ -5,6 +5,8 @@
   const INTENT_TTL_MS = 3 * 60 * 60 * 1000;
   const PAUSE_MS = 15 * 60 * 1000;
   const PAUSE_WAIT_S = 10;
+  const STRICT_EXIT_LATE_MS = 60 * 1000;
+  const DAY_MS = 24 * 60 * 60 * 1000;
 
   const DEFAULTS = {
     mode: "relaxed",
@@ -41,6 +43,13 @@
     search: [["results", "ytd-search"]],
   };
 
+  const SUBS_SHELF =
+    'ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(> #content > ytd-rich-shelf-renderer:not([is-shorts]))';
+
+  const LEAKS = {
+    subs: [["home", SUBS_SHELF.replace("> #content > ", "")]],
+  };
+
   const CHOICES = {
     mode: ["relaxed", "auto", "strict"],
     homeTarget: ["ask", "subs", "wl", "feed"],
@@ -53,6 +62,7 @@
     for (const [key, allowed] of Object.entries(CHOICES)) if (allowed.includes(s[key])) out[key] = s[key];
     for (const key of ["stopAutoplay", "endPrompt"]) if (typeof s[key] === "boolean") out[key] = s[key];
     for (const key of ["strictStart", "strictEnd"]) if (/^\d{2}:\d{2}$/.test(s[key] ?? "")) out[key] = s[key];
+    if (Number.isFinite(s.strictSkipUntil)) out.strictSkipUntil = s.strictSkipUntil;
     if (Number.isFinite(s.revealSeconds)) out.revealSeconds = Math.max(0, Math.min(120, Math.round(s.revealSeconds)));
     if (Array.isArray(s.strictDays)) {
       out.strictDays = [...new Set(s.strictDays.filter((d) => Number.isInteger(d) && d >= 0 && d <= 6))];
@@ -69,12 +79,25 @@
   function isStrict(settings, date) {
     if (settings.mode === "strict") return true;
     if (settings.mode !== "auto") return false;
+    if (isSkipped(settings, date)) return false;
     if (!settings.strictDays.includes(date.getDay())) return false;
     const now = date.getHours() * 60 + date.getMinutes();
     const start = toMinutes(settings.strictStart);
     const end = toMinutes(settings.strictEnd);
     if (start === end) return false;
     return start < end ? now >= start && now < end : now >= start || now < end;
+  }
+
+  function isSkipped(settings, date) {
+    const left = settings.strictSkipUntil - date.getTime();
+    return Number.isFinite(left) && left > 0 && left <= DAY_MS + 60 * 60 * 1000;
+  }
+
+  function nextStrictEnd(settings, date) {
+    const [h, m] = [Math.floor(toMinutes(settings.strictEnd) / 60), toMinutes(settings.strictEnd) % 60];
+    const end = new Date(date.getFullYear(), date.getMonth(), date.getDate(), h, m);
+    if (end.getTime() <= date.getTime()) end.setDate(end.getDate() + 1);
+    return end.getTime();
   }
 
   function pageType(pathname) {
@@ -193,6 +216,18 @@
     return !isStrict(settings, date) && !isPaused(pausedUntil, date.getTime());
   }
 
+  function strictExit(settings, startsAt, date) {
+    if (!isStrict(settings, date)) return "none";
+    if (isPauseStarting(startsAt, date.getTime())) return "waiting";
+    const late = date.getTime() - startsAt;
+    return Number.isFinite(startsAt) && late >= 0 && late <= STRICT_EXIT_LATE_MS ? "due" : "none";
+  }
+
+  function endStrict(settings, date) {
+    if (settings.mode === "auto") return mergeSettings({ ...settings, strictSkipUntil: nextStrictEnd(settings, date) });
+    return mergeSettings({ ...settings, strictSkipUntil: undefined, mode: "relaxed" });
+  }
+
   const FEEDBACK_FORM =
     "https://docs.google.com/forms/d/e/1FAIpQLScK_SZgLBU4-khfkJgem6Gfdk0JkcnCYq2bATd491NIQ6uAGQ/viewform?usp=pp_url&entry.870279470=VERSION&entry.1434595339=BROWSER&entry.2144774803=PAGE&entry.426719485=FILTERS";
 
@@ -289,8 +324,12 @@
     DEFAULT_HIDDEN,
     OPT_IN,
     HEALTH,
+    SUBS_SHELF,
+    LEAKS,
     mergeSettings,
     isStrict,
+    isSkipped,
+    nextStrictEnd,
     pageType,
     isRealPlaylist,
     shortsToWatch,
@@ -314,6 +353,8 @@
     isPaused,
     isPauseStarting,
     canPause,
+    strictExit,
+    endStrict,
     dayKey,
     lastDays,
     addCount,

@@ -1,5 +1,6 @@
 html:not([data-er-show-home]) :is(
   ytd-browse[page-subtype="home"],
+  ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(> #content > ytd-rich-shelf-renderer:not([is-shorts])),
   ytd-guide-entry-renderer:has(a[href="/feed/trending"]),
   ytd-guide-entry-renderer:has(a[href^="/feed/explore"]),
   yt-searchbox:has(input[name="search_query"]:placeholder-shown) .ytSearchboxComponentSuggestionsContainer

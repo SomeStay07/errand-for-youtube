@@ -3,7 +3,7 @@
     "message": "Errand für YouTube: Shorts, Startseite & Empfehlungen ausblenden"
   },
   "extDescription": {
-    "message": "Blendet Shorts, Startseite und Empfehlungen auf YouTube aus. Sag, was du suchst, schau es, schließ den Tab. Gratis, kein Tracking."
+    "message": "YouTube hat immer das nächste Video parat. Errand blendet Shorts und Feed aus und bietet am Ende an, den Tab zu schließen. Gratis."
   },
   "actionTitle": {
     "message": "Errand-Einstellungen"
@@ -142,7 +142,7 @@
     "message": "Strenger Modus"
   },
   "strictHint": {
-    "message": "Blendet Feed, Shorts, Empfehlungen und Kommentare aus, ohne Buttons zum Anzeigen."
+    "message": "Blendet Feed, Shorts, Empfehlungen und Kommentare aus, ohne Buttons zum Wiedereinblenden."
   },
   "strictWhen": {
     "message": "Wann"
@@ -250,7 +250,7 @@
     "message": "Keine Shorts. Empfehlungen und Kommentare hinter einem Button."
   },
   "welcomeEnd": {
-    "message": "Kein Autoplay. Am Videoende kannst du den Tab schließen."
+    "message": "Am Ende eines Videos startet kein weiteres, außer in Playlists. Errand fragt, ob du gefunden hast, was du gesucht hast."
   },
   "welcomeShorts1": {
     "message": "Keine Shorts auf Startseite, in Suche, Abos und Kanälen."
@@ -334,5 +334,27 @@
   },
   "titleBroken": {
     "message": "Errand: YouTube hat etwas geändert. Öffnen für Details."
+  },
+  "strictOffButton": {
+    "message": "Strengen Modus ausschalten"
+  },
+  "strictOffCountdown": {
+    "message": "Ausschalten in $SECONDS$…",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "strictOffUntil": {
+    "message": "Ausschalten bis $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "importLocked": {
+    "message": "Im strengen Modus nicht verfügbar"
   }
 }

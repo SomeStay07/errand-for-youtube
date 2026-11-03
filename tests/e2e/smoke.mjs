@@ -25,6 +25,7 @@ const context = await chromium.launchPersistentContext(profile, {
 });
 
 const results = {};
+const skipped = [];
 const check = (name, value) => {
   results[name] = value;
   console.log(`${value ? "PASS" : "FAIL"} ${name}`);
@@ -80,6 +81,7 @@ const visibleShorts = await page.evaluate(
   () => [...document.querySelectorAll('a[href^="/shorts/"]')].filter((a) => a.offsetParent !== null).length,
 );
 check("search: no visible Shorts links", visibleShorts === 0);
+const shortsHref = await page.evaluate(() => document.querySelector('a[href^="/shorts/"]')?.getAttribute("href") || null);
 check("search: intent pill", await page.locator("#er-pill").isVisible());
 await blurPage();
 await page.screenshot({ path: join(OUT, "2-search.png") });
@@ -114,9 +116,30 @@ if (playable) await page.evaluate(() => {
 if (playable) {
   await page.waitForSelector("#er-end", { timeout: 20000 }).catch(() => {});
   await pause(1500);
-  check("end: prompt visible", await page.locator("#er-end").isVisible());
-  check("end: no endscreen grid", !(await page.locator(".ytp-endscreen-content, .ytp-fullscreen-grid-stills-container").first().isVisible().catch(() => false)));
+  const reachedEnd = await page.evaluate(() => {
+    const video = document.querySelector("video.html5-main-video");
+    return Boolean(video) && (video.ended || video.currentTime >= video.duration - 3);
+  });
   await page.screenshot({ path: join(OUT, "4-end.png") });
+  if (reachedEnd) {
+    check("end: prompt visible", await page.locator("#er-end").isVisible());
+    check("end: no endscreen grid", !(await page.locator(".ytp-endscreen-content, .ytp-fullscreen-grid-stills-container").first().isVisible().catch(() => false)));
+  } else {
+    skipped.push("end-of-video");
+    console.log("SKIP end-of-video checks: the seek to the end did not land (video still buffering or an ad)");
+  }
+}
+
+if (shortsHref) {
+  const shortsPage = await context.newPage();
+  const id = shortsHref.split("/")[2].split(/[?#]/)[0];
+  await shortsPage.goto(`https://www.youtube.com/shorts/${id}`, { waitUntil: "domcontentloaded" });
+  await shortsPage.waitForURL(/\/watch\?v=/, { timeout: 15000 }).catch(() => {});
+  check("shorts: link opens as a normal video", shortsPage.url().includes(`/watch?v=${id}`));
+  await shortsPage.close();
+} else {
+  skipped.push("shorts-redirect");
+  console.log("SKIP shorts redirect: no Shorts link found on the search page");
 }
 
 const popup = await context.newPage();
@@ -146,4 +169,5 @@ check("resume: question back", await page.locator("#er-intent").isVisible());
 
 await context.close();
 const failed = Object.entries(results).filter(([, v]) => !v).map(([k]) => k);
-console.log(failed.length ? `FAILED: ${failed.join(", ")}` : "ALL PASS");
+console.log(failed.length ? `FAILED: ${failed.join(", ")}` : `ALL PASS${skipped.length ? ` (skipped: ${skipped.join(", ")})` : ""}`);
+if (failed.length) process.exitCode = 1;

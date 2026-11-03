@@ -6,6 +6,7 @@ Errand does not collect, send or sell any data.
 
 - It runs only on `www.youtube.com`, where it hides page elements and adds its own buttons.
 - Your settings, the goal you type on the home page, daily counts of errands done and closed for the last 30 days, the id of the last counted errand, and the end time of a pause are stored in your browser's extension storage. They never leave your device. The goal is deleted once it is older than three hours, the next time you open YouTube.
+- For strict mode, two more times are stored: when a 10-second turn-off wait ends, and when the skipped scheduled hours end.
 - Errand makes no network requests. There is no analytics, no account and no remote code.
 - Uninstalling the extension deletes everything it stored.
 - "Report a problem" opens an anonymous Google Form in a new tab, prefilled with the extension version, browser name, page type and the names of broken filters. You see everything before sending; nothing is sent unless you submit it.
@@ -24,6 +25,7 @@ Errand не собирает, не отправляет и не продаёт �
 
 - Расширение работает только на `www.youtube.com`: прячет элементы страницы и добавляет свои кнопки.
 - Настройки, цель, которую вы пишете на главной, счётчики сделанных дел и закрытий по дням за последние 30 дней, метка последнего засчитанного дела и время окончания паузы хранятся в хранилище расширения в вашем браузере и никуда не уходят. Цель удаляется, когда ей больше трёх часов, при следующем заходе на YouTube.
+- Для строгого режима хранятся ещё два времени: когда закончится 10-секундное ожидание перед выключением и до какого момента пропущены текущие часы по расписанию.
 - Errand не делает запросов в сеть. Нет аналитики, аккаунтов и загружаемого кода.
 - При удалении расширения удаляется всё, что оно хранило.
 - Кнопка "Сообщить о проблеме" открывает анонимную Google-форму в новой вкладке. В ней уже заполнены версия расширения, браузер, тип страницы и названия сломанных фильтров. Вы видите всё до отправки, и ничего не уходит, пока вы сами не нажмёте "Отправить".

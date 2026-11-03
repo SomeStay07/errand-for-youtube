@@ -94,7 +94,8 @@ select {
   margin: 0 0 12px;
 }
 
-#pauseButton {
+#pauseButton,
+#strictOff {
   width: 100%;
   padding: 7px 10px;
   border: 1px solid var(--line);
@@ -106,6 +107,15 @@ select {
 }
 
 #pauseButton:disabled {
+  cursor: default;
+  color: var(--muted);
+}
+
+#strictOff {
+  margin-top: 8px;
+}
+
+.actions .button.disabled {
   cursor: default;
   color: var(--muted);
 }

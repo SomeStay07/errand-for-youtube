@@ -2,38 +2,34 @@
 
 Nombre, Chrome/Opera (extName, 60/75): Errand para YouTube: oculta Shorts, inicio y recomendaciones
 Nombre, Edge/Firefox (extNameShort, 39/45): Errand para YouTube: sin Shorts ni feed
-Resumen (extDescription, 128/132): Oculta los Shorts, el inicio y las recomendaciones de YouTube. Di a qué vienes, míralo y cierra la pestaña. Gratis, sin rastreo.
+Resumen (extDescription, 132/132): YouTube siempre tiene otro vídeo para ti. Errand oculta los Shorts y el feed y, al acabar el tuyo, ofrece cerrar la pestaña. Gratis.
 
 ## Descripción (pega lo que hay debajo de esta línea)
 
-Entras en YouTube a por un vídeo y las recomendaciones se comen la tarde. Con Errand, el inicio te pregunta a qué vienes en lugar de mostrarte el feed. Lo escribes, ves el vídeo y, cuando termina, Errand te pregunta si encontraste lo que buscabas y te ofrece cerrar la pestaña.
+Así es como un tutorial se come la tarde entera. En inglés, errand quiere decir "recado": entras a por un vídeo, como quien baja a por el pan, y te vas cuando lo tienes. Es gratis y de código abierto, y no hace falta cuenta. Si solo quieres quitar los Shorts, elige "Solo quitar Shorts" en la primera pantalla: el feed, las recomendaciones, los comentarios, la reproducción automática y la pantalla final se quedan como estaban.
 
-Los Shorts, el feed de inicio y la columna de recomendaciones están ocultos, así que el siguiente vídeo ya no está a un clic. Sirve para estudiar, para trabajar, para el tutorial que necesitas ahora o para un solo vídeo antes de dormir.
-
-Si solo quieres quitar los Shorts, elige "Solo quitar Shorts" en la primera pantalla: el feed, las recomendaciones y los comentarios se quedan como estaban.
-
-Gratis y de código abierto, sin cuenta. La extensión no hace peticiones de red y no envía a ningún sitio lo que ves.
+Cuando acaba tu vídeo, la reproducción automática está desactivada, salvo en listas de reproducción. No aparecen la pantalla final ni sus tarjetas, y en pantalla completa tampoco la cuadrícula de vídeos. Errand te pregunta si encontraste lo que buscabas y te ofrece cerrar la pestaña.
 
 Qué cambia
 
-• El inicio muestra una sola pregunta en lugar del feed: "¿A qué vienes?". Escribe la respuesta y llegas a los resultados de búsqueda. Si lo prefieres, Inicio puede abrir Suscripciones, Ver más tarde o el feed de siempre.
-• Los Shorts desaparecen de Inicio, la búsqueda, Suscripciones, las páginas de canal y el menú lateral. Un enlace a un Short se abre en el reproductor normal o no se abre, si así lo eliges.
-• La página del vídeo no tiene columna de recomendaciones (salvo si elegiste "Solo quitar Shorts"). Si la necesitas, pulsa "Mostrar recomendaciones" y espera 10 segundos. Los comentarios se abren con un botón "Mostrar comentarios".
-• Cuando acaba un vídeo, no empieza otro solo y no hay muro de miniaturas. Errand te pregunta si encontraste lo que buscabas y te ofrece cerrar la pestaña. Si escribiste a qué venías, "Volver a los resultados" te lleva de vuelta a la búsqueda. Las listas de reproducción siguen como siempre.
-• También se ocultan los Mixes, Tendencias y las sugerencias con el cuadro de búsqueda vacío. En el menú puedes ocultar además el chat en directo, la campana, los contadores de visualizaciones, "me gusta" y suscriptores, y atenuar las miniaturas hasta pasar el ratón.
-• El modo estricto funciona con horario, por ejemplo de lunes a viernes de 9 a 18. En esas horas desaparecen también los botones de "mostrar".
-• El menú muestra los últimos 7 días: cuántas veces viste hasta el final el vídeo al que venías y cuántas veces cerraste la pestaña después. Se guarda en tu navegador.
-• "Pausar 15 min" lo desactiva todo tras 10 segundos de espera y vuelve a activarlo solo. En modo estricto no hay pausa.
+• Inicio muestra una sola pregunta en lugar del feed. Escribes la respuesta y llegas a los resultados de búsqueda. Inicio también puede abrir Ver más tarde, el feed de siempre o Suscripciones (allí sin la fila de vídeos más relevantes).
+• Los Shorts desaparecen de Inicio, la búsqueda, Suscripciones, las páginas de canal y el menú lateral. Sus enlaces se abren en el reproductor normal o no se abren, si así lo eliges.
+• La página del vídeo no tiene columna de recomendaciones. Si la necesitas, pulsa "Mostrar recomendaciones" y espera 10 segundos. Los comentarios se abren con un botón "Mostrar comentarios".
+• Si escribiste a qué venías, al final "Volver a los resultados" te devuelve a tu búsqueda. Las listas de reproducción siguen como siempre.
+• Con los ajustes por defecto también se ocultan los Mixes y las sugerencias con el cuadro de búsqueda vacío. En el menú puedes ocultar además el chat en directo, la campana y los contadores de visualizaciones, "me gusta" y suscriptores, o atenuar las miniaturas hasta que pases el ratón por encima.
+• El modo estricto se activa según un horario, por ejemplo de lunes a viernes de 9 a 18, y en esas horas quita los botones de "mostrar".
+• "Pausar 15 min" lo desactiva todo tras 10 segundos de espera y vuelve a activarlo solo. En modo estricto no hay pausa. Desactivar el modo estricto también lleva 10 segundos, y con horario solo queda desactivado hasta que acaban esas horas.
+• El menú muestra cuántos recados terminaste en los últimos 7 días.
 
 Si YouTube cambia algo, te enteras
 
-Las extensiones como esta suelen romperse igual. Cuando YouTube cambia el diseño, los Shorts vuelven y las reseñas de una estrella dicen "dejó de funcionar tras una actualización". En Inicio, en la búsqueda y en la página del vídeo, Errand comprueba que sigue encontrando lo que oculta y que no se ha colado ningún Short. Si algo cambió, el icono muestra "!" y el menú te dice qué ha dejado de funcionar.
+Las extensiones como esta suelen romperse igual. Cambia el diseño, lo oculto vuelve a asomar y las reseñas de una estrella dicen "dejó de funcionar tras una actualización". En Inicio, en la búsqueda y en la página del vídeo, Errand comprueba que sigue encontrando lo que oculta y que no se ha colado ningún Short. Si algo cambió, el icono muestra "!" y el menú te dice qué ha dejado de funcionar. Cada fallo se apunta en un registro público con la fecha en que se encontró, se arregló y llegó a la tienda (en inglés): https://somestay07.github.io/errand-for-youtube/breakage/
 
-El aviso de bloqueador de anuncios suele saltar cuando se bloquean peticiones o anuncios. Errand no bloquea nada: oculta partes de la página y añade algunos botones propios. Los Shorts, el feed y las recomendaciones se ocultan antes de que se dibuje la página, así que no aparecen ni un instante.
+El aviso de bloqueador de anuncios suele saltar cuando se bloquean peticiones o anuncios. Errand no bloquea ni lo uno ni lo otro: oculta partes de la página y añade algunos botones propios. Los Shorts, el feed y las recomendaciones se ocultan antes de que aparezca la página, así que no parpadean.
 
 Privacidad
 
-Los ajustes y las estadísticas se quedan en tu navegador. Permisos: acceso a www.youtube.com, para ocultar cosas ahí, y almacenamiento, para recordar tus ajustes. Nada más.
+Los ajustes y las estadísticas se quedan en tu navegador. La extensión no hace peticiones de red y no lleva IA. Permisos: acceso a www.youtube.com, para ocultar cosas ahí, y almacenamiento, para recordar tus ajustes. Nada más.
 
 Código: https://github.com/SomeStay07/errand-for-youtube
 
@@ -43,4 +39,6 @@ Preguntas
 ¿Tengo que iniciar sesión? No.
 [Solo en Chrome Web Store] ¿Brave, Vivaldi, Yandex Browser? Instálala desde Chrome Web Store.
 ¿Móvil? Todavía no.
-¿Se ha colado algo? Abre una incidencia en GitHub con una captura de pantalla. Arreglar lo que rompen las actualizaciones de YouTube es lo primero que hago.
+¿Se ha colado algo? Abre una incidencia en GitHub con una captura de pantalla. Lo que rompen las actualizaciones es lo primero que arreglo.
+
+YouTube es una marca de Google LLC. Errand no tiene relación con Google ni cuenta con su aval.

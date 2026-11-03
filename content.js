@@ -338,6 +338,9 @@
         .filter(([, selector]) => !document.querySelector(selector))
         .map(([name]) => name);
       if (effective().hide.shorts && visibleShorts() > 0) missing.push("shorts");
+      for (const [name, selector] of L.LEAKS[page] || []) {
+        if (effective().hide[name] && !missing.includes(name) && isVisible(selector)) missing.push(name);
+      }
       send({ type: "health", page, missing });
     }, 6000);
   }
@@ -348,6 +351,10 @@
       const title = (node.getAttribute("tab-title") || node.textContent || "").trim().toLowerCase();
       if (title === "shorts") node.setAttribute("data-er-shorts", "");
     }
+  }
+
+  function isVisible(selector) {
+    return [...document.querySelectorAll(selector)].some((node) => node.getBoundingClientRect().height > 0);
   }
 
   function visibleShorts() {

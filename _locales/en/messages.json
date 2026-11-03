@@ -3,7 +3,7 @@
     "message": "Errand for YouTube: Hide Shorts, Feed & Recommendations"
   },
   "extDescription": {
-    "message": "Say what you came for, watch it, close the tab. Distraction-free YouTube without Shorts, the home feed or recommendations. Free."
+    "message": "YouTube always has one more video for you. Errand hides Shorts and the feed and offers to close the tab when yours ends. Free."
   },
   "actionTitle": {
     "message": "Errand settings"
@@ -250,7 +250,7 @@
     "message": "No Shorts. Recommendations and comments wait behind a button."
   },
   "welcomeEnd": {
-    "message": "No autoplay. When a video ends, you can close the tab."
+    "message": "When a video ends, the next one doesn't start, except in playlists. Errand asks if you got what you came for."
   },
   "welcomeShorts1": {
     "message": "Shorts are hidden on home, search, subscriptions and channels."
@@ -334,5 +334,27 @@
   },
   "titleBroken": {
     "message": "Errand: YouTube changed something. Open for details."
+  },
+  "strictOffButton": {
+    "message": "Turn off strict mode"
+  },
+  "strictOffCountdown": {
+    "message": "Turning off in $SECONDS$…",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "strictOffUntil": {
+    "message": "Turn off until $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "importLocked": {
+    "message": "Not available in strict mode"
   }
 }

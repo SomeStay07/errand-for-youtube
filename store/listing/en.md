@@ -2,38 +2,34 @@
 
 Name, Chrome/Opera (extName, 55/75): Errand for YouTube: Hide Shorts, Feed & Recommendations
 Name, Edge/Firefox (extNameShort, 38/45): Errand for YouTube: Hide Shorts & Feed
-Summary (extDescription, 128/132): Say what you came for, watch it, close the tab. Distraction-free YouTube without Shorts, the home feed or recommendations. Free.
+Summary (extDescription, 126/132): YouTube always has one more video for you. Errand hides Shorts and the feed and offers to close the tab when yours ends. Free.
 
 ## Description (paste below this line)
 
-You open YouTube for one video and the recommendations take the evening. With Errand, the home page asks what you came for instead of showing the feed. You type it, watch the video, and when it ends Errand asks if you got it and offers to close the tab.
+That's how one tutorial takes the whole evening. Like an errand: you go for one video and leave once you have it. It's a distraction-free YouTube extension. Free and open source, and you don't need an account. If you only want Shorts gone, pick "Just hide Shorts" on the first screen: the feed, recommendations, comments, autoplay and the end screen stay as they were.
 
-Shorts, the home feed and the recommendations column are hidden, so the next video isn't one click away. It's for study, work, a tutorial you need right now, or one video before bed.
-
-If you only want Shorts gone, pick "Just hide Shorts" on the first screen: the feed, recommendations and comments stay as they are.
-
-Free and open source, no account needed. The extension makes no network requests and sends nothing about what you watch anywhere.
+When your video ends, autoplay is off unless it's a playlist. The end screen and end cards stay hidden, and so does the "More videos" grid in fullscreen. Errand asks "Got what you came for?" and offers Close tab.
 
 What changes
 
-• The home page shows one question instead of the feed: "What are you here for?" Type the answer and you land on search results. If you prefer, Home can open Subscriptions, Watch later or the usual feed.
-• Shorts disappear from home, search, subscriptions, channel pages and the sidebar. A Shorts link opens in the normal player, or doesn't open at all if you choose that.
-• Video pages have no recommendations column (unless you chose "Just hide Shorts"). If you need it, press "Show recommendations" and wait 10 seconds. Comments open with a "Show comments" button.
-• When a video ends, nothing autoplays and there's no wall of thumbnails. Errand asks if you found what you came for and offers Close tab. If you typed what you came for, "Back to results" returns you to the search. Playlists keep playing as usual.
-• Mixes, Trending and the suggestions under an empty search box are hidden too. In the menu you can also hide live chat, the notification bell, view, like and subscriber counts, and dim thumbnails until you hover.
-• Strict mode runs on a schedule, say weekdays 9 to 6. During those hours the "show" buttons are gone as well.
-• The menu shows the last 7 days: how many times you watched the video you came for to the end, and how many times you then closed the tab. The count stays in your browser.
-• "Pause 15 min" turns everything off after a 10-second wait and turns it back on by itself. Strict mode has no pause.
+• Home shows one question instead of the feed. Type the answer and you land on search results. Home can also open Watch later, the usual feed or Subscriptions (there without the "Most relevant" shelf).
+• Shorts disappear from home, search, subscriptions, channel pages and the sidebar. Their links open in the normal player, or don't open at all if you choose that.
+• Video pages have no recommendations column. If you need it, press "Show recommendations" and wait 10 seconds. Comments open with a "Show comments" button.
+• If you typed what you came for, "Back to results" at the end takes you back to your search. Playlists play on as usual.
+• With the default look, Mixes and the suggestions under an empty search box are hidden too. The menu can also hide live chat, the notification bell and view, like and subscriber counts, or dim thumbnails until you hover.
+• Strict mode runs on a schedule, say weekdays 9 to 6, and removes the "show" buttons for those hours.
+• "Pause 15 min" turns everything off after a 10-second wait and comes back on by itself. Strict mode has no pause. Turning it off also takes a 10-second wait, and on a schedule it stays off only until those hours end.
+• The menu shows how many errands you finished in the last 7 days.
 
 If YouTube changes something, you'll know
 
-Extensions like this usually break the same way. When YouTube changes its layout, Shorts creep back and the one-star reviews say "stopped working after an update". On home, search and video pages Errand checks that it still finds what it hides and that no Shorts slipped through. If something changed, the icon shows "!" and the menu says what stopped working.
+Extensions like this usually break the same way. The layout changes, hidden things creep back, and the one-star reviews say "stopped working after an update". On home, search and video pages Errand checks that it still finds what it hides and that no Shorts slipped through. If something changed, the icon shows "!" and the menu says what stopped working. Every breakage goes into a public log with the date it was found, fixed and live in the store: https://somestay07.github.io/errand-for-youtube/breakage/
 
 The ad-blocker warning usually appears when requests or ads get blocked. Errand blocks neither: it hides parts of the page and adds a few buttons of its own. Shorts, the feed and recommendations are hidden before the page draws, so they don't flash.
 
 Privacy
 
-Settings and stats stay in your browser. Permissions: access to www.youtube.com, to hide things there, and storage, to remember your settings. Nothing else.
+Settings and stats stay in your browser. The extension makes no network requests, and there's no AI in it. Permissions: access to www.youtube.com, to hide things there, and storage, to remember your settings. Nothing else.
 
 Code: https://github.com/SomeStay07/errand-for-youtube
 
@@ -43,4 +39,6 @@ Does it block ads? No. Use uBlock Origin for that; they work fine together.
 Do I need to sign in? No.
 [Chrome Web Store only] Brave, Vivaldi, Yandex Browser? Install it from the Chrome Web Store.
 Phone? Not yet.
-Something leaked through? Open an issue on GitHub with a screenshot. Fixes after YouTube updates are what I work on first.
+Something leaked through? Open an issue on GitHub with a screenshot. Fixes after updates are what I work on first.
+
+YouTube is a trademark of Google LLC. Errand is not affiliated with or endorsed by Google.

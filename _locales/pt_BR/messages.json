@@ -3,7 +3,7 @@
     "message": "Errand para YouTube: oculte Shorts, página inicial e recomendações"
   },
   "extDescription": {
-    "message": "Oculta os Shorts, a página inicial e as recomendações do YouTube. Diga o que veio ver, assista e feche a aba. Grátis, sem rastreio."
+    "message": "O YouTube sempre tem mais um vídeo para você. O Errand oculta os Shorts e o feed e, no fim do seu, sugere fechar a aba. Grátis."
   },
   "actionTitle": {
     "message": "Configurações do Errand"
@@ -250,7 +250,7 @@
     "message": "Sem Shorts. Recomendações e comentários ficam atrás de um botão."
   },
   "welcomeEnd": {
-    "message": "Sem reprodução automática. No fim do vídeo, dá para fechar a aba."
+    "message": "Quando o vídeo acaba, nenhum outro começa, a não ser numa playlist. O Errand pergunta se você achou o que veio buscar."
   },
   "welcomeShorts1": {
     "message": "Shorts ocultos no Início, na pesquisa, nas inscrições e nos canais."
@@ -334,5 +334,27 @@
   },
   "titleBroken": {
     "message": "Errand: o YouTube mudou algo. Abra para ver o quê."
+  },
+  "strictOffButton": {
+    "message": "Desligar o modo rígido"
+  },
+  "strictOffCountdown": {
+    "message": "Desligando em $SECONDS$…",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "strictOffUntil": {
+    "message": "Desligar até $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "importLocked": {
+    "message": "Indisponível no modo rígido"
   }
 }

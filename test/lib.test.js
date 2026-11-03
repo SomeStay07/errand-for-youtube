@@ -232,3 +232,85 @@ test("breakage page lives on the site", () => {
   assert.ok(L.BREAKAGE_URL.startsWith(L.SITE_URL));
   assert.ok(L.BREAKAGE_URL.endsWith("/breakage/"));
 });
+
+test("strict exit waits like pause and only while strict", () => {
+  const strict = L.mergeSettings({ mode: "strict" });
+  const relaxed = L.mergeSettings({ mode: "relaxed" });
+  const date = at(1, 10);
+  const now = date.getTime();
+  assert.equal(L.strictExit(strict, now + 9_000, date), "waiting");
+  assert.equal(L.strictExit(strict, now, date), "due");
+  assert.equal(L.strictExit(strict, now - 30_000, date), "due");
+  assert.equal(L.strictExit(strict, now - 61_000, date), "none");
+  assert.equal(L.strictExit(strict, now - 24 * 60 * 60 * 1000, date), "none");
+  assert.equal(L.strictExit(strict, now + 60_000, date), "none");
+  assert.equal(L.strictExit(strict, undefined, date), "none");
+  assert.equal(L.strictExit(relaxed, now + 9_000, date), "none");
+  assert.equal(L.strictExit(relaxed, now, date), "none");
+});
+
+test("strict exit in the auto window is abandoned outside the window", () => {
+  const auto = L.mergeSettings({ mode: "auto", strictStart: "09:00", strictEnd: "18:00", strictDays: [1] });
+  const inside = at(1, 10);
+  const outside = at(1, 19);
+  assert.equal(L.strictExit(auto, inside.getTime() + 5_000, inside), "waiting");
+  assert.equal(L.strictExit(auto, outside.getTime(), outside), "none");
+});
+
+test("turning strict off in always mode sets mode to relaxed", () => {
+  const off = L.endStrict(L.mergeSettings({ mode: "strict", strictStart: "08:00" }), at(1, 10));
+  assert.equal(off.mode, "relaxed");
+  assert.equal(off.strictStart, "08:00");
+  assert.equal(off.strictSkipUntil, undefined);
+});
+
+test("turning strict off in the schedule skips only the current window", () => {
+  const auto = L.mergeSettings({ mode: "auto", strictStart: "09:00", strictEnd: "18:00", strictDays: [1, 2] });
+  const off = L.endStrict(auto, at(1, 10));
+  assert.equal(off.mode, "auto");
+  assert.deepEqual(off.strictDays, [1, 2]);
+  assert.equal(off.strictSkipUntil, at(1, 18).getTime());
+  assert.equal(auto.strictSkipUntil, undefined);
+  assert.equal(L.isStrict(off, at(1, 10)), false);
+  assert.equal(L.isStrict(off, at(1, 17, 59)), false);
+  assert.equal(L.isStrict(off, at(2, 9)), true);
+  assert.equal(L.canPause(off, at(1, 10), undefined), true);
+});
+
+test("a skipped window that crosses midnight ends at the next strictEnd", () => {
+  const night = L.mergeSettings({ mode: "auto", strictStart: "22:00", strictEnd: "06:00", strictDays: [0, 1, 2, 3, 4, 5, 6] });
+  const late = L.endStrict(night, at(1, 23));
+  assert.equal(late.strictSkipUntil, at(2, 6).getTime());
+  assert.equal(L.isStrict(late, at(2, 5, 59)), false);
+  assert.equal(L.isStrict(late, at(2, 22)), true);
+  const early = L.endStrict(night, at(2, 2));
+  assert.equal(early.strictSkipUntil, at(2, 6).getTime());
+});
+
+test("a strict skip expires and a stale or far one is ignored", () => {
+  const auto = { mode: "auto", strictStart: "09:00", strictEnd: "18:00", strictDays: [1, 2] };
+  const expired = L.mergeSettings({ ...auto, strictSkipUntil: at(1, 18).getTime() });
+  assert.equal(L.isStrict(expired, at(2, 10)), true);
+  assert.equal(L.isSkipped(expired, at(2, 10)), false);
+  const far = L.mergeSettings({ ...auto, strictSkipUntil: at(9, 18).getTime() });
+  assert.equal(L.isStrict(far, at(1, 10)), true);
+  const always = L.mergeSettings({ mode: "strict", strictSkipUntil: at(1, 18).getTime() });
+  assert.equal(L.isStrict(always, at(1, 10)), true);
+  assert.equal(L.mergeSettings({ ...auto, strictSkipUntil: "x" }).strictSkipUntil, undefined);
+});
+
+test("most relevant shelf on subscriptions follows the home filter", () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const css = fs.readFileSync(path.join(__dirname, "..", "hide.css"), "utf8");
+  const homeGroup = css.slice(0, css.indexOf("}"));
+  assert.ok(homeGroup.startsWith("html:not([data-er-show-home])"));
+  assert.ok(homeGroup.includes(L.SUBS_SHELF));
+  assert.match(L.SUBS_SHELF, /^ytd-browse\[page-subtype="subscriptions"\] /);
+  assert.match(L.SUBS_SHELF, /ytd-rich-shelf-renderer:not\(\[is-shorts\]\)/);
+  assert.doesNotMatch(L.SUBS_SHELF, /ytd-shelf-renderer|relevant/i);
+  assert.deepEqual(L.LEAKS.subs.map(([name]) => name), ["home"]);
+  const [, leak] = L.LEAKS.subs[0];
+  assert.equal(leak, L.SUBS_SHELF.replace("> #content > ", ""));
+  assert.deepEqual(L.HEALTH.subs, []);
+});

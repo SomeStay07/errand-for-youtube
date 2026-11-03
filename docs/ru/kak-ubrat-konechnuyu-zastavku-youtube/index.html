@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Как убрать конечную заставку на YouTube</title>
+  <meta name="description" content="Что остаётся в конце видео, если выключить автовоспроизведение, фильтр для uBlock Origin и бесплатное расширение, которое прячет конечную заставку.">
+  <link rel="canonical" href="https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-konechnuyu-zastavku-youtube/">
+  <link rel="alternate" hreflang="en" href="https://somestay07.github.io/errand-for-youtube/hide-youtube-end-screen/">
+  <link rel="alternate" hreflang="x-default" href="https://somestay07.github.io/errand-for-youtube/hide-youtube-end-screen/">
+  <link rel="alternate" hreflang="ru" href="https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-konechnuyu-zastavku-youtube/">
+  <link rel="icon" href="../../assets/favicon.png">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Как убрать конечную заставку на YouTube">
+  <meta property="og:description" content="Что остаётся в конце видео, если выключить автовоспроизведение, фильтр для uBlock Origin и бесплатное расширение, которое прячет конечную заставку.">
+  <meta property="og:url" content="https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-konechnuyu-zastavku-youtube/">
+  <meta property="og:image" content="https://somestay07.github.io/errand-for-youtube/assets/og-ru.png">
+  <meta property="og:image:alt" content="Errand for YouTube">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="../../style.css">
+  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Как убрать конечную заставку на YouTube", "description": "Что остаётся в конце видео, если выключить автовоспроизведение, фильтр для uBlock Origin и бесплатное расширение, которое прячет конечную заставку.", "inLanguage": "ru", "datePublished": "2026-11-03", "dateModified": "2026-11-03", "url": "https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-konechnuyu-zastavku-youtube/", "image": "https://somestay07.github.io/errand-for-youtube/assets/og-ru.png", "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"}, "about": {"@type": "SoftwareApplication", "name": "Errand for YouTube", "url": "https://somestay07.github.io/errand-for-youtube/"}}, {"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "ru", "mainEntity": [{"@type": "Question", "name": "Если выключить автовоспроизведение, заставка пропадёт?", "acceptedAnswer": {"@type": "Answer", "text": "Нет. Следующее видео не начнётся, но плитки заставки и стена видео всё равно появятся."}}, {"@type": "Question", "name": "Почему на некоторых видео заставки нет?", "acceptedAnswer": {"@type": "Answer", "text": "Заставку добавляет автор ролика, и есть она не на каждом видео."}}, {"@type": "Question", "name": "Плейлисты играют дальше, если заставка скрыта?", "acceptedAnswer": {"@type": "Answer", "text": "Да. Errand прячет рекомендации, а плейлист переходит к следующему видео как обычно."}}]}]</script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="../"><img src="../../assets/icon.png" alt="" width="32" height="32"> Errand</a>
+    <nav><a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a></nav>
+  </header>
+  <main>
+    <article>
+      <section class="hero">
+        <p class="small">Обновлено в ноябре 2026</p>
+        <h1>Как убрать конечную заставку на YouTube</h1>
+        
+<p class="lead">Если выключить автовоспроизведение, следующее видео не начнётся, но конечная заставка и стена рекомендованных видео всё равно появятся. Чтобы их убрать, нужен фильтр или расширение.</p>
+
+<h2>Что появляется в конце видео</h2>
+<ul>
+<li>Конечная заставка: плитки с видео, плейлистами или кнопкой подписки, которые автор ставит на последние 5-20 секунд ролика.</li>
+<li>Стена видео: сетка рекомендаций, которая закрывает плеер, когда ролик остановился.</li>
+<li>В полноэкранном режиме сетка с другими видео, которая выезжает поверх картинки.</li>
+</ul>
+
+<h2>Что умеет сам YouTube</h2>
+<p>Переключатель автовоспроизведения внизу плеера останавливает следующее видео. Заставку и стену видео он не трогает. Ставить ли заставку, решает автор ролика, поэтому на части видео её нет.</p>
+
+<h2>Способ 1: фильтр для uBlock Origin</h2>
+<p>Откройте панель uBlock Origin, вкладку "Мои фильтры", и вставьте:</p>
+<pre>www.youtube.com##.ytp-endscreen-content
+www.youtube.com##.ytp-ce-element
+www.youtube.com##.ytp-videowall-still
+www.youtube.com##.ytp-modern-videowall-still
+www.youtube.com##.ytp-suggestion-set
+www.youtube.com##.ytp-fullscreen-grid</pre>
+<p>Правила подходят к плееру YouTube на ноябрь 2026 года. Когда YouTube переименует эти части плеера, фильтр перестанет работать без предупреждения.</p>
+
+<h2>Способ 2: расширение</h2>
+<p><a href="../">Errand</a> прячет конечную заставку, стену видео и сетку в полноэкранном режиме и держит автовоспроизведение выключенным везде, кроме плейлистов. Когда видео закончится, он спросит, получилось ли найти нужное, и предложит закрыть вкладку. Если YouTube поменяет плеер и Errand перестанет находить заставку, на его иконке появится "!".</p>
+<p>Если при установке вы выбрали "Просто убрать Shorts", заставка остаётся такой, как её показывает YouTube. Чтобы её спрятать, включите в меню Errand "Скрывать подборку в конце".</p>
+<p>Ещё инструкции: <a href="../kak-ubrat-shorts-youtube/">как убрать Shorts на YouTube</a>, <a href="../../alternatives/">сравнение с Unhook и другими (на английском)</a>.</p>
+<p class="cta"><a class="button primary" href="https://github.com/SomeStay07/errand-for-youtube">Установить в Chrome</a></p>
+
+      </section>
+      <section>
+        <h2>Вопросы</h2>
+        <h3>Если выключить автовоспроизведение, заставка пропадёт?</h3><p>Нет. Следующее видео не начнётся, но плитки заставки и стена видео всё равно появятся.</p><h3>Почему на некоторых видео заставки нет?</h3><p>Заставку добавляет автор ролика, и есть она не на каждом видео.</p><h3>Плейлисты играют дальше, если заставка скрыта?</h3><p>Да. Errand прячет рекомендации, а плейлист переходит к следующему видео как обычно.</p>
+        <p class="small">Бесплатно, код открыт, аккаунт не нужен. Errand не делает запросов в сеть.</p>
+      </section>
+    </article>
+  </main>
+  <footer><a href="../">Errand</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Сообщить о проблеме</a> · <a href="https://somestay07.github.io/errand-for-youtube/breakage/">Журнал поломок (англ.)</a></footer>
+</body>
+</html>

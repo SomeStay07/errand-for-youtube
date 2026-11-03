@@ -78,7 +78,10 @@ chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") chrome.tabs.create({ url: chrome.runtime.getURL("welcome.html") });
 });
 
-chrome.runtime.onStartup.addListener(() => enqueue(syncPauseBadge));
+chrome.runtime.onStartup.addListener(() => {
+  enqueue(syncPauseBadge);
+  enqueue(finishStrictExit);
+});
 
 let startTimer = 0;
 
@@ -99,9 +102,30 @@ async function startPendingPause() {
   startTimer = setTimeout(() => enqueue(startPendingPause), pauseStartsAt - Date.now() + 50);
 }
 
+let strictTimer = 0;
+
+async function finishStrictExit() {
+  const { strictOffAt, settings } = await chrome.storage.local.get(["strictOffAt", "settings"]);
+  clearTimeout(strictTimer);
+  const current = L.mergeSettings(settings);
+  if (current.strictSkipUntil !== undefined && !L.isSkipped(current, new Date())) {
+    await chrome.storage.local.set({ settings: { ...current, strictSkipUntil: undefined } });
+    return;
+  }
+  const state = L.strictExit(current, strictOffAt, new Date());
+  if (state === "waiting") {
+    strictTimer = setTimeout(() => enqueue(finishStrictExit), strictOffAt - Date.now() + 50);
+    return;
+  }
+  if (strictOffAt === undefined) return;
+  await chrome.storage.local.remove("strictOffAt");
+  if (state === "due") await chrome.storage.local.set({ settings: L.endStrict(current, new Date()) });
+}
+
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "local" && (changes.pausedUntil || changes.settings)) enqueue(syncPauseBadge);
   if (area === "local" && changes.pauseStartsAt) enqueue(startPendingPause);
+  if (area === "local" && (changes.strictOffAt || changes.settings)) enqueue(finishStrictExit);
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
