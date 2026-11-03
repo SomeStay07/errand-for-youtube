@@ -1,10 +1,12 @@
 # Errand for YouTube
 
+**Errand for YouTube is a free, open-source Chrome extension that hides YouTube Shorts, the home feed and recommendations, and asks what you came for instead.**
+
 Hide YouTube Shorts, the home feed and recommendations. Say what you came for, watch it, close the tab.
 
 A free, open-source alternative to Unhook, DF Tube and Remove YouTube Suggestions.
 
-[Chrome Web Store](https://github.com/SomeStay07/errand-for-youtube) · [Firefox Add-ons](https://github.com/SomeStay07/errand-for-youtube) · [Edge Add-ons](https://github.com/SomeStay07/errand-for-youtube) · [Website](https://somestay07.github.io/errand-for-youtube) · [По-русски](#по-русски)
+[Chrome Web Store](https://github.com/SomeStay07/errand-for-youtube) · [Website](https://somestay07.github.io/errand-for-youtube) · [По-русски](#по-русски)
 
 ![Errand: YouTube home asks what you came for](store/images/en/screenshot-1.png)
 
@@ -25,9 +27,8 @@ No analytics, no account, no network requests. Permissions: `www.youtube.com` (t
 
 ## Install from source
 
-1. `npm run build` creates `dist/chrome`, `dist/firefox`, `dist/edge`, `dist/opera` and a zip for each.
+1. `npm run build` creates `dist/chrome` and `dist/errand-chrome-<version>.zip`. Other browsers: `node scripts/build.mjs firefox edge opera`.
 2. Chrome: `chrome://extensions` → Developer mode → Load unpacked → `dist/chrome`.
-3. Firefox: `about:debugging` → This Firefox → Load Temporary Add-on → `dist/firefox/manifest.json`.
 
 ## Development
 
@@ -46,6 +47,6 @@ License: GPL-3.0.
 
 Errand прячет Shorts, главную ленту и рекомендации YouTube. Вместо ленты главная спрашивает: «Зачем вы здесь?» В конце видео нет автовоспроизведения, зато есть кнопка «Закрыть вкладку». Рекомендации и комментарии открываются по кнопке, рекомендации — после 10 секунд ожидания.
 
-Бесплатно, код открыт. Без аналитики, аккаунтов и запросов в сеть. Работает в Chrome, Edge, Firefox, а также в Яндекс Браузере, Brave и Vivaldi через Chrome Web Store.
+Бесплатно, код открыт. Без аналитики, аккаунтов и запросов в сеть. Работает в Chrome, а также в Яндекс Браузере, Brave и Vivaldi через Chrome Web Store.
 
 [Установить из Chrome Web Store](https://github.com/SomeStay07/errand-for-youtube)

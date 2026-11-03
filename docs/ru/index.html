@@ -16,6 +16,7 @@
   <meta property="og:image" content="https://somestay07.github.io/errand-for-youtube/assets/og-ru.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="../style.css">
+  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Errand for YouTube", "applicationCategory": "BrowserApplication", "operatingSystem": "Chrome", "inLanguage": "ru", "description": "Скрывает Shorts, главную ленту и рекомендации YouTube и спрашивает, зачем вы пришли.", "url": "https://somestay07.github.io/errand-for-youtube/ru/", "softwareVersion": "0.1.0", "dateModified": "2026-11-03", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "license": "https://www.gnu.org/licenses/gpl-3.0.html", "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"}, "sameAs": ["https://github.com/SomeStay07/errand-for-youtube"]}, {"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "ru", "mainEntity": [{"@type": "Question", "name": "Это бесплатно?", "acceptedAnswer": {"@type": "Answer", "text": "Да. Код открыт под лицензией GPL-3.0 на GitHub."}}, {"@type": "Question", "name": "Можно убрать Shorts на компьютере без расширения?", "acceptedAnswer": {"@type": "Answer", "text": "Частично. У полки Shorts есть «Не интересует», но она возвращается. Errand убирает шортсы с главной, из поиска, подписок, страниц каналов и меню, а ссылки на них открывает в обычном плеере."}}, {"@type": "Question", "name": "Как убрать рекомендации на YouTube?", "acceptedAnswer": {"@type": "Answer", "text": "Errand убирает колонку рекомендаций на странице видео и вместо ленты показывает вопрос «Зачем вы здесь?». Кнопка «Показать рекомендации» откроет их через 10 секунд, а строгий режим уберёт и её в выбранные часы."}}, {"@type": "Question", "name": "Какие данные собирает?", "acceptedAnswer": {"@type": "Answer", "text": "Никаких. Настройки и счётчик за неделю хранятся в браузере, запросов в сеть расширение не делает."}}, {"@type": "Question", "name": "YouTube покажет предупреждение про блокировщик рекламы?", "acceptedAnswer": {"@type": "Answer", "text": "Не должен. Errand не блокирует запросы, не трогает рекламу и загрузку видео, а обычно предупреждение появляется именно из-за этого."}}, {"@type": "Question", "name": "Блокирует рекламу?", "acceptedAnswer": {"@type": "Answer", "text": "Нет. Для этого есть uBlock Origin, они друг другу не мешают."}}, {"@type": "Question", "name": "Яндекс Браузер, Brave, Vivaldi?", "acceptedAnswer": {"@type": "Answer", "text": "Ставится из Chrome Web Store."}}, {"@type": "Question", "name": "На телефоне?", "acceptedAnswer": {"@type": "Answer", "text": "Пока нет."}}]}]</script>
 </head>
 <body>
   <header class="top">
@@ -29,8 +30,6 @@
       <p class="lead">Зашли за одним роликом и очнулись через час? Errand оставляет поиск, подписки и само видео, а всё, что сделано, чтобы вы листали дальше, убирает.</p>
       <p class="cta">
         <a class="button primary" href="https://github.com/SomeStay07/errand-for-youtube">Установить в Chrome</a>
-        <a class="button" href="https://github.com/SomeStay07/errand-for-youtube">Firefox</a>
-        <a class="button" href="https://github.com/SomeStay07/errand-for-youtube">Edge</a>
       </p>
       <p class="small">Бесплатно, код открыт. Без аккаунтов, аналитики и запросов в сеть. Ставится и в Яндекс Браузер.</p>
       <video class="shot" src="../assets/demo-ru.mp4" poster="../assets/demo-ru-poster.jpg" width="1280" height="800" autoplay muted loop playsinline aria-label="Errand на YouTube: вопрос вместо ленты, поиск без Shorts, видео без рекомендаций, конец видео, меню"></video>
@@ -64,15 +63,26 @@
     <section>
       <h2>Вопросы</h2>
       <h3>Это бесплатно?</h3>
-      <p>Да. Код лежит на <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a>.</p>
+      <p>Да. Код открыт под лицензией GPL-3.0 на GitHub.</p>
+      <h3>Можно убрать Shorts на компьютере без расширения?</h3>
+      <p>Частично. У полки Shorts есть «Не интересует», но она возвращается. Errand убирает шортсы с главной, из поиска, подписок, страниц каналов и меню, а ссылки на них открывает в обычном плеере.</p>
+      <h3>Как убрать рекомендации на YouTube?</h3>
+      <p>Errand убирает колонку рекомендаций на странице видео и вместо ленты показывает вопрос «Зачем вы здесь?». Кнопка «Показать рекомендации» откроет их через 10 секунд, а строгий режим уберёт и её в выбранные часы.</p>
       <h3>Какие данные собирает?</h3>
-      <p>Никаких. Настройки и счётчик за неделю хранятся в браузере. <a href="https://github.com/SomeStay07/errand-for-youtube/blob/main/PRIVACY.md">Политика конфиденциальности</a>.</p>
+      <p>Никаких. Настройки и счётчик за неделю хранятся в браузере, запросов в сеть расширение не делает.</p>
+      <h3>YouTube покажет предупреждение про блокировщик рекламы?</h3>
+      <p>Не должен. Errand не блокирует запросы, не трогает рекламу и загрузку видео, а обычно предупреждение появляется именно из-за этого.</p>
       <h3>Блокирует рекламу?</h3>
       <p>Нет. Для этого есть uBlock Origin, они друг другу не мешают.</p>
       <h3>Яндекс Браузер, Brave, Vivaldi?</h3>
       <p>Ставится из Chrome Web Store.</p>
       <h3>На телефоне?</h3>
       <p>Пока нет.</p>
+    </section>
+    <section>
+      <h2>Инструкции</h2>
+      <p class="guides"><a href="kak-ubrat-shorts-youtube/">Как убрать Shorts на YouTube</a> <a href="youtube-bez-rekomendaciy/">YouTube без рекомендаций</a> <a href="../alternatives/">Сравнение с Unhook и другими (англ.)</a></p>
+      <p class="small">Обновлено в ноябре 2026</p>
     </section>
   </main>
 

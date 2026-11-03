@@ -170,3 +170,42 @@ footer {
   color: var(--muted);
   font-size: 15px;
 }
+
+pre {
+  white-space: pre;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 6px;
+}
+
+.table {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+th,
+td {
+  text-align: left;
+  vertical-align: top;
+  padding: 10px 12px 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.guides {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}

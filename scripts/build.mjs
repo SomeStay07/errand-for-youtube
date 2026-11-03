@@ -47,7 +47,7 @@ const TARGETS = {
   firefox,
 };
 
-const only = process.argv.slice(2);
+const only = process.argv.length > 2 ? process.argv.slice(2) : ["chrome"];
 rmSync(DIST, { recursive: true, force: true });
 
 for (const [name, transform] of Object.entries(TARGETS)) {

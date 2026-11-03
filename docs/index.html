@@ -16,9 +16,7 @@
   <meta property="og:image" content="https://somestay07.github.io/errand-for-youtube/assets/og-en.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="style.css">
-  <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"SoftwareApplication","name":"Errand for YouTube","applicationCategory":"BrowserApplication","operatingSystem":"Chrome, Firefox, Edge","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Hides YouTube Shorts, the home feed and recommendations, and asks what you came for.","url":"https://somestay07.github.io/errand-for-youtube/","softwareVersion":"0.1.0","downloadUrl":"https://github.com/SomeStay07/errand-for-youtube","sameAs":["https://github.com/SomeStay07/errand-for-youtube","https://github.com/SomeStay07/errand-for-youtube","https://github.com/SomeStay07/errand-for-youtube","https://github.com/SomeStay07/errand-for-youtube"]}
-  </script>
+  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Errand for YouTube", "applicationCategory": "BrowserApplication", "operatingSystem": "Chrome", "inLanguage": "en", "description": "Hides YouTube Shorts, the home feed and recommendations, and asks what you came for.", "url": "https://somestay07.github.io/errand-for-youtube/", "softwareVersion": "0.1.0", "dateModified": "2026-11-03", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "license": "https://www.gnu.org/licenses/gpl-3.0.html", "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"}, "sameAs": ["https://github.com/SomeStay07/errand-for-youtube"]}, {"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "en", "mainEntity": [{"@type": "Question", "name": "Is it free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The code is open under GPL-3.0 on GitHub."}}, {"@type": "Question", "name": "Can I hide YouTube Shorts on desktop without an extension?", "acceptedAnswer": {"@type": "Answer", "text": "Partly. YouTube lets you mark a Shorts shelf \"Not interested\", but it comes back. Errand hides Shorts on the home page, in search, subscriptions, channel pages and the sidebar, and opens Shorts links in the normal player."}}, {"@type": "Question", "name": "How do I remove recommendations from YouTube?", "acceptedAnswer": {"@type": "Answer", "text": "Errand removes the recommendations column on video pages and replaces the home feed with \"What are you here for?\". \"Show recommendations\" brings them back after 10 seconds; strict mode removes that button during the hours you pick."}}, {"@type": "Question", "name": "What data does it collect?", "acceptedAnswer": {"@type": "Answer", "text": "None. Settings and the weekly count stay in your browser, and the extension makes no network requests."}}, {"@type": "Question", "name": "Will YouTube show the ad-blocker warning?", "acceptedAnswer": {"@type": "Answer", "text": "It shouldn't. Errand doesn't block requests, touch ads or change how videos load, which is what usually triggers that warning."}}, {"@type": "Question", "name": "Does it block ads?", "acceptedAnswer": {"@type": "Answer", "text": "No. Use uBlock Origin for that; they work together."}}, {"@type": "Question", "name": "Brave, Vivaldi, Yandex Browser?", "acceptedAnswer": {"@type": "Answer", "text": "Install it from the Chrome Web Store."}}, {"@type": "Question", "name": "Phone?", "acceptedAnswer": {"@type": "Answer", "text": "Not yet."}}]}]</script>
 </head>
 <body>
   <header class="top">
@@ -32,8 +30,6 @@
       <p class="lead">Opened YouTube for one video and looked up an hour later? Errand keeps search, your subscriptions and the video, and removes the parts built to keep you scrolling.</p>
       <p class="cta">
         <a class="button primary" href="https://github.com/SomeStay07/errand-for-youtube">Add to Chrome</a>
-        <a class="button" href="https://github.com/SomeStay07/errand-for-youtube">Firefox</a>
-        <a class="button" href="https://github.com/SomeStay07/errand-for-youtube">Edge</a>
       </p>
       <p class="small">Free and open source. No account, no analytics, no network requests.</p>
       <video class="shot" src="assets/demo-en.mp4" poster="assets/demo-en-poster.jpg" width="1280" height="800" autoplay muted loop playsinline aria-label="Errand on YouTube: the home page asks what you came for, search without Shorts, the settings menu"></video>
@@ -67,15 +63,26 @@
     <section>
       <h2>Questions</h2>
       <h3>Is it free?</h3>
-      <p>Yes. The code is on <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a>.</p>
+      <p>Yes. The code is open under GPL-3.0 on GitHub.</p>
+      <h3>Can I hide YouTube Shorts on desktop without an extension?</h3>
+      <p>Partly. YouTube lets you mark a Shorts shelf &quot;Not interested&quot;, but it comes back. Errand hides Shorts on the home page, in search, subscriptions, channel pages and the sidebar, and opens Shorts links in the normal player.</p>
+      <h3>How do I remove recommendations from YouTube?</h3>
+      <p>Errand removes the recommendations column on video pages and replaces the home feed with &quot;What are you here for?&quot;. &quot;Show recommendations&quot; brings them back after 10 seconds; strict mode removes that button during the hours you pick.</p>
       <h3>What data does it collect?</h3>
-      <p>None. Settings and the weekly count stay in your browser. <a href="https://github.com/SomeStay07/errand-for-youtube/blob/main/PRIVACY.md">Privacy policy</a>.</p>
+      <p>None. Settings and the weekly count stay in your browser, and the extension makes no network requests.</p>
+      <h3>Will YouTube show the ad-blocker warning?</h3>
+      <p>It shouldn&#x27;t. Errand doesn&#x27;t block requests, touch ads or change how videos load, which is what usually triggers that warning.</p>
       <h3>Does it block ads?</h3>
       <p>No. Use uBlock Origin for that; they work together.</p>
       <h3>Brave, Vivaldi, Yandex Browser?</h3>
       <p>Install it from the Chrome Web Store.</p>
       <h3>Phone?</h3>
       <p>Not yet.</p>
+    </section>
+    <section>
+      <h2>Guides</h2>
+      <p class="guides"><a href="hide-youtube-shorts/">How to hide YouTube Shorts on desktop</a> <a href="youtube-without-recommendations/">YouTube without recommendations</a> <a href="alternatives/">Unhook and others compared</a></p>
+      <p class="small">Updated November 2026</p>
     </section>
   </main>
 
