@@ -41,7 +41,7 @@
     "message": "Mostrar recomendaciones"
   },
   "revealCountdown": {
-    "message": "¿Seguro que las quieres? Aparecen en $SECONDS$…",
+    "message": "Aparecen en $SECONDS$…",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -306,12 +306,6 @@
   "breakageLink": {
     "message": "Lista de fallos"
   },
-  "welcomeReload": {
-    "message": "YouTube ya está abierto: recárgalo para aplicar."
-  },
-  "welcomeReloadButton": {
-    "message": "Recargar"
-  },
   "intentFooter": {
     "message": "Esto es Errand. Cámbialo en el menú de la extensión."
   },
@@ -336,7 +330,7 @@
     "message": "Errand: YouTube cambió algo. Ábrelo para ver qué."
   },
   "strictOffButton": {
-    "message": "Desactivar el modo estricto"
+    "message": "Desactivar modo estricto"
   },
   "strictOffCountdown": {
     "message": "Se desactiva en $SECONDS$…",
@@ -356,5 +350,8 @@
   },
   "importLocked": {
     "message": "No disponible en modo estricto"
+  },
+  "welcomeReloadOpen": {
+    "message": "Recarga las pestañas de YouTube que ya tengas abiertas."
   }
 }

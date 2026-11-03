@@ -41,7 +41,7 @@
     "message": "Empfehlungen anzeigen"
   },
   "revealCountdown": {
-    "message": "Wirklich? Sie erscheinen in $SECONDS$…",
+    "message": "Anzeige in $SECONDS$…",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -306,12 +306,6 @@
   "breakageLink": {
     "message": "Bekannte Fehler"
   },
-  "welcomeReload": {
-    "message": "YouTube ist schon offen. Lade es neu, damit es greift."
-  },
-  "welcomeReloadButton": {
-    "message": "Neu laden"
-  },
   "intentFooter": {
     "message": "Das ist Errand. Ändern im Erweiterungsmenü."
   },
@@ -356,5 +350,8 @@
   },
   "importLocked": {
     "message": "Im strengen Modus nicht verfügbar"
+  },
+  "welcomeReloadOpen": {
+    "message": "Lade bereits offene YouTube-Tabs neu."
   }
 }

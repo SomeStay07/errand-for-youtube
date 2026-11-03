@@ -41,7 +41,7 @@
     "message": "Mostrar recomendações"
   },
   "revealCountdown": {
-    "message": "Quer mesmo? Aparecem em $SECONDS$…",
+    "message": "Aparecem em $SECONDS$…",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -306,12 +306,6 @@
   "breakageLink": {
     "message": "Lista de falhas"
   },
-  "welcomeReload": {
-    "message": "O YouTube já está aberto. Recarregue para aplicar."
-  },
-  "welcomeReloadButton": {
-    "message": "Recarregar"
-  },
   "intentFooter": {
     "message": "Isto é o Errand. Mude no menu da extensão."
   },
@@ -356,5 +350,8 @@
   },
   "importLocked": {
     "message": "Indisponível no modo rígido"
+  },
+  "welcomeReloadOpen": {
+    "message": "Recarregue as abas do YouTube que já estiverem abertas."
   }
 }

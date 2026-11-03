@@ -15,6 +15,7 @@ export function reporter() {
   const rows = [];
   const check = (name, ok, detail = "") => {
     const status = ok === null ? "NOT TESTABLE" : ok ? "PASS" : "FAIL";
+    if (status === "FAIL") process.exitCode = 1;
     rows.push({ name, status, detail: typeof detail === "string" ? detail : JSON.stringify(detail) });
     console.log(`${status} ${name}${detail ? ` — ${typeof detail === "string" ? detail : JSON.stringify(detail)}` : ""}`);
   };

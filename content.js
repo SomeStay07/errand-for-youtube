@@ -300,16 +300,22 @@
     showEndPrompt(player);
   }
 
+  function reportHealth(page, missing) {
+    if (missing) root.setAttribute("data-er-health", missing.join(",") || "ok");
+    else root.removeAttribute("data-er-health");
+    send({ type: "health", page, missing: missing || [] });
+  }
+
   function scheduleHealth() {
     clearTimeout(healthTimer);
     const page = root.dataset.erPage;
     const checks = L.HEALTH[page];
     if (!checks) {
-      send({ type: "health", page, missing: [] });
+      reportHealth(page, effective().paused ? null : []);
       return;
     }
     if (effective().paused) {
-      send({ type: "health", page, missing: [] });
+      reportHealth(page, null);
       return;
     }
     healthTimer = setTimeout(function check() {
@@ -328,12 +334,13 @@
         return;
       }
       if (effective().paused) {
-        send({ type: "health", page, missing: [] });
+        reportHealth(page, null);
         return;
       }
       const live = Boolean(document.querySelector("ytd-live-chat-frame"));
       const playable = Number.isFinite(document.querySelector("video.html5-main-video")?.duration);
-      const missing = checks
+      const active = { ...effective().hide, autoplay: Boolean(settings.stopAutoplay) };
+      const missing = L.healthChecks(page, active)
         .filter(([name]) => !(live && name === "comments") && !(!playable && PLAYER_CHECKS.has(name)))
         .filter(([, selector]) => !document.querySelector(selector))
         .map(([name]) => name);
@@ -341,7 +348,7 @@
       for (const [name, selector] of L.LEAKS[page] || []) {
         if (effective().hide[name] && !missing.includes(name) && isVisible(selector)) missing.push(name);
       }
-      send({ type: "health", page, missing });
+      reportHealth(page, missing);
     }, 6000);
   }
 
@@ -426,6 +433,7 @@
       settings = L.mergeSettings(changes.settings.newValue);
       apply();
       remountIfChanged(before);
+      scheduleHealth();
     }
     if (changes.intent) {
       intent = changes.intent.newValue ?? null;

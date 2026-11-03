@@ -21,29 +21,33 @@ function clock(ms) {
   return new Intl.DateTimeFormat(chrome.i18n.getUILanguage(), { hour: "numeric", minute: "2-digit" }).format(new Date(ms));
 }
 
+async function syncHealthyTitles(title) {
+  const { health = {} } = await chrome.storage.session.get("health");
+  for (const [tabId, entry] of Object.entries(health)) {
+    if (!entry.missing.length) await chrome.action.setTitle({ tabId: Number(tabId), title }).catch(() => {});
+  }
+}
+
 async function syncPauseBadge() {
   const { pausedUntil, settings } = await chrome.storage.local.get(["pausedUntil", "settings"]);
   const strict = L.isStrict(L.mergeSettings(settings), new Date());
   if (L.isPaused(pausedUntil, Date.now()) && !strict) {
+    const title = t("titlePaused", clock(pausedUntil));
     await chrome.action.setBadgeText({ text: "II" });
     await chrome.action.setBadgeBackgroundColor({ color: "#5f6368" });
-    await chrome.action.setTitle({ title: t("titlePaused", clock(pausedUntil)) });
+    await chrome.action.setTitle({ title });
+    await syncHealthyTitles(title);
     return;
   }
+  const title = strict ? t("titleStrict") : t("titleOn");
   await chrome.action.setBadgeText({ text: "" });
-  await chrome.action.setTitle({ title: strict ? t("titleStrict") : t("titleOn") });
+  await chrome.action.setTitle({ title });
+  await syncHealthyTitles(title);
   if (pausedUntil !== undefined && !L.isPaused(pausedUntil, Date.now())) await chrome.storage.local.remove("pausedUntil");
 }
 
 async function recordHealth(tabId, page, missing) {
-  if (missing.length) {
-    await chrome.action.setBadgeText({ tabId, text: "!" });
-    await chrome.action.setBadgeBackgroundColor({ tabId, color: "#d93025" });
-    await chrome.action.setTitle({ tabId, title: t("titleBroken") });
-  } else {
-    await chrome.action.setBadgeText({ tabId, text: null });
-    await chrome.action.setTitle({ tabId, title: null });
-  }
+  if (!(await chrome.tabs.get(tabId).catch(() => null))) return;
   const { health = {} } = await chrome.storage.session.get("health");
   health[tabId] = { page, missing, ts: Date.now() };
   await chrome.storage.session.set({ health });
@@ -51,6 +55,16 @@ async function recordHealth(tabId, page, missing) {
     const { log = [] } = await chrome.storage.local.get("log");
     await chrome.storage.local.set({ log: L.appendLog(log, { page, missing }, Date.now()) });
   }
+  try {
+    if (missing.length) {
+      await chrome.action.setBadgeText({ tabId, text: "!" });
+      await chrome.action.setBadgeBackgroundColor({ tabId, color: "#d93025" });
+      await chrome.action.setTitle({ tabId, title: t("titleBroken") });
+    } else {
+      await chrome.action.setBadgeText({ tabId, text: null });
+      await chrome.action.setTitle({ tabId, title: await chrome.action.getTitle({}) });
+    }
+  } catch {}
 }
 
 chrome.runtime.onMessage.addListener((message, sender) => {
@@ -88,6 +102,10 @@ let startTimer = 0;
 async function startPendingPause() {
   const { pauseStartsAt, pausedUntil, settings } = await chrome.storage.local.get(["pauseStartsAt", "pausedUntil", "settings"]);
   clearTimeout(startTimer);
+  if (pauseStartsAt !== undefined && L.isStrict(L.mergeSettings(settings), new Date())) {
+    await chrome.storage.local.remove("pauseStartsAt");
+    return;
+  }
   if (!L.isPauseStarting(pauseStartsAt, Date.now())) {
     if (pauseStartsAt !== undefined && pauseStartsAt <= Date.now()) {
       await chrome.storage.local.remove("pauseStartsAt");
@@ -124,7 +142,7 @@ async function finishStrictExit() {
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "local" && (changes.pausedUntil || changes.settings)) enqueue(syncPauseBadge);
-  if (area === "local" && changes.pauseStartsAt) enqueue(startPendingPause);
+  if (area === "local" && (changes.pauseStartsAt || changes.settings)) enqueue(startPendingPause);
   if (area === "local" && (changes.strictOffAt || changes.settings)) enqueue(finishStrictExit);
 });
 

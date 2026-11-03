@@ -35,8 +35,11 @@ let [worker] = context.serviceWorkers();
 if (!worker) worker = await context.waitForEvent("serviceworker");
 const extId = worker.url().split("/")[2];
 
-await new Promise((r) => setTimeout(r, 1500));
-const welcome = context.pages().find((p) => p.url().includes("welcome.html"));
+let welcome = null;
+for (let i = 0; i < 50 && !welcome; i++) {
+  welcome = context.pages().find((p) => p.url().includes("welcome.html")) ?? null;
+  if (!welcome) await new Promise((r) => setTimeout(r, 200));
+}
 check("install: welcome page opened", Boolean(welcome));
 if (welcome) {
   await welcome.waitForTimeout(500);

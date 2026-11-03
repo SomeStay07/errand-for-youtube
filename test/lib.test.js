@@ -314,3 +314,24 @@ test("most relevant shelf on subscriptions follows the home filter", () => {
   assert.equal(leak, L.SUBS_SHELF.replace("> #content > ", ""));
   assert.deepEqual(L.HEALTH.subs, []);
 });
+
+test("endscreen presence matches the current player and only hidden parts are hidden", () => {
+  const css = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "hide.css"), "utf8");
+  const [, endscreen] = L.HEALTH.watch.find(([name]) => name === "endscreen");
+  const parts = endscreen.split(",").map((part) => part.trim());
+  assert.ok(parts.includes(".ytp-modern-videowall-still"));
+  assert.ok(parts.includes(".ytp-fullscreen-grid"));
+  for (const part of parts) assert.ok(css.includes(part), part);
+});
+
+test("presence checks run only for filters that are hiding", () => {
+  const names = (page, active) => L.healthChecks(page, active).map(([name]) => name);
+  const all = { related: true, endscreen: true, comments: true, autoplay: true };
+  assert.deepEqual(names("watch", all), ["player", "related", "comments", "autoplay", "endscreen"]);
+  assert.deepEqual(names("watch", { related: false, endscreen: false, comments: false, autoplay: false }), ["player"]);
+  assert.deepEqual(names("watch", { ...all, endscreen: false }), ["player", "related", "comments", "autoplay"]);
+  assert.deepEqual(names("home", { home: false }), []);
+  assert.deepEqual(names("home", { home: true }), ["home"]);
+  assert.deepEqual(names("search", {}), ["results"]);
+  assert.deepEqual(names("other", all), []);
+});

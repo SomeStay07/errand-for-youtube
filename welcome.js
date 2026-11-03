@@ -35,16 +35,6 @@ async function init() {
     });
   }
   renderLines(current || "ask");
-  try {
-    const tabs = await chrome.tabs.query({ url: "https://www.youtube.com/*" });
-    if (tabs.length) {
-      document.getElementById("reloadStep").hidden = false;
-      document.getElementById("reload").addEventListener("click", () => {
-        for (const tab of tabs) chrome.tabs.reload(tab.id);
-        document.getElementById("reloadStep").hidden = true;
-      });
-    }
-  } catch {}
 }
 
 init();

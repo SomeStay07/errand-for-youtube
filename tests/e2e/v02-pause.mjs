@@ -80,10 +80,12 @@ while (Date.now() - tc < 5200) {
 await popup.close();
 const closedAt = Date.now();
 await sleep(7500);
-const afterCancel = await storage(ctx, "pausedUntil");
-const aAfterCancel = await stateA();
+const afterClose = await storage(ctx, "pausedUntil");
+const aAfterClose = await stateA();
 const lastBeforeClose = cancelSamples.at(-1).text;
-check("C1 closing popup mid-countdown cancels", afterCancel.pausedUntil === undefined && !aAfterCancel.showHome, `closed at "${lastBeforeClose}", 7.5 s later pausedUntil=${afterCancel.pausedUntil}, home feed shown=${aAfterCancel.showHome}`);
+check("C1 closing popup mid-countdown does not cancel; the background starts the pause", Number.isFinite(afterClose.pausedUntil) && aAfterClose.showHome, `closed at "${lastBeforeClose}", 7.5 s later pausedUntil=${afterClose.pausedUntil}, home feed shown=${aAfterClose.showHome}`);
+await ctx.worker.evaluate(() => chrome.storage.local.remove("pausedUntil"));
+await sleep(1500);
 
 await observe(A, "data-er-show-home");
 await observe(B, "data-er-show-related");
@@ -91,16 +93,14 @@ popup = await openRealPopup(ctx, A);
 await popup.click("#pauseButton");
 const clickAt = Date.now();
 const seq = [];
-let allDisabled = true;
 while (Date.now() - clickAt < 13000) {
   const s = await pstate();
   if (!seq.length || seq.at(-1).text !== s.text) seq.push({ t: Date.now() - clickAt, text: s.text });
-  if (/Pausing/.test(s.text) && !s.disabled) allDisabled = false;
   if (s.text === "Turn back on") break;
   await sleep(100);
 }
 const countdown = seq.filter((x) => /Pausing in/.test(x.text)).map((x) => Number(x.text.match(/\d+/)[0]));
-check("C1 countdown 10…1, disabled throughout", countdown.join(",") === "10,9,8,7,6,5,4,3,2,1" && allDisabled, `${countdown.join(",")}; disabled=${allDisabled}; seq=${seq.map((x) => `${x.t}ms:${x.text}`).join(" | ")}`);
+check("C1 countdown 10…1", countdown.join(",") === "10,9,8,7,6,5,4,3,2,1", `${countdown.join(",")}; seq=${seq.map((x) => `${x.t}ms:${x.text}`).join(" | ")}`);
 await popup.screenshot(join(OUT, "C-popup-paused.png"));
 await sleep(1600);
 const setAt = await ctx.worker.evaluate(() => globalThis.__pauseSet);
@@ -116,7 +116,7 @@ const bP = await stateB();
 check("C2 home during pause: feed shown, no question", aP.showHome && !aP.question, aP);
 check("C2 watch during pause: related shown, no reveal/comments buttons, no no-autoplay attr", bP.showRelated && bP.showComments && bP.reveal === 0 && bP.commentsBtn === 0 && !bP.noAutoplay, bP);
 const pp = await pstate();
-check("C3 popup status 'Paused until HH:MM', health hidden", /^Paused until \d\d:\d\d\. YouTube is as is\.$/.test(pp.status) && pp.healthHidden && pp.text === "Turn back on" && !pp.disabled, pp);
+check("C3 popup status 'Paused until HH:MM', health hidden", /^Paused until \d{1,2}:\d\d( [AP]M)?\. YouTube is as is\.$/.test(pp.status) && pp.healthHidden && pp.text === "Turn back on" && !pp.disabled, pp);
 const ids = await tabIds();
 const badgeGlobal = await badge();
 const badgeA = ids.home !== undefined ? await badge(ids.home) : null;

@@ -35,13 +35,17 @@
       ["related", "ytd-watch-flexy #related"],
       ["comments", "ytd-comments#comments"],
       ["autoplay", 'button[data-tooltip-target-id="ytp-autonav-toggle-button"]'],
-      ["endscreen", ".html5-endscreen"],
+      ["endscreen", ".html5-endscreen, .ytp-modern-videowall-still, .ytp-fullscreen-grid"],
     ],
     home: [["home", 'ytd-browse[page-subtype="home"]']],
     subs: [],
     channel: [],
     search: [["results", "ytd-search"]],
   };
+
+  function healthChecks(page, active) {
+    return (HEALTH[page] || []).filter(([name]) => active[name] !== false);
+  }
 
   const SUBS_SHELF =
     'ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(> #content > ytd-rich-shelf-renderer:not([is-shorts]))';
@@ -324,6 +328,7 @@
     DEFAULT_HIDDEN,
     OPT_IN,
     HEALTH,
+    healthChecks,
     SUBS_SHELF,
     LEAKS,
     mergeSettings,

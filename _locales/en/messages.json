@@ -41,7 +41,7 @@
     "message": "Show recommendations"
   },
   "revealCountdown": {
-    "message": "Still want them? Showing in $SECONDS$…",
+    "message": "Showing in $SECONDS$…",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -306,12 +306,6 @@
   "breakageLink": {
     "message": "Known issues"
   },
-  "welcomeReload": {
-    "message": "YouTube is already open. Reload it to apply."
-  },
-  "welcomeReloadButton": {
-    "message": "Reload"
-  },
   "intentFooter": {
     "message": "This is Errand. Change it in the extension menu."
   },
@@ -356,5 +350,8 @@
   },
   "importLocked": {
     "message": "Not available in strict mode"
+  },
+  "welcomeReloadOpen": {
+    "message": "Reload any YouTube tab you already have open."
   }
 }

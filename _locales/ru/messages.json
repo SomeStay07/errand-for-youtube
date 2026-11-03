@@ -41,7 +41,7 @@
     "message": "Показать рекомендации"
   },
   "revealCountdown": {
-    "message": "Точно нужно? Покажу через $SECONDS$…",
+    "message": "Покажу через $SECONDS$…",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -306,12 +306,6 @@
   "breakageLink": {
     "message": "Журнал поломок"
   },
-  "welcomeReload": {
-    "message": "YouTube уже открыт. Перезагрузите его, чтобы всё заработало."
-  },
-  "welcomeReloadButton": {
-    "message": "Перезагрузить"
-  },
   "intentFooter": {
     "message": "Это Errand. Поменять можно в меню расширения."
   },
@@ -356,5 +350,8 @@
   },
   "importLocked": {
     "message": "Недоступно в строгом режиме"
+  },
+  "welcomeReloadOpen": {
+    "message": "Перезагрузите уже открытые вкладки YouTube."
   }
 }
