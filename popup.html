@@ -14,6 +14,10 @@
     </div>
   </header>
 
+  <div id="pause" hidden>
+    <button type="button" id="pauseButton"></button>
+  </div>
+
   <p id="health"></p>
 
   <section>
@@ -32,6 +36,7 @@
         <option value="show" data-i18n="shortsShow"></option>
       </select>
     </label>
+    <a href="#" id="lookAgain" class="link" data-i18n="lookAgain"></a>
   </section>
 
   <section>
@@ -42,6 +47,10 @@
     <details>
       <summary data-i18n="sectionMore"></summary>
       <div id="more"></div>
+      <div class="actions backup">
+        <button type="button" id="export" data-i18n="exportSettings"></button>
+        <label class="button"><span data-i18n="importSettings"></span><input type="file" id="import" accept="application/json" hidden></label>
+      </div>
     </details>
   </section>
 
@@ -64,15 +73,14 @@
     </div>
   </section>
 
-  <section>
+  <section id="week" hidden>
     <h2 data-i18n="sectionWeek"></h2>
     <p id="summary"></p>
+    <p class="hint" data-i18n="errandsHint"></p>
   </section>
 
   <section class="actions">
     <a id="report" class="button" target="_blank" rel="noopener" data-i18n="reportProblem"></a>
-    <button type="button" id="export" data-i18n="exportSettings"></button>
-    <label class="button"><span data-i18n="importSettings"></span><input type="file" id="import" accept="application/json" hidden></label>
   </section>
 
   <script src="lib.js"></script>

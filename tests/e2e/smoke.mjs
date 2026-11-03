@@ -20,7 +20,7 @@ const context = await chromium.launchPersistentContext(profile, {
   ignoreDefaultArgs: ["--enable-automation"],
   colorScheme: "dark",
   viewport: { width: 1280, height: 800 },
-  args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`, `--lang=${LOCALE}`, "--window-position=-2000,0", "--disable-blink-features=AutomationControlled", "--use-mock-keychain", "--password-store=basic"],
+  args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`, `--lang=${LOCALE}`, ...(process.env.HEADED === "1" ? ["--window-position=-2000,0"] : ["--headless=new"]), "--disable-blink-features=AutomationControlled", "--use-mock-keychain", "--password-store=basic"],
   recordVideo: VIDEO ? { dir: join(OUT, "video"), size: { width: 1280, height: 800 } } : undefined,
 });
 
@@ -34,7 +34,17 @@ let [worker] = context.serviceWorkers();
 if (!worker) worker = await context.waitForEvent("serviceworker");
 const extId = worker.url().split("/")[2];
 
-const page = context.pages()[0] || (await context.newPage());
+await new Promise((r) => setTimeout(r, 1500));
+const welcome = context.pages().find((p) => p.url().includes("welcome.html"));
+check("install: welcome page opened", Boolean(welcome));
+if (welcome) {
+  await welcome.waitForTimeout(500);
+  check("welcome: ask preset selected", await welcome.locator('input[value="ask"]').isChecked());
+  check("welcome: three lines", (await welcome.locator("#lines li").count()) === 3);
+  await welcome.screenshot({ path: join(OUT, "0-welcome.png"), fullPage: true });
+  await welcome.close();
+}
+const page = context.pages().find((p) => !p.url().startsWith("chrome-extension://")) || (await context.newPage());
 const pause = (ms) => page.waitForTimeout(ms);
 const BLUR_CSS = `ytd-thumbnail img, yt-thumbnail-view-model img, yt-image img, #avatar img, yt-img-shadow img, .yt-spec-avatar-shape img, yt-avatar-shape img, ytd-channel-name, #channel-name, .ytContentMetadataViewModelMetadataRow a { filter: blur(9px) !important; }`;
 async function blurPage() { await page.addStyleTag({ content: BLUR_CSS }).catch(() => {}); await page.waitForTimeout(400); }
@@ -113,13 +123,26 @@ const popup = await context.newPage();
 await popup.setViewportSize({ width: 340, height: 900 });
 await popup.goto(`chrome-extension://${extId}/popup.html`);
 await popup.waitForTimeout(800);
-const stats = await popup.locator("#summary").textContent();
-check("popup: stats recorded", !/No videos|Пока/.test(stats || ""));
+check("popup: no stats on a fresh profile", await popup.locator("#week").isHidden());
+check("popup: pause button shown", await popup.locator("#pauseButton").isVisible());
 await popup.screenshot({ path: join(OUT, "5-popup.png"), fullPage: true });
 
 const health = await popup.evaluate(() => chrome.storage.session.get("health"));
 console.log("health:", JSON.stringify(health));
-console.log("summary:", stats);
+
+await page.goto("https://www.youtube.com/", { waitUntil: "domcontentloaded" });
+await pause(3000);
+await popup.evaluate(() => chrome.storage.local.set({ pausedUntil: Date.now() + 60_000 }));
+await pause(1500);
+check("pause: home feed shown", await page.evaluate(() => document.documentElement.hasAttribute("data-er-show-home")));
+check("pause: question hidden", !(await page.locator("#er-intent").isVisible()));
+check("pause: shorts shown", await page.evaluate(() => document.documentElement.hasAttribute("data-er-show-shorts")));
+await popup.reload();
+await popup.waitForTimeout(500);
+check("pause: popup offers resume", /back|обратно|activar|novo|einschalten/i.test(await popup.locator("#pauseButton").textContent()));
+await popup.evaluate(() => chrome.storage.local.remove("pausedUntil"));
+await pause(1500);
+check("resume: question back", await page.locator("#er-intent").isVisible());
 
 await context.close();
 const failed = Object.entries(results).filter(([, v]) => !v).map(([k]) => k);

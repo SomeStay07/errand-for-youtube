@@ -27,6 +27,9 @@ const HEALTH_KEYS = {
 };
 
 let settings = L.mergeSettings();
+let pausedUntil = null;
+let pauseStartsAt = null;
+let pauseTimer = 0;
 
 const $ = (id) => document.getElementById(id);
 
@@ -65,36 +68,80 @@ function save() {
   renderStatus();
 }
 
+function isPausedNow() {
+  return !L.isStrict(settings, new Date()) && L.isPaused(pausedUntil, Date.now());
+}
+
 function renderStatus() {
   let text = t("statusNormal");
   if (settings.mode === "strict") text = t("statusStrictAlways");
   else if (L.isStrict(settings, new Date())) text = t("statusStrictUntil", settings.strictEnd);
+  else if (isPausedNow()) {
+    const time = new Intl.DateTimeFormat(LANG, { hour: "numeric", minute: "2-digit" }).format(new Date(pausedUntil));
+    text = t("statusPaused", time);
+  }
   $("status").textContent = text;
   $("schedule").hidden = settings.mode !== "auto";
+  renderPause();
 }
 
-function renderStats(stats) {
-  let intended = 0;
-  let drift = 0;
-  for (const key of L.lastDays(7, new Date())) {
-    intended += stats[key]?.intended || 0;
-    drift += stats[key]?.drift || 0;
+function renderPause() {
+  const row = $("pause");
+  const button = $("pauseButton");
+  if (healthEntry !== undefined) $("health").hidden = isPausedNow() || !healthEntry;
+  clearTimeout(pauseTimer);
+  if (L.isStrict(settings, new Date())) {
+    row.hidden = true;
+    return;
   }
-  const total = intended + drift;
-  $("summary").textContent = total ? t("summary", total, Math.round((drift / total) * 100)) : t("summaryEmpty");
+  row.hidden = false;
+  if (L.isPauseStarting(pauseStartsAt, Date.now())) {
+    const left = Math.max(1, Math.ceil((pauseStartsAt - Date.now()) / 1000));
+    button.textContent = t("pauseCountdown", left);
+    pauseTimer = setTimeout(renderPause, 250);
+    return;
+  }
+  button.textContent = isPausedNow() ? t("resumeButton") : t("pauseButton");
 }
+
+function onPauseClick() {
+  if (isPausedNow()) {
+    chrome.storage.local.remove("pausedUntil");
+    pausedUntil = null;
+  } else if (L.isPauseStarting(pauseStartsAt, Date.now())) {
+    chrome.storage.local.remove("pauseStartsAt");
+    pauseStartsAt = null;
+  } else if (L.canPause(settings, new Date(), pausedUntil)) {
+    pauseStartsAt = Date.now() + L.PAUSE_WAIT_S * 1000;
+    chrome.storage.local.set({ pauseStartsAt });
+  }
+  renderStatus();
+}
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== "local") return;
+  if (changes.pausedUntil) pausedUntil = changes.pausedUntil.newValue ?? null;
+  if (changes.pauseStartsAt) pauseStartsAt = changes.pauseStartsAt.newValue ?? null;
+  if (changes.pausedUntil || changes.pauseStartsAt) renderStatus();
+});
+
+function renderStats(stats) {
+  const { done, closed } = L.errandTotals(stats, new Date());
+  $("week").hidden = done === 0;
+  if (done) $("summary").textContent = t("errandsSummary", done, closed);
+}
+
+let healthEntry;
 
 async function renderHealth() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const { health = {} } = await chrome.storage.session.get("health");
   const entry = tab ? health[tab.id] : null;
+  healthEntry = entry || null;
   $("report").href = reportLink(entry);
   const node = $("health");
-  if (!entry) {
-    node.className = "hint";
-    node.textContent = t("healthOpenTab");
-    return;
-  }
+  node.hidden = !entry || isPausedNow();
+  if (!entry) return;
   if (!entry.missing.length) {
     node.className = "ok";
     node.textContent = t("healthOk");
@@ -103,7 +150,8 @@ async function renderHealth() {
   node.className = "warn";
   const names = entry.missing.map((key) => (HEALTH_KEYS[key] ? t(HEALTH_KEYS[key]) : key));
   const link = el("a", { href: reportLink(entry), target: "_blank", rel: "noopener" }, t("reportThis"));
-  node.replaceChildren(t("healthBroken", new Intl.ListFormat(LANG).format(names)), " ", link);
+  const known = el("a", { href: L.BREAKAGE_URL, target: "_blank", rel: "noopener" }, t("breakageLink"));
+  node.replaceChildren(t("healthBroken", new Intl.ListFormat(LANG).format(names)), " ", link, " · ", known);
 }
 
 function browserLabel() {
@@ -165,6 +213,7 @@ function renderForm() {
       settings.strictDays = [...set];
       save();
     });
+    box.setAttribute("aria-label", weekdayName(day, "long"));
     days.append(el("label", { title: weekdayName(day, "long") }, box, weekdayName(day, "narrow")));
   }
 }
@@ -199,9 +248,20 @@ function setupBackup() {
 
 async function init() {
   localize();
-  const data = await chrome.storage.local.get(["settings", "stats", "log"]);
+  const data = await chrome.storage.local.get(["settings", "stats", "log", "pausedUntil", "pauseStartsAt"]);
   diagnosticsLog = data.log || [];
   settings = L.mergeSettings(data.settings);
+  pausedUntil = data.pausedUntil ?? null;
+  pauseStartsAt = data.pauseStartsAt ?? null;
+  $("lookAgain").addEventListener("click", (event) => {
+    event.preventDefault();
+    chrome.tabs.create({ url: chrome.runtime.getURL("welcome.html") });
+  });
+  if (data.pausedUntil !== undefined && !L.isPaused(data.pausedUntil, Date.now())) {
+    chrome.storage.local.remove("pausedUntil");
+    pausedUntil = null;
+  }
+  $("pauseButton").addEventListener("click", onPauseClick);
   renderForm();
   setupBackup();
   renderStatus();

@@ -90,6 +90,26 @@ select {
   accent-color: var(--accent);
 }
 
+#pause {
+  margin: 0 0 12px;
+}
+
+#pauseButton {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  cursor: pointer;
+}
+
+#pauseButton:disabled {
+  cursor: default;
+  color: var(--muted);
+}
+
 #health {
   margin: 0 0 12px;
 }
@@ -188,6 +208,18 @@ th {
   font: inherit;
   text-align: center;
   cursor: pointer;
+}
+
+.link {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--accent);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.backup {
+  margin-top: 8px;
 }
 
 .ok {

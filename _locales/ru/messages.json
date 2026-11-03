@@ -35,7 +35,7 @@
     }
   },
   "pillClear": {
-    "message": "Сбросить"
+    "message": "Сбросить цель"
   },
   "revealButton": {
     "message": "Показать рекомендации"
@@ -69,7 +69,7 @@
     "message": "Остаться"
   },
   "statusNormal": {
-    "message": "Обычный режим"
+    "message": "Errand включён"
   },
   "statusStrictAlways": {
     "message": "Строгий режим включён всегда"
@@ -84,23 +84,6 @@
   },
   "sectionWeek": {
     "message": "За 7 дней"
-  },
-  "summary": {
-    "message": "Всего: $TOTAL$ · в сторону: $PERCENT$%",
-    "placeholders": {
-      "total": {
-        "content": "$1"
-      },
-      "percent": {
-        "content": "$2"
-      }
-    }
-  },
-  "summaryEmpty": {
-    "message": "Пока ничего не смотрели"
-  },
-  "healthOpenTab": {
-    "message": "Откройте вкладку YouTube, чтобы проверить фильтры"
   },
   "healthOk": {
     "message": "Все фильтры работают"
@@ -171,7 +154,7 @@
     "message": "Всегда"
   },
   "modeRelaxed": {
-    "message": "Никогда"
+    "message": "Выкл."
   },
   "strictFrom": {
     "message": "С"
@@ -192,7 +175,7 @@
     "message": "Главная"
   },
   "homeAsk": {
-    "message": "Вопрос"
+    "message": "Спрашивать, зачем пришли"
   },
   "commentsButton": {
     "message": "Показать комментарии"
@@ -238,5 +221,118 @@
   },
   "reportThis": {
     "message": "Сообщить"
+  },
+  "welcomeTitle": {
+    "message": "Errand включён"
+  },
+  "welcomeQuestion": {
+    "message": "Каким сделать YouTube?"
+  },
+  "presetAsk": {
+    "message": "Спрашивать, зачем пришли"
+  },
+  "presetShorts": {
+    "message": "Просто убрать Shorts"
+  },
+  "presetSubs": {
+    "message": "Сначала подписки"
+  },
+  "welcomeChanges": {
+    "message": "Что поменяется на YouTube"
+  },
+  "welcomeAsk1": {
+    "message": "Вместо ленты на главной — вопрос, зачем пришли."
+  },
+  "welcomeSubs1": {
+    "message": "Главная открывает подписки."
+  },
+  "welcomeHidden": {
+    "message": "Shorts нет. Рекомендации и комментарии — за кнопкой."
+  },
+  "welcomeEnd": {
+    "message": "Без автовоспроизведения. В конце видео можно сразу закрыть вкладку."
+  },
+  "welcomeShorts1": {
+    "message": "Shorts скрыты на главной, в поиске, подписках и на каналах."
+  },
+  "welcomeShorts2": {
+    "message": "Ссылки на Shorts ведут в обычный плеер."
+  },
+  "welcomeShorts3": {
+    "message": "Лента, рекомендации и комментарии остаются как были."
+  },
+  "welcomeOpen": {
+    "message": "Открыть YouTube"
+  },
+  "welcomePin": {
+    "message": "Закрепите Errand: значок пазла в панели → булавка. Настройки там же."
+  },
+  "errandsSummary": {
+    "message": "Сделано дел: $DONE$ · закрыли сразу: $CLOSED$",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "closed": {
+        "content": "$2"
+      }
+    }
+  },
+  "errandsHint": {
+    "message": "Сделано: досмотрели видео после ответа «зачем пришли». Закрыли: нажали «Закрыть вкладку»."
+  },
+  "pauseButton": {
+    "message": "Пауза на 15 мин"
+  },
+  "pauseCountdown": {
+    "message": "Пауза через $SECONDS$…",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusPaused": {
+    "message": "На паузе до $TIME$. YouTube как есть.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "resumeButton": {
+    "message": "Включить снова"
+  },
+  "breakageLink": {
+    "message": "Журнал поломок"
+  },
+  "welcomeReload": {
+    "message": "YouTube уже открыт — перезагрузите его, чтобы всё заработало."
+  },
+  "welcomeReloadButton": {
+    "message": "Перезагрузить"
+  },
+  "intentFooter": {
+    "message": "Это Errand. Поменять можно в меню расширения."
+  },
+  "lookAgain": {
+    "message": "Выбрать вид заново"
+  },
+  "titleOn": {
+    "message": "Errand включён"
+  },
+  "titlePaused": {
+    "message": "Errand на паузе до $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "titleStrict": {
+    "message": "Errand: строгий режим"
+  },
+  "titleBroken": {
+    "message": "Errand: YouTube что-то поменял. Откройте, чтобы узнать что."
   }
 }

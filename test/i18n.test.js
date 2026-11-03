@@ -12,10 +12,12 @@ const messages = Object.fromEntries(
 
 function usedKeys() {
   const keys = new Set();
-  for (const file of ["content.js", "popup.js"]) {
+  for (const file of ["content.js", "popup.js", "welcome.js", "background.js"]) {
     for (const match of read(file).matchAll(/\bt\("(\w+)"/g)) keys.add(match[1]);
   }
   for (const match of read("popup.html").matchAll(/data-i18n="(\w+)"/g)) keys.add(match[1]);
+  for (const match of read("welcome.html").matchAll(/data-i18n="(\w+)"/g)) keys.add(match[1]);
+  for (const match of read("lib.js").matchAll(/"(welcome\w+)"/g)) keys.add(match[1]);
   for (const match of read("popup.js").matchAll(/\["\w+", "(hide\w+)"\]/g)) keys.add(match[1]);
   for (const match of read("popup.js").matchAll(/: "(health\w+)"/g)) keys.add(match[1]);
   for (const match of read("manifest.json").matchAll(/__MSG_(\w+)__/g)) keys.add(match[1]);

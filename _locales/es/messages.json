@@ -35,7 +35,7 @@
     }
   },
   "pillClear": {
-    "message": "Borrar"
+    "message": "Borrar a qué vine"
   },
   "revealButton": {
     "message": "Mostrar recomendaciones"
@@ -69,7 +69,7 @@
     "message": "Quedarme"
   },
   "statusNormal": {
-    "message": "Modo normal"
+    "message": "Errand está activo"
   },
   "statusStrictAlways": {
     "message": "El modo estricto está siempre activado"
@@ -84,23 +84,6 @@
   },
   "sectionWeek": {
     "message": "Últimos 7 días"
-  },
-  "summary": {
-    "message": "Total: $TOTAL$ · por inercia: $PERCENT$ %",
-    "placeholders": {
-      "total": {
-        "content": "$1"
-      },
-      "percent": {
-        "content": "$2"
-      }
-    }
-  },
-  "summaryEmpty": {
-    "message": "Aún no hay vídeos"
-  },
-  "healthOpenTab": {
-    "message": "Abre una pestaña de YouTube para comprobar los filtros"
   },
   "healthOk": {
     "message": "Todos los filtros funcionan"
@@ -171,7 +154,7 @@
     "message": "Siempre"
   },
   "modeRelaxed": {
-    "message": "Nunca"
+    "message": "Desactivado"
   },
   "strictFrom": {
     "message": "Desde"
@@ -192,7 +175,7 @@
     "message": "Inicio"
   },
   "homeAsk": {
-    "message": "La pregunta"
+    "message": "Preguntar a qué vengo"
   },
   "commentsButton": {
     "message": "Mostrar comentarios"
@@ -238,5 +221,118 @@
   },
   "reportThis": {
     "message": "Informar"
+  },
+  "welcomeTitle": {
+    "message": "Errand activado"
+  },
+  "welcomeQuestion": {
+    "message": "¿Cómo quieres YouTube?"
+  },
+  "presetAsk": {
+    "message": "Preguntar a qué vengo"
+  },
+  "presetShorts": {
+    "message": "Solo quitar Shorts"
+  },
+  "presetSubs": {
+    "message": "Primero suscripciones"
+  },
+  "welcomeChanges": {
+    "message": "Qué cambia en YouTube"
+  },
+  "welcomeAsk1": {
+    "message": "En Inicio verás «¿A qué vienes?» en vez del feed."
+  },
+  "welcomeSubs1": {
+    "message": "Inicio te lleva a tus suscripciones."
+  },
+  "welcomeHidden": {
+    "message": "Sin Shorts. Recomendaciones y comentarios, tras un botón."
+  },
+  "welcomeEnd": {
+    "message": "Sin reproducción automática. Al acabar, puedes cerrar la pestaña."
+  },
+  "welcomeShorts1": {
+    "message": "Shorts ocultos en inicio, búsqueda, suscripciones y canales."
+  },
+  "welcomeShorts2": {
+    "message": "Los Shorts se abren como vídeos normales."
+  },
+  "welcomeShorts3": {
+    "message": "El feed, las recomendaciones y los comentarios quedan igual."
+  },
+  "welcomeOpen": {
+    "message": "Abrir YouTube"
+  },
+  "welcomePin": {
+    "message": "Fija Errand: icono del puzle en la barra → chincheta. Ahí están los ajustes."
+  },
+  "errandsSummary": {
+    "message": "Hecho: $DONE$ · cerrado al acabar: $CLOSED$",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "closed": {
+        "content": "$2"
+      }
+    }
+  },
+  "errandsHint": {
+    "message": "Hecho: un vídeo terminó tras decir a qué venías. Cerrado: pulsaste «Cerrar pestaña»."
+  },
+  "pauseButton": {
+    "message": "Pausar 15 min"
+  },
+  "pauseCountdown": {
+    "message": "Pausa en $SECONDS$…",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusPaused": {
+    "message": "En pausa hasta las $TIME$. YouTube tal cual.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "resumeButton": {
+    "message": "Reactivar"
+  },
+  "breakageLink": {
+    "message": "Lista de fallos"
+  },
+  "welcomeReload": {
+    "message": "YouTube ya está abierto: recárgalo para aplicar."
+  },
+  "welcomeReloadButton": {
+    "message": "Recargar"
+  },
+  "intentFooter": {
+    "message": "Esto es Errand. Cámbialo en el menú de la extensión."
+  },
+  "lookAgain": {
+    "message": "Elegir otro estilo"
+  },
+  "titleOn": {
+    "message": "Errand está activo"
+  },
+  "titlePaused": {
+    "message": "Errand en pausa hasta las $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "titleStrict": {
+    "message": "Errand: modo estricto"
+  },
+  "titleBroken": {
+    "message": "Errand: YouTube cambió algo. Ábrelo para ver qué."
   }
 }

@@ -182,6 +182,12 @@ html[data-er-page="home"]:not([data-er-show-home]) #er-intent {
   text-decoration: none;
 }
 
+#er-intent .er-footnote {
+  margin: 8px 0 0;
+  color: var(--er-muted);
+  font-size: 12px;
+}
+
 #er-intent nav a:hover {
   color: inherit;
 }
@@ -216,6 +222,7 @@ html[data-er-page="watch"] #er-pill {
 
 #er-pill button,
 #er-reveal,
+#er-comments,
 #er-end button {
   font: inherit;
   cursor: pointer;

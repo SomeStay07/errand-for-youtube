@@ -17,7 +17,8 @@ WHAT CHANGES
 • End of a video: no autoplay, no wall of thumbnails. Errand asks if you found what you came for and offers to close the tab.
 • Also hidden: Mixes, Trending, and suggestions in an empty search box. Optional: live chat, the notification bell, view, like and subscriber counts, bright thumbnails.
 • Strict mode on a schedule, say weekdays 9 to 6: the feed, Shorts, recommendations and comments stay hidden, and the "show" buttons are gone.
-• A weekly count of videos you opened on purpose vs. the ones you drifted into. Kept in your browser.
+• A weekly count of errands done (a video finished after you typed what you came for) and how often you then pressed Close tab. Kept in your browser.
+• Need the feed for a moment? "Pause 15 min" turns everything off and back on by itself. Not available in strict mode.
 
 IF THE SITE CHANGES, YOU'LL KNOW
 Extensions like this usually die the same way: the site changes its layout and hidden things creep back. On the home page, search and video pages, Errand checks that it still finds what it hides and that nothing slipped back. If something changed, the icon shows "!" and the menu tells you what stopped working.

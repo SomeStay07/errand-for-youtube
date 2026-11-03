@@ -3,7 +3,8 @@
   const OPT_IN = ["chat", "notifications", "metrics", "thumbs"];
   const HOME_TARGETS = { subs: "/feed/subscriptions", wl: "/playlist?list=WL" };
   const INTENT_TTL_MS = 3 * 60 * 60 * 1000;
-  const INTENDED_SOURCES = new Set(["search", "subs", "playlist", "channel", "library"]);
+  const PAUSE_MS = 15 * 60 * 1000;
+  const PAUSE_WAIT_S = 10;
 
   const DEFAULTS = {
     mode: "relaxed",
@@ -94,13 +95,6 @@
     return Boolean(list) && !list.startsWith("RD") && !params.has("start_radio");
   }
 
-  function classifyVisit(prevPath, pathname, search) {
-    if (pageType(pathname) !== "watch") return null;
-    if (isRealPlaylist(search)) return "intended";
-    if (prevPath === null) return "intended";
-    return INTENDED_SOURCES.has(pageType(prevPath)) ? "intended" : "drift";
-  }
-
   function shortsToWatch(pathname, search = "") {
     const match = /^\/shorts\/([\w-]{6,})/.exec(pathname);
     if (!match) return null;
@@ -110,7 +104,10 @@
     return `/watch?v=${match[1]}${rest ? `&${rest}` : ""}`;
   }
 
-  function hiddenParts(settings, strict) {
+  function hiddenParts(settings, strict, paused = false) {
+    if (paused && !strict) {
+      return Object.fromEntries([...DEFAULT_HIDDEN, ...OPT_IN].map((key) => [key, false]));
+    }
     const hide = {
       ...settings.hide,
       home: settings.homeTarget !== "feed",
@@ -131,6 +128,70 @@
 
   const REPO_URL = "https://github.com/SomeStay07/errand-for-youtube";
   const SITE_URL = "https://somestay07.github.io/errand-for-youtube";
+  const BREAKAGE_URL = `${SITE_URL}/breakage/`;
+
+  const PRESETS = {
+    ask: {
+      homeTarget: "ask",
+      shortsMode: "watch",
+      stopAutoplay: true,
+      endPrompt: true,
+      hide: { related: true, endscreen: true, comments: true },
+    },
+    shorts: {
+      homeTarget: "feed",
+      shortsMode: "watch",
+      stopAutoplay: false,
+      endPrompt: false,
+      hide: { related: false, endscreen: false, comments: false },
+    },
+    subs: {
+      homeTarget: "subs",
+      shortsMode: "watch",
+      stopAutoplay: true,
+      endPrompt: true,
+      hide: { related: true, endscreen: true, comments: true },
+    },
+  };
+
+  const WELCOME_LINES = {
+    ask: ["welcomeAsk1", "welcomeHidden", "welcomeEnd"],
+    shorts: ["welcomeShorts1", "welcomeShorts2", "welcomeShorts3"],
+    subs: ["welcomeSubs1", "welcomeHidden", "welcomeEnd"],
+  };
+
+  function applyPreset(settings, id) {
+    const base = mergeSettings(settings);
+    const preset = PRESETS[id];
+    if (!preset) return base;
+    return mergeSettings({ ...base, ...preset, hide: { ...base.hide, ...preset.hide } });
+  }
+
+  function presetOf(settings) {
+    const s = mergeSettings(settings);
+    for (const [id, preset] of Object.entries(PRESETS)) {
+      const top = Object.entries(preset).every(([key, value]) => key === "hide" || s[key] === value);
+      const hide = Object.entries(preset.hide).every(([key, value]) => s.hide[key] === value);
+      if (top && hide) return id;
+    }
+    return null;
+  }
+
+  function welcomeLines(id) {
+    return WELCOME_LINES[id] || WELCOME_LINES.ask;
+  }
+
+  function isPaused(pausedUntil, now) {
+    return Number.isFinite(pausedUntil) && pausedUntil > now && pausedUntil - now <= PAUSE_MS;
+  }
+
+  function isPauseStarting(startsAt, now) {
+    return Number.isFinite(startsAt) && startsAt > now && startsAt - now <= PAUSE_WAIT_S * 1000 + 1000;
+  }
+
+  function canPause(settings, date, pausedUntil) {
+    return !isStrict(settings, date) && !isPaused(pausedUntil, date.getTime());
+  }
 
   const FEEDBACK_FORM =
     "https://docs.google.com/forms/d/e/1FAIpQLScK_SZgLBU4-khfkJgem6Gfdk0JkcnCYq2bATd491NIQ6uAGQ/viewform?usp=pp_url&entry.870279470=VERSION&entry.1434595339=BROWSER&entry.2144774803=PAGE&entry.426719485=FILTERS";
@@ -188,15 +249,39 @@
     return keys;
   }
 
-  function addVisit(stats, kind, date, keepDays = 30) {
+  function addCount(stats, kind, date, keepDays = 30) {
     const key = dayKey(date);
-    const day = { intended: 0, drift: 0, ...(stats[key] || {}) };
-    day[kind] += 1;
+    const source = stats && typeof stats === "object" ? stats : {};
+    const day = { ...(source[key] || {}) };
+    day[kind] = (day[kind] || 0) + 1;
     const keep = new Set(lastDays(keepDays, date));
     const next = {};
-    for (const [k, v] of Object.entries(stats)) if (keep.has(k)) next[k] = v;
+    for (const [k, v] of Object.entries(source)) if (keep.has(k)) next[k] = v;
     next[key] = day;
     return next;
+  }
+
+  function errandEvent(last, kind, id) {
+    const prev = { done: null, closed: null, ...(last || {}) };
+    if (typeof id !== "number" || !Number.isFinite(id)) return { count: false, last: prev };
+    if (kind === "done") {
+      return { count: id !== prev.done, last: { ...prev, done: id } };
+    }
+    if (kind === "closed") {
+      const count = id === prev.done && id !== prev.closed;
+      return { count, last: count ? { ...prev, closed: id } : prev };
+    }
+    return { count: false, last: prev };
+  }
+
+  function errandTotals(stats, date) {
+    const totals = { done: 0, closed: 0 };
+    for (const key of lastDays(7, date)) {
+      const day = stats?.[key];
+      totals.done += Number(day?.done) || 0;
+      totals.closed += Number(day?.closed) || 0;
+    }
+    return totals;
   }
 
   const api = {
@@ -208,7 +293,6 @@
     isStrict,
     pageType,
     isRealPlaylist,
-    classifyVisit,
     shortsToWatch,
     homeRedirect,
     hiddenParts,
@@ -220,9 +304,21 @@
     reportUrl,
     REPO_URL,
     SITE_URL,
+    BREAKAGE_URL,
+    PRESETS,
+    applyPreset,
+    presetOf,
+    welcomeLines,
+    PAUSE_MS,
+    PAUSE_WAIT_S,
+    isPaused,
+    isPauseStarting,
+    canPause,
     dayKey,
     lastDays,
-    addVisit,
+    addCount,
+    errandEvent,
+    errandTotals,
   };
 
   root.ErrandLib = api;

@@ -67,19 +67,6 @@ test("mergeSettings keeps defaults for missing hide keys", () => {
   assert.equal(s.revealSeconds, 10);
 });
 
-test("watch visits are classified by where the user came from", () => {
-  assert.equal(L.classifyVisit("/results", "/watch", "?v=abc"), "intended");
-  assert.equal(L.classifyVisit("/feed/subscriptions", "/watch", "?v=abc"), "intended");
-  assert.equal(L.classifyVisit("/@channel", "/watch", "?v=abc"), "intended");
-  assert.equal(L.classifyVisit(null, "/watch", "?v=abc"), "intended");
-  assert.equal(L.classifyVisit("/watch", "/watch", "?v=abc"), "drift");
-  assert.equal(L.classifyVisit("/shorts/xyz123", "/watch", "?v=abc"), "drift");
-  assert.equal(L.classifyVisit("/watch", "/watch", "?v=abc&list=PL1"), "intended");
-  assert.equal(L.classifyVisit("/results", "/feed/subscriptions", ""), null);
-  assert.equal(L.classifyVisit("/watch", "/watch", "?v=abc&list=RDabc&start_radio=1"), "drift");
-  assert.equal(L.classifyVisit("/watch", "/watch", "?v=abc&list=RDMMabc"), "drift");
-});
-
 test("shorts links map to the regular player", () => {
   assert.equal(L.shortsToWatch("/shorts/dQw4w9WgXcQ"), "/watch?v=dQw4w9WgXcQ");
   assert.equal(L.shortsToWatch("/shorts/"), null);
@@ -121,15 +108,6 @@ test("intent expires after three hours", () => {
   assert.equal(L.activeIntent(null, ts), null);
 });
 
-test("addVisit counts per day and drops days older than the window", () => {
-  const today = new Date(2026, 10, 3);
-  let stats = { "2026-09-01": { intended: 5, drift: 5 } };
-  stats = L.addVisit(stats, "drift", today);
-  stats = L.addVisit(stats, "intended", today);
-  stats = L.addVisit(stats, "drift", today);
-  assert.deepEqual(stats, { "2026-11-03": { intended: 1, drift: 2 } });
-});
-
 test("lastDays returns oldest first and crosses month boundary", () => {
   assert.deepEqual(L.lastDays(3, new Date(2026, 10, 2)), ["2026-10-31", "2026-11-01", "2026-11-02"]);
 });
@@ -146,4 +124,111 @@ test("home redirect follows the chosen target", () => {
   assert.equal(L.homeRedirect(L.mergeSettings()), null);
   assert.equal(L.homeRedirect(L.mergeSettings({ homeTarget: "subs" })), "/feed/subscriptions");
   assert.equal(L.homeRedirect(L.mergeSettings({ homeTarget: "wl" })), "/playlist?list=WL");
+});
+
+test("ask preset equals the defaults, so untouched installs behave like 0.1", () => {
+  const d = L.mergeSettings();
+  for (const [key, value] of Object.entries(L.PRESETS.ask)) {
+    if (key === "hide") for (const [h, v] of Object.entries(value)) assert.equal(d.hide[h], v, h);
+    else assert.equal(d[key], value, key);
+  }
+  assert.equal(L.presetOf(d), "ask");
+});
+
+test("shorts preset shows the feed and video page, keeps strict and opt-in settings", () => {
+  const before = L.mergeSettings({ mode: "auto", strictStart: "08:00", strictDays: [1, 2], hide: { metrics: true } });
+  const s = L.applyPreset(before, "shorts");
+  assert.equal(s.homeTarget, "feed");
+  assert.equal(s.shortsMode, "watch");
+  assert.equal(s.stopAutoplay, false);
+  assert.equal(s.endPrompt, false);
+  assert.deepEqual([s.hide.related, s.hide.endscreen, s.hide.comments], [false, false, false]);
+  assert.equal(s.mode, "auto");
+  assert.equal(s.strictStart, "08:00");
+  assert.deepEqual(s.strictDays, [1, 2]);
+  assert.equal(s.hide.metrics, true);
+  assert.equal(L.presetOf(s), "shorts");
+});
+
+test("unknown preset leaves settings unchanged and customized settings match no preset", () => {
+  const s = L.mergeSettings({ homeTarget: "wl" });
+  assert.deepEqual(L.applyPreset(s, "nope"), L.mergeSettings(s));
+  const subs = L.applyPreset(L.mergeSettings(), "subs");
+  assert.equal(L.presetOf(subs), "subs");
+  assert.equal(L.presetOf({ ...subs, hide: { ...subs.hide, comments: false } }), null);
+});
+
+test("welcome lines give three keys per preset and fall back to ask", () => {
+  for (const id of ["ask", "shorts", "subs"]) assert.equal(L.welcomeLines(id).length, 3);
+  assert.deepEqual(L.welcomeLines("nope"), L.welcomeLines("ask"));
+});
+
+test("errand events count each errand once and closed only after done", () => {
+  let r = L.errandEvent(undefined, "done", 1);
+  assert.equal(r.count, true);
+  r = L.errandEvent(r.last, "done", 1);
+  assert.equal(r.count, false);
+  r = L.errandEvent(r.last, "closed", 1);
+  assert.equal(r.count, true);
+  r = L.errandEvent(r.last, "closed", 1);
+  assert.equal(r.count, false);
+  r = L.errandEvent(r.last, "closed", 2);
+  assert.equal(r.count, false);
+  r = L.errandEvent(r.last, "done", 2);
+  assert.equal(r.count, true);
+  r = L.errandEvent(r.last, "closed", 2);
+  assert.equal(r.count, true);
+  assert.equal(L.errandEvent(r.last, "done", "3").count, false);
+});
+
+test("addCount keeps other fields and drops days older than 30", () => {
+  const today = new Date(2026, 10, 3);
+  let stats = { "2026-09-01": { done: 5 }, "2026-11-03": { intended: 4 } };
+  stats = L.addCount(stats, "done", today);
+  stats = L.addCount(stats, "done", today);
+  stats = L.addCount(stats, "closed", today);
+  assert.deepEqual(stats, { "2026-11-03": { intended: 4, done: 2, closed: 1 } });
+});
+
+test("errandTotals sums the last 7 days and ignores old visit fields", () => {
+  const today = new Date(2026, 10, 3);
+  const stats = {
+    "2026-11-03": { done: 2, closed: 1, intended: 9, drift: 9 },
+    "2026-10-30": { done: 1 },
+    "2026-10-20": { done: 7, closed: 7 },
+  };
+  assert.deepEqual(L.errandTotals(stats, today), { done: 3, closed: 1 });
+  assert.deepEqual(L.errandTotals({}, today), { done: 0, closed: 0 });
+});
+
+test("pause lasts at most 15 minutes and is ignored when strict", () => {
+  const now = 1_000_000;
+  assert.equal(L.isPaused(now + 60_000, now), true);
+  assert.equal(L.isPaused(now, now), false);
+  assert.equal(L.isPaused(now - 1, now), false);
+  assert.equal(L.isPaused(now + L.PAUSE_MS + 1, now), false);
+  assert.equal(L.isPaused(undefined, now), false);
+  assert.equal(L.isPaused("9999999999999", now), false);
+  const relaxed = L.mergeSettings();
+  const strict = L.mergeSettings({ mode: "strict" });
+  const date = new Date(now);
+  assert.equal(L.canPause(relaxed, date, undefined), true);
+  assert.equal(L.canPause(strict, date, undefined), false);
+  assert.equal(L.canPause(relaxed, date, now + 1000), false);
+  const off = L.hiddenParts(relaxed, false, true);
+  assert.ok(Object.values(off).every((v) => v === false));
+  assert.deepEqual(L.hiddenParts(relaxed, true, true), L.hiddenParts(relaxed, true, false));
+});
+
+test("a pending pause start is valid only within the wait window", () => {
+  const now = 5_000_000;
+  assert.equal(L.isPauseStarting(now + 9_000, now), true);
+  assert.equal(L.isPauseStarting(now - 1, now), false);
+  assert.equal(L.isPauseStarting(now + 60_000, now), false);
+  assert.equal(L.isPauseStarting(undefined, now), false);
+});
+
+test("breakage page lives on the site", () => {
+  assert.ok(L.BREAKAGE_URL.startsWith(L.SITE_URL));
+  assert.ok(L.BREAKAGE_URL.endsWith("/breakage/"));
 });

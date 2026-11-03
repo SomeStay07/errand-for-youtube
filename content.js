@@ -4,24 +4,17 @@
   const root = document.documentElement;
   let settings = L.mergeSettings();
   let intent = null;
-  let prevPath = referrerPath();
+  let pausedUntil = null;
+  let resumeTimer = 0;
+  let waitingVisible = false;
+  let lastPaused = false;
   let lastHref = null;
-  let lastVideo = null;
   let navToken = 0;
   let healthTimer = 0;
   let currentVideo = null;
   const PLAYER_CHECKS = new Set(["autoplay", "endscreen"]);
   const AUTOPLAY_BUTTON = 'button[data-tooltip-target-id="ytp-autonav-toggle-button"]';
   const SHORTS_LINK_ALLOWED = "#description, ytd-text-inline-expander, ytd-comments, #er-intent";
-
-  function referrerPath() {
-    try {
-      const ref = new URL(document.referrer);
-      return ref.hostname.endsWith("youtube.com") ? ref.pathname : null;
-    } catch {
-      return null;
-    }
-  }
 
   function send(message) {
     try {
@@ -52,7 +45,8 @@
 
   function effective() {
     const strict = L.isStrict(settings, new Date());
-    return { hide: L.hiddenParts(settings, strict), strict };
+    const paused = !strict && L.isPaused(pausedUntil, Date.now());
+    return { hide: L.hiddenParts(settings, strict, paused), strict, paused };
   }
 
   function apply() {
@@ -66,13 +60,22 @@
       document.getElementById("er-reveal")?.remove();
       document.getElementById("er-comments")?.remove();
     }
-    root.toggleAttribute("data-er-no-autoplay", Boolean(settings.stopAutoplay));
+    root.toggleAttribute("data-er-no-autoplay", Boolean(settings.stopAutoplay) && !effective().paused);
+    if (effective().paused) root.removeAttribute("data-er-autoplay-off");
     root.toggleAttribute("data-er-playlist", L.isRealPlaylist(location.search));
     root.dataset.erPage = L.pageType(location.pathname);
     renderPill();
+    const paused = effective().paused;
+    if (lastPaused && !paused) {
+      mountReveal();
+      mountCommentsButton();
+      if (root.dataset.erPage === "watch") stopAutoplay();
+    }
+    lastPaused = paused;
   }
 
   function redirect() {
+    if (effective().paused) return false;
     const onShorts = L.pageType(location.pathname) === "shorts" && effective().hide.shorts;
     const target =
       (onShorts && (settings.shortsMode === "block" ? "/" : L.shortsToWatch(location.pathname, location.search))) ||
@@ -96,6 +99,7 @@
   function onKeydown(event) {
     if (!event.shiftKey || event.key.toLowerCase() !== "n" || event.metaKey || event.ctrlKey || event.altKey) return;
     if (!settings.stopAutoplay || root.dataset.erPage !== "watch" || L.isRealPlaylist(location.search)) return;
+    if (effective().paused) return;
     const target = event.target;
     if (target instanceof Element && target.closest("input, textarea, [contenteditable]")) return;
     event.preventDefault();
@@ -138,6 +142,7 @@
         el("a", { href: "/playlist?list=WL" }, t("linkWatchLater")),
         el("a", { href: "/feed/history" }, t("linkHistory")),
       ),
+      el("p", { class: "er-footnote" }, t("intentFooter")),
     );
     document.body.append(el("div", { id: "er-intent" }, form));
   }
@@ -152,7 +157,7 @@
       } catch {}
     }
     let pill = document.getElementById("er-pill");
-    if (!text || root.dataset.erPage === "home") {
+    if (!text || root.dataset.erPage === "home" || effective().paused) {
       pill?.remove();
       return;
     }
@@ -175,15 +180,15 @@
   function mountReveal() {
     document.getElementById("er-reveal")?.remove();
     root.removeAttribute("data-er-reveal");
-    const { hide, strict } = effective();
-    if (root.dataset.erPage !== "watch" || !hide.related || strict || settings.revealSeconds < 0) return;
+    const { hide, strict, paused } = effective();
+    if (root.dataset.erPage !== "watch" || !hide.related || strict || paused || settings.revealSeconds < 0) return;
     waitFor("ytd-watch-flexy #related", placeReveal);
   }
 
   function placeReveal(related) {
     let button = document.getElementById("er-reveal");
     if (!button) {
-      button = el("button", { id: "er-reveal", type: "button" }, t("revealButton"));
+      button = el("button", { id: "er-reveal", type: "button", "aria-live": "polite" }, t("revealButton"));
       button.addEventListener("click", () => countdown(button), { once: true });
     }
     if (button.nextElementSibling !== related) related.before(button);
@@ -205,8 +210,8 @@
   function mountCommentsButton() {
     document.getElementById("er-comments")?.remove();
     root.removeAttribute("data-er-reveal-comments");
-    const { hide, strict } = effective();
-    if (root.dataset.erPage !== "watch" || !hide.comments || strict) return;
+    const { hide, strict, paused } = effective();
+    if (root.dataset.erPage !== "watch" || !hide.comments || strict || paused) return;
     waitFor("ytd-comments#comments", (comments) => {
       document.getElementById("er-comments")?.remove();
       const button = el(
@@ -243,7 +248,7 @@
   }
 
   function stopAutoplay() {
-    if (!settings.stopAutoplay || root.dataset.erPage !== "watch") return;
+    if (!settings.stopAutoplay || root.dataset.erPage !== "watch" || effective().paused) return;
     waitFor(`${AUTOPLAY_BUTTON}:not([style*="none"])`, (button) => {
       const toggle = button.querySelector(".ytp-autonav-toggle-button");
       if (toggle?.getAttribute("aria-checked") === "true") button.click();
@@ -254,7 +259,7 @@
   }
 
   function cancelUpNext() {
-    if (!settings.stopAutoplay || root.hasAttribute("data-er-autoplay-off")) return;
+    if (!settings.stopAutoplay || root.hasAttribute("data-er-autoplay-off") || effective().paused) return;
     document.querySelector(".ytp-autonav-endscreen-upnext-cancel-button")?.click();
   }
 
@@ -265,7 +270,7 @@
     const actions = [
       el(
         "button",
-        { type: "button", class: "er-primary", onclick: () => send({ type: "close-tab" }) },
+        { type: "button", class: "er-primary", onclick: () => send({ type: "close-tab", errand: activeErrandId() }) },
         t("endClose"),
       ),
     ];
@@ -274,27 +279,25 @@
     }
     actions.push(el("button", { type: "button", onclick: dismiss }, t("endStay")));
     const question = text ? t("endQuestionWithIntent", text) : t("endQuestion");
-    player.append(el("div", { id: "er-end" }, el("p", {}, question), el("div", { class: "er-actions" }, ...actions)));
+    player.append(el("div", { id: "er-end", role: "dialog", "aria-live": "polite", "aria-label": question }, el("p", {}, question), el("div", { class: "er-actions" }, ...actions)));
+  }
+
+  function activeErrandId() {
+    return L.activeIntent(intent, Date.now()) ? intent.ts : null;
   }
 
   function onEnded(event) {
     const video = event.target;
-    if (!settings.endPrompt || !(video instanceof HTMLVideoElement)) return;
+    if (!(video instanceof HTMLVideoElement)) return;
     if (!video.classList.contains("html5-main-video") || root.dataset.erPage !== "watch") return;
-    if (L.isRealPlaylist(location.search)) return;
     const player = document.getElementById("movie_player");
     if (!player || player.classList.contains("ad-showing")) return;
+    if (effective().paused) return;
+    const errand = activeErrandId();
+    if (errand !== null) send({ type: "errand", kind: "done", id: errand });
+    if (!settings.endPrompt || L.isRealPlaylist(location.search)) return;
     setTimeout(cancelUpNext, 300);
     showEndPrompt(player);
-  }
-
-  function recordVisit() {
-    const kind = L.classifyVisit(prevPath, location.pathname, location.search);
-    if (!kind) return;
-    const id = new URLSearchParams(location.search).get("v");
-    if (!id || id === lastVideo) return;
-    lastVideo = id;
-    send({ type: "visit", kind });
   }
 
   function scheduleHealth() {
@@ -305,7 +308,29 @@
       send({ type: "health", page, missing: [] });
       return;
     }
-    healthTimer = setTimeout(() => {
+    if (effective().paused) {
+      send({ type: "health", page, missing: [] });
+      return;
+    }
+    healthTimer = setTimeout(function check() {
+      if (document.hidden) {
+        if (!waitingVisible) {
+          waitingVisible = true;
+          document.addEventListener(
+            "visibilitychange",
+            () => {
+              waitingVisible = false;
+              scheduleHealth();
+            },
+            { once: true },
+          );
+        }
+        return;
+      }
+      if (effective().paused) {
+        send({ type: "health", page, missing: [] });
+        return;
+      }
       const live = Boolean(document.querySelector("ytd-live-chat-frame"));
       const playable = Number.isFinite(document.querySelector("video.html5-main-video")?.duration);
       const missing = checks
@@ -343,8 +368,6 @@
     navToken += 1;
     if (redirect()) return;
     apply();
-    recordVisit();
-    prevPath = location.pathname;
     document.getElementById("er-end")?.remove();
     mountReveal();
     mountCommentsButton();
@@ -360,9 +383,24 @@
     else document.addEventListener("DOMContentLoaded", callback, { once: true });
   }
 
-  chrome.storage.local.get(["settings", "intent"]).then((data) => {
+  function scheduleResume() {
+    clearTimeout(resumeTimer);
+    if (!L.isPaused(pausedUntil, Date.now())) return;
+    resumeTimer = setTimeout(resume, pausedUntil - Date.now() + 250);
+  }
+
+  function resume() {
+    const before = revealState();
+    apply();
+    remountIfChanged(before);
+    send({ type: "pause-ended" });
+  }
+
+  chrome.storage.local.get(["settings", "intent", "pausedUntil"]).then((data) => {
     settings = L.mergeSettings(data.settings);
     intent = data.intent ?? null;
+    pausedUntil = data.pausedUntil ?? null;
+    scheduleResume();
     apply();
     if (redirect()) return;
     document.addEventListener("yt-navigate-finish", onNavigate);
@@ -386,6 +424,14 @@
       intent = changes.intent.newValue ?? null;
       renderPill();
     }
+    if (changes.pausedUntil) {
+      const before = revealState();
+      pausedUntil = changes.pausedUntil.newValue ?? null;
+      apply();
+      remountIfChanged(before);
+      scheduleResume();
+      scheduleHealth();
+    }
   });
 
   document.addEventListener("click", onClick, true);
@@ -402,8 +448,8 @@
   }, 1000);
 
   function revealState() {
-    const { hide, strict } = effective();
-    return `${hide.related}|${hide.comments}|${strict}`;
+    const { hide, strict, paused } = effective();
+    return `${hide.related}|${hide.comments}|${strict}|${paused}`;
   }
 
   function remountIfChanged(before) {

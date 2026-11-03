@@ -17,7 +17,8 @@ QUÉ CAMBIA
 • Al terminar un vídeo: sin reproducción automática ni muro de miniaturas. Errand te pregunta si encontraste lo que buscabas y te ofrece cerrar la pestaña.
 • También se ocultan: Mixes, Tendencias y las sugerencias con el cuadro de búsqueda vacío. Opcional: el chat en directo, la campana de notificaciones, los contadores de visualizaciones, "me gusta" y suscriptores, y las miniaturas llamativas.
 • Modo estricto con horario, por ejemplo de lunes a viernes de 9 a 18: el feed, los Shorts, las recomendaciones y los comentarios siguen ocultos y los botones de "mostrar" desaparecen.
-• Un recuento semanal de los vídeos que abriste a propósito frente a los que te arrastraron. Se guarda en tu navegador.
+• Un recuento semanal de lo hecho: recados en los que terminaste un vídeo tras decir a qué venías, y cuántas veces pulsaste «Cerrar pestaña» después. Se guarda en tu navegador.
+• ¿Necesitas el feed un momento? «Pausar 15 min» lo desactiva todo y vuelve solo. No disponible en modo estricto.
 
 SI LA WEB CAMBIA, TE ENTERAS
 Las extensiones como esta suelen morir igual: la web cambia el diseño y lo oculto vuelve a colarse. En Inicio, en la búsqueda y en la página del vídeo, Errand comprueba que sigue encontrando lo que oculta y que no ha vuelto nada. Si algo cambió, el icono muestra "!" y el menú te dice qué ha dejado de funcionar.

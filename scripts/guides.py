@@ -18,12 +18,18 @@ www.youtube.com##ytd-mini-guide-entry-renderer:has(a[href^="/shorts"])"""
 TEXT = {
     "en": {
         "lang": "en", "home": "../", "cta": "Add to Chrome", "free": "Free and open source. No account, no analytics, no network requests.",
-        "updated": "Updated November 2026", "guides": "Guides", "faq": "Questions", "report": "Report a problem",
+        "updated": "Updated November 2026", "guides": "Guides", "faq": "Questions", "report": "Report a problem", "breakage": "Breakage log",
     },
     "ru": {
         "lang": "ru", "home": "../", "cta": "Установить в Chrome", "free": "Бесплатно, код открыт. Без аккаунтов, аналитики и запросов в сеть.",
-        "updated": "Обновлено в ноябре 2026", "guides": "Инструкции", "faq": "Вопросы", "report": "Сообщить о проблеме",
+        "updated": "Обновлено в ноябре 2026", "guides": "Инструкции", "faq": "Вопросы", "report": "Сообщить о проблеме", "breakage": "Журнал поломок (англ.)",
     },
+}
+
+
+PAIRS = {
+    "hide-youtube-shorts": "kak-ubrat-shorts-youtube",
+    "youtube-without-recommendations": "youtube-bez-rekomendaciy",
 }
 
 PAGES = [
@@ -191,11 +197,12 @@ def page_html(p):
     t = TEXT[p["loc"]]
     up = "../" * p["depth"]
     url = f"{SITE}/{'ru/' if p['loc'] == 'ru' else ''}{p['slug']}/"
+    img = f"{SITE}/assets/og-{'ru' if p['loc'] == 'ru' else 'en'}.png"
     faq_html = "".join(f"<h3>{html.escape(q)}</h3><p>{html.escape(a)}</p>" for q, a in p["faq"])
     ld = [
         {
             "@context": "https://schema.org", "@type": "TechArticle", "headline": p["h1"], "description": p["desc"],
-            "inLanguage": p["loc"], "dateModified": UPDATED, "url": url,
+            "inLanguage": p["loc"], "datePublished": UPDATED, "dateModified": UPDATED, "url": url, "image": img,
             "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"},
             "about": {"@type": "SoftwareApplication", "name": "Errand for YouTube", "url": f"{SITE}/"},
         },
@@ -204,19 +211,33 @@ def page_html(p):
             "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in p["faq"]],
         },
     ]
-    return f"""<!doctype html>
+    alts = []
+    if p["loc"] == "en":
+        alts.append(("en", url))
+        if p["slug"] in PAIRS:
+            alts.append(("ru", f"{SITE}/ru/{PAIRS[p['slug']]}/"))
+        alts.append(("x-default", url))
+    else:
+        en = next((k for k, v in PAIRS.items() if v == p["slug"]), None)
+        if en:
+            alts += [("en", f"{SITE}/{en}/"), ("x-default", f"{SITE}/{en}/")]
+        alts.append(("ru", url))
+    alt_html = "".join(f'\n  <link rel="alternate" hreflang="{h}" href="{u}">' for h, u in alts)
+    return f"""<!DOCTYPE html>
 <html lang="{p['loc']}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{html.escape(p['title'])}</title>
   <meta name="description" content="{html.escape(p['desc'])}">
-  <link rel="canonical" href="{url}">
+  <link rel="canonical" href="{url}">{alt_html}
   <link rel="icon" href="{up}assets/favicon.png">
   <meta property="og:type" content="article">
   <meta property="og:title" content="{html.escape(p['title'])}">
   <meta property="og:description" content="{html.escape(p['desc'])}">
-  <meta property="og:image" content="{SITE}/assets/og-{'ru' if p['loc'] == 'ru' else 'en'}.png">
+  <meta property="og:url" content="{url}">
+  <meta property="og:image" content="{img}">
+  <meta property="og:image:alt" content="Errand for YouTube">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="{up}style.css">
   <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
@@ -240,7 +261,7 @@ def page_html(p):
       </section>
     </article>
   </main>
-  <footer><a href="{t['home']}">Errand</a> · <a href="{GH}">GitHub</a> · <a href="{GH}/issues">{t['report']}</a></footer>
+  <footer><a href="{t['home']}">Errand</a> · <a href="{GH}">GitHub</a> · <a href="{GH}/issues">{t['report']}</a> · <a href="{SITE}/breakage/">{t['breakage']}</a></footer>
 </body>
 </html>
 """
@@ -253,7 +274,7 @@ for p in PAGES:
         f.write(page_html(p))
     print(os.path.relpath(os.path.join(folder, "index.html"), ROOT))
 
-urls = [f"{SITE}/", f"{SITE}/ru/"] + [f"{SITE}/{'ru/' if p['loc'] == 'ru' else ''}{p['slug']}/" for p in PAGES]
+urls = [f"{SITE}/", f"{SITE}/ru/", f"{SITE}/breakage/"] + [f"{SITE}/{'ru/' if p['loc'] == 'ru' else ''}{p['slug']}/" for p in PAGES]
 with open(os.path.join(ROOT, "sitemap.xml"), "w") as f:
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
     for u in urls:

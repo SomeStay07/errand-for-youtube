@@ -17,7 +17,8 @@ O QUE MUDA
 • Fim do vídeo: sem reprodução automática, sem parede de miniaturas. O Errand pergunta se você achou o que veio buscar e oferece fechar a aba.
 • Também ficam ocultos: Mixes, Em alta e as sugestões com a caixa de pesquisa vazia. Opcional: chat ao vivo, o sino de notificações, as contagens de visualizações, curtidas e inscritos, e as miniaturas chamativas.
 • Modo rígido com horário, por exemplo de segunda a sexta, das 9h às 18h: o feed, os Shorts, as recomendações e os comentários continuam ocultos, e os botões de "mostrar" desaparecem.
-• Uma contagem semanal dos vídeos que você abriu de propósito e dos que te levaram junto. Fica salva no seu navegador.
+• Uma contagem semanal do que foi feito: idas em que você terminou um vídeo depois de dizer o que veio ver, e quantas vezes clicou em "Fechar aba" depois. Fica salva no seu navegador.
+• Precisa do feed por um instante? "Pausar 15 min" desliga tudo e volta sozinho. Não disponível no modo rígido.
 
 SE O SITE MUDAR, VOCÊ FICA SABENDO
 Extensões assim costumam morrer do mesmo jeito: o site muda o layout e o que estava oculto volta aos poucos. Na página inicial, na pesquisa e na página do vídeo, o Errand confere se ainda encontra o que oculta e se nada voltou. Se algo mudou, o ícone mostra "!" e o menu diz o que parou de funcionar.

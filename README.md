@@ -18,7 +18,8 @@ A free, open-source alternative to Unhook, DF Tube and Remove YouTube Suggestion
 - **End of a video**: no autoplay, no thumbnail wall. Errand asks if you found what you came for and offers to close the tab.
 - **Also hidden**: Mixes, Trending, empty-search suggestions. Optional: live chat, notification bell, view, like and subscriber counts, bright thumbnails.
 - **Strict mode** on a schedule: no "show" buttons during the hours you pick.
-- **Weekly count** of videos opened on purpose vs. drifted into, stored only in your browser.
+- **Weekly count** of errands done and tabs closed right after, stored only in your browser.
+- **Pause 15 min** when you need the feed for a moment; it turns itself back on (not in strict mode).
 - **"!" on the icon** when YouTube changes its layout and something Errand hides is back.
 
 ## Privacy

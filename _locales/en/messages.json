@@ -35,7 +35,7 @@
     }
   },
   "pillClear": {
-    "message": "Clear"
+    "message": "Clear what I came for"
   },
   "revealButton": {
     "message": "Show recommendations"
@@ -69,7 +69,7 @@
     "message": "Stay"
   },
   "statusNormal": {
-    "message": "Normal mode"
+    "message": "Errand is on"
   },
   "statusStrictAlways": {
     "message": "Strict mode is always on"
@@ -84,23 +84,6 @@
   },
   "sectionWeek": {
     "message": "Last 7 days"
-  },
-  "summary": {
-    "message": "Total: $TOTAL$ · drifted: $PERCENT$%",
-    "placeholders": {
-      "total": {
-        "content": "$1"
-      },
-      "percent": {
-        "content": "$2"
-      }
-    }
-  },
-  "summaryEmpty": {
-    "message": "No videos yet"
-  },
-  "healthOpenTab": {
-    "message": "Open a YouTube tab to check the filters"
   },
   "healthOk": {
     "message": "All filters are working"
@@ -171,7 +154,7 @@
     "message": "Always"
   },
   "modeRelaxed": {
-    "message": "Never"
+    "message": "Off"
   },
   "strictFrom": {
     "message": "From"
@@ -192,7 +175,7 @@
     "message": "Home page"
   },
   "homeAsk": {
-    "message": "The question"
+    "message": "Ask what I came for"
   },
   "commentsButton": {
     "message": "Show comments"
@@ -238,5 +221,118 @@
   },
   "reportThis": {
     "message": "Report it"
+  },
+  "welcomeTitle": {
+    "message": "Errand is on"
+  },
+  "welcomeQuestion": {
+    "message": "How should YouTube look?"
+  },
+  "presetAsk": {
+    "message": "Ask what I came for"
+  },
+  "presetShorts": {
+    "message": "Just hide Shorts"
+  },
+  "presetSubs": {
+    "message": "Subscriptions first"
+  },
+  "welcomeChanges": {
+    "message": "What changes on YouTube"
+  },
+  "welcomeAsk1": {
+    "message": "Home asks what you came for, instead of the feed."
+  },
+  "welcomeSubs1": {
+    "message": "Home opens your Subscriptions."
+  },
+  "welcomeHidden": {
+    "message": "No Shorts. Recommendations and comments wait behind a button."
+  },
+  "welcomeEnd": {
+    "message": "No autoplay. When a video ends, you can close the tab."
+  },
+  "welcomeShorts1": {
+    "message": "Shorts are hidden on home, search, subscriptions and channels."
+  },
+  "welcomeShorts2": {
+    "message": "Shorts links open as normal videos."
+  },
+  "welcomeShorts3": {
+    "message": "The feed, recommendations and comments stay as they are."
+  },
+  "welcomeOpen": {
+    "message": "Open YouTube"
+  },
+  "welcomePin": {
+    "message": "Pin Errand: puzzle icon in the toolbar → pin. Settings live there."
+  },
+  "errandsSummary": {
+    "message": "Errands done: $DONE$ · closed after: $CLOSED$",
+    "placeholders": {
+      "done": {
+        "content": "$1"
+      },
+      "closed": {
+        "content": "$2"
+      }
+    }
+  },
+  "errandsHint": {
+    "message": "Done: a video ended after you said what you came for. Closed: you pressed Close tab."
+  },
+  "pauseButton": {
+    "message": "Pause 15 min"
+  },
+  "pauseCountdown": {
+    "message": "Pausing in $SECONDS$…",
+    "placeholders": {
+      "seconds": {
+        "content": "$1"
+      }
+    }
+  },
+  "statusPaused": {
+    "message": "Paused until $TIME$. YouTube is as is.",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "resumeButton": {
+    "message": "Turn back on"
+  },
+  "breakageLink": {
+    "message": "Known issues"
+  },
+  "welcomeReload": {
+    "message": "YouTube is already open — reload it to apply."
+  },
+  "welcomeReloadButton": {
+    "message": "Reload"
+  },
+  "intentFooter": {
+    "message": "This is Errand. Change it in the extension menu."
+  },
+  "lookAgain": {
+    "message": "Choose a look again"
+  },
+  "titleOn": {
+    "message": "Errand is on"
+  },
+  "titlePaused": {
+    "message": "Errand is paused until $TIME$",
+    "placeholders": {
+      "time": {
+        "content": "$1"
+      }
+    }
+  },
+  "titleStrict": {
+    "message": "Errand: strict mode"
+  },
+  "titleBroken": {
+    "message": "Errand: YouTube changed something. Open for details."
   }
 }

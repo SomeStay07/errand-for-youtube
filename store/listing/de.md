@@ -17,7 +17,8 @@ WAS SICH ÄNDERT
 • Ende eines Videos: kein Autoplay, keine Wand aus Thumbnails. Errand fragt, ob du gefunden hast, wofür du gekommen bist, und bietet an, den Tab zu schließen.
 • Ebenfalls ausgeblendet: Mixes, Trends und Vorschläge bei leerem Suchfeld. Optional: Livechat, die Benachrichtigungsglocke, Aufrufe-, Like- und Abonnentenzahlen, knallige Thumbnails.
 • Strenger Modus nach Zeitplan, etwa werktags von 9 bis 18 Uhr: Feed, Shorts, Empfehlungen und Kommentare bleiben ausgeblendet, und die „Anzeigen“-Buttons sind weg.
-• Eine wöchentliche Zählung der Videos, die du bewusst geöffnet hast, gegenüber denen, in die du reingerutscht bist. Bleibt in deinem Browser.
+• Eine Wochenzählung: erledigte Vorhaben (ein Video zu Ende geschaut, nachdem du dein Ziel genannt hast) und wie oft du danach „Tab schließen“ gedrückt hast. Bleibt in deinem Browser.
+• Brauchst du kurz den Feed? „15 Min. Pause“ schaltet alles aus und von selbst wieder ein. Im strengen Modus nicht verfügbar.
 
 WENN SICH DIE SEITE ÄNDERT, MERKST DU ES
 Erweiterungen wie diese sterben meist auf dieselbe Art: Die Seite ändert ihr Layout und Ausgeblendetes schleicht sich zurück. Auf der Startseite, in der Suche und auf Videoseiten prüft Errand, ob es noch findet, was es ausblendet, und ob nichts zurückgekommen ist. Hat sich etwas geändert, zeigt das Icon ein „!“ und das Menü sagt dir, was nicht mehr funktioniert.

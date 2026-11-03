@@ -1,0 +1,50 @@
+const L = globalThis.ErrandLib;
+const t = (key, ...subs) => chrome.i18n.getMessage(key, subs.map(String));
+
+let settings = L.mergeSettings();
+
+function localize() {
+  document.documentElement.lang = chrome.i18n.getUILanguage();
+  document.documentElement.dir = t("@@bidi_dir");
+  for (const node of document.querySelectorAll("[data-i18n]")) node.textContent = t(node.dataset.i18n);
+}
+
+function renderLines(id) {
+  const list = document.getElementById("lines");
+  list.replaceChildren(
+    ...L.welcomeLines(id).map((key) => {
+      const item = document.createElement("li");
+      item.textContent = t(key);
+      return item;
+    }),
+  );
+}
+
+async function init() {
+  localize();
+  const data = await chrome.storage.local.get("settings");
+  settings = L.mergeSettings(data.settings);
+  const current = L.presetOf(settings);
+  for (const radio of document.querySelectorAll('input[name="preset"]')) {
+    radio.checked = radio.value === current;
+    radio.addEventListener("change", async () => {
+      const fresh = await chrome.storage.local.get("settings");
+      settings = L.applyPreset(L.mergeSettings(fresh.settings), radio.value);
+      await chrome.storage.local.set({ settings });
+      renderLines(radio.value);
+    });
+  }
+  renderLines(current || "ask");
+  try {
+    const tabs = await chrome.tabs.query({ url: "https://www.youtube.com/*" });
+    if (tabs.length) {
+      document.getElementById("reloadStep").hidden = false;
+      document.getElementById("reload").addEventListener("click", () => {
+        for (const tab of tabs) chrome.tabs.reload(tab.id);
+        document.getElementById("reloadStep").hidden = true;
+      });
+    }
+  } catch {}
+}
+
+init();

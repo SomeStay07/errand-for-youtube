@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title data-i18n="welcomeTitle"></title>
+  <link rel="stylesheet" href="welcome.css">
+</head>
+<body>
+  <main>
+    <header>
+      <img src="icons/icon-48.png" alt="" width="48" height="48">
+      <h1 data-i18n="welcomeTitle"></h1>
+    </header>
+
+    <fieldset>
+      <legend data-i18n="welcomeQuestion"></legend>
+      <label class="choice"><input type="radio" name="preset" value="ask"><span data-i18n="presetAsk"></span></label>
+      <label class="choice"><input type="radio" name="preset" value="shorts"><span data-i18n="presetShorts"></span></label>
+      <label class="choice"><input type="radio" name="preset" value="subs"><span data-i18n="presetSubs"></span></label>
+    </fieldset>
+
+    <h2 data-i18n="welcomeChanges"></h2>
+    <ul id="lines" aria-live="polite"></ul>
+
+    <ol class="steps">
+      <li data-i18n="welcomePin"></li>
+      <li id="reloadStep" hidden><span data-i18n="welcomeReload"></span> <button type="button" id="reload" data-i18n="welcomeReloadButton"></button></li>
+    </ol>
+    <a id="open" class="button" href="https://www.youtube.com/" data-i18n="welcomeOpen"></a>
+  </main>
+
+  <script src="lib.js"></script>
+  <script src="welcome.js"></script>
+</body>
+</html>
