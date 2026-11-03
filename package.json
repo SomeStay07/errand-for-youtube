@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "test": "node --test test/lib.test.js test/i18n.test.js",
-    "build": "node scripts/build.mjs",
-    "e2e": "node tests/e2e/smoke.mjs"
+    "build": "python3 -I scripts/publish-kit.py && node scripts/build.mjs",
+    "e2e": "node tests/e2e/smoke.mjs",
+    "check:copy": "node scripts/check-copy.mjs"
   },
   "devDependencies": {
     "playwright-core": "1.56.1"

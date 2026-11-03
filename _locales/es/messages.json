@@ -52,7 +52,7 @@
     "message": "Se acabó. ¿Has encontrado lo que buscabas?"
   },
   "endQuestionWithIntent": {
-    "message": "¿Has encontrado lo que buscabas: «$TEXT$»?",
+    "message": "¿Has encontrado lo que buscabas: \"$TEXT$\"?",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -241,7 +241,7 @@
     "message": "Qué cambia en YouTube"
   },
   "welcomeAsk1": {
-    "message": "En Inicio verás «¿A qué vienes?» en vez del feed."
+    "message": "En Inicio verás \"¿A qué vienes?\" en vez del feed."
   },
   "welcomeSubs1": {
     "message": "Inicio te lleva a tus suscripciones."
@@ -265,7 +265,7 @@
     "message": "Abrir YouTube"
   },
   "welcomePin": {
-    "message": "Fija Errand: icono del puzle en la barra → chincheta. Ahí están los ajustes."
+    "message": "Fija Errand desde el icono del puzle en la barra. Ahí están los ajustes."
   },
   "errandsSummary": {
     "message": "Hecho: $DONE$ · cerrado al acabar: $CLOSED$",
@@ -279,7 +279,7 @@
     }
   },
   "errandsHint": {
-    "message": "Hecho: un vídeo terminó tras decir a qué venías. Cerrado: pulsaste «Cerrar pestaña»."
+    "message": "Hecho: un vídeo terminó tras decir a qué venías. Cerrado: pulsaste \"Cerrar pestaña\"."
   },
   "pauseButton": {
     "message": "Pausar 15 min"

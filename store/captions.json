@@ -4,9 +4,9 @@
     "screens": [
       ["home.png", "Home asks what you came for. No feed."],
       ["search.png", "Search results without Shorts."],
-      ["watch.png", "No recommendations column. Need it? Wait 10 seconds."],
-      ["end.png", "When the video ends, close the tab instead of starting another."],
-      ["popup.png", "Every switch in one menu. Nothing leaves your browser."]
+      ["watch.png", "No recommendations column. One click and 10 seconds bring it back."],
+      ["end.png", "When the video ends, Errand offers to close the tab."],
+      ["popup.png", "Every switch in one menu. Settings stay in your browser."]
     ]
   },
   "ru": {
@@ -14,9 +14,9 @@
     "screens": [
       ["home.png", "Главная спрашивает, зачем вы пришли. Ленты нет."],
       ["search.png", "Поиск без Shorts."],
-      ["watch.png", "Рекомендаций нет. Нужны — подождите 10 секунд."],
-      ["end.png", "Видео закончилось — закройте вкладку, а не включайте следующее."],
-      ["popup.png", "Все настройки в одном меню. Данные не покидают браузер."]
+      ["watch.png", "Рекомендаций нет. Если нужны, кнопка покажет их через 10 секунд."],
+      ["end.png", "Видео закончилось. Errand предлагает закрыть вкладку."],
+      ["popup.png", "Все настройки в одном меню. Они хранятся в браузере."]
     ]
   },
   "es": {
@@ -24,9 +24,9 @@
     "screens": [
       ["home.png", "Inicio te pregunta a qué vienes. Sin feed."],
       ["search.png", "Resultados de búsqueda sin Shorts."],
-      ["watch.png", "Sin columna de recomendaciones. ¿La quieres? Espera 10 s."],
-      ["end.png", "Al acabar el vídeo, cierra la pestaña en vez de ver otro."],
-      ["popup.png", "Todos los ajustes en un menú. Nada sale de tu navegador."]
+      ["watch.png", "Sin columna de recomendaciones. Un botón la abre en 10 s."],
+      ["end.png", "Al acabar el vídeo, Errand te ofrece cerrar la pestaña."],
+      ["popup.png", "Todos los ajustes en un menú, guardados en tu navegador."]
     ]
   },
   "pt_BR": {
@@ -34,9 +34,9 @@
     "screens": [
       ["home.png", "O Início pergunta o que você veio ver. Sem feed."],
       ["search.png", "Resultados da pesquisa sem Shorts."],
-      ["watch.png", "Sem coluna de recomendações. Precisa? Espere 10 segundos."],
-      ["end.png", "Quando o vídeo acabar, feche a aba em vez de ver outro."],
-      ["popup.png", "Todas as opções em um menu. Nada sai do seu navegador."]
+      ["watch.png", "Sem coluna de recomendações. Um botão mostra a coluna em 10 s."],
+      ["end.png", "Quando o vídeo acaba, o Errand sugere fechar a aba."],
+      ["popup.png", "Todas as opções em um menu, salvas no seu navegador."]
     ]
   },
   "de": {
@@ -44,9 +44,9 @@
     "screens": [
       ["home.png", "Die Startseite fragt, wofür du hier bist. Kein Feed."],
       ["search.png", "Suchergebnisse ohne Shorts."],
-      ["watch.png", "Keine Empfehlungsspalte. Brauchst du sie? Warte 10 Sekunden."],
-      ["end.png", "Video zu Ende? Schließ den Tab, statt ein neues zu starten."],
-      ["popup.png", "Alle Schalter in einem Menü. Nichts verlässt deinen Browser."]
+      ["watch.png", "Keine Empfehlungsspalte. Ein Button zeigt sie nach 10 s."],
+      ["end.png", "Am Videoende bietet Errand an, den Tab zu schließen."],
+      ["popup.png", "Alle Schalter in einem Menü, gespeichert in deinem Browser."]
     ]
   }
 }

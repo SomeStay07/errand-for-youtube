@@ -3,7 +3,7 @@
     "message": "Errand for YouTube: Hide Shorts, Feed & Recommendations"
   },
   "extDescription": {
-    "message": "Distraction-free YouTube: hide Shorts, the home feed and recommendations. Say what you came for, watch it. Free, open source."
+    "message": "Say what you came for, watch it, close the tab. Distraction-free YouTube without Shorts, the home feed or recommendations. Free."
   },
   "actionTitle": {
     "message": "Errand settings"
@@ -52,7 +52,7 @@
     "message": "That's the end. Got what you came for?"
   },
   "endQuestionWithIntent": {
-    "message": "Got what you came for — “$TEXT$”?",
+    "message": "Got what you came for: \"$TEXT$\"?",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -265,7 +265,7 @@
     "message": "Open YouTube"
   },
   "welcomePin": {
-    "message": "Pin Errand: puzzle icon in the toolbar → pin. Settings live there."
+    "message": "Pin Errand from the puzzle icon in the toolbar. Settings live there."
   },
   "errandsSummary": {
     "message": "Errands done: $DONE$ · closed after: $CLOSED$",
@@ -307,7 +307,7 @@
     "message": "Known issues"
   },
   "welcomeReload": {
-    "message": "YouTube is already open — reload it to apply."
+    "message": "YouTube is already open. Reload it to apply."
   },
   "welcomeReloadButton": {
     "message": "Reload"

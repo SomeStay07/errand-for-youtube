@@ -52,7 +52,7 @@
     "message": "Das war's. Hast du gefunden, was du gesucht hast?"
   },
   "endQuestionWithIntent": {
-    "message": "Hast du „$TEXT$“ gefunden?",
+    "message": "Hast du \"$TEXT$\" gefunden?",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -265,7 +265,7 @@
     "message": "YouTube öffnen"
   },
   "welcomePin": {
-    "message": "Errand anheften: Puzzle-Symbol in der Leiste → Pin. Dort sind die Einstellungen."
+    "message": "Hefte Errand über das Puzzle-Symbol in der Leiste an. Dort sind die Einstellungen."
   },
   "errandsSummary": {
     "message": "Erledigt: $DONE$ · danach geschlossen: $CLOSED$",
@@ -279,7 +279,7 @@
     }
   },
   "errandsHint": {
-    "message": "Erledigt: ein Video lief zu Ende, nachdem du dein Ziel genannt hast. Geschlossen: „Tab schließen“ gedrückt."
+    "message": "Erledigt: ein Video lief zu Ende, nachdem du dein Ziel genannt hast. Geschlossen: \"Tab schließen\" gedrückt."
   },
   "pauseButton": {
     "message": "15 Min. Pause"
@@ -307,7 +307,7 @@
     "message": "Bekannte Fehler"
   },
   "welcomeReload": {
-    "message": "YouTube ist schon offen – neu laden, damit es greift."
+    "message": "YouTube ist schon offen. Lade es neu, damit es greift."
   },
   "welcomeReloadButton": {
     "message": "Neu laden"

@@ -52,7 +52,7 @@
     "message": "Acabou. Achou o que veio buscar?"
   },
   "endQuestionWithIntent": {
-    "message": "Achou o que veio buscar: “$TEXT$”?",
+    "message": "Achou o que veio buscar: \"$TEXT$\"?",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -265,7 +265,7 @@
     "message": "Abrir o YouTube"
   },
   "welcomePin": {
-    "message": "Fixe o Errand: ícone de quebra-cabeça na barra → alfinete. As opções ficam lá."
+    "message": "Fixe o Errand pelo ícone de quebra-cabeça na barra. As opções ficam lá."
   },
   "errandsSummary": {
     "message": "Feitos: $DONE$ · fechados no fim: $CLOSED$",
@@ -307,7 +307,7 @@
     "message": "Lista de falhas"
   },
   "welcomeReload": {
-    "message": "O YouTube já está aberto — recarregue para aplicar."
+    "message": "O YouTube já está aberto. Recarregue para aplicar."
   },
   "welcomeReloadButton": {
     "message": "Recarregar"
