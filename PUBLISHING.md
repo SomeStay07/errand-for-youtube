@@ -28,7 +28,7 @@
    - Marquee 1400×560: `store/images/<язык>/promo-marquee-1400x560.png`.
 4. Privacy practices (готовые ответы):
    - **Single purpose:** Errand reduces distraction on youtube.com. It hides Shorts, the home feed, recommendations and end-screen suggestions, replaces the home page with a "What are you here for?" search box, and offers to close the tab when a video ends. All features act only on www.youtube.com pages.
-   - **storage:** Saves the user's settings, the optional goal typed on the home page (deleted after 3 hours) and weekly counts of opened videos in local extension storage. Nothing is transmitted.
+   - **storage:** Saves the user's settings, the optional goal typed on the home page (deleted after 3 hours), weekly counts of opened videos and a short local log of filters that stopped working, in local extension storage. Nothing is transmitted.
    - **Host permission (https://www.youtube.com/\*):** The content script and CSS must run on YouTube pages to hide Shorts, the feed, recommendations and comments before the page draws, to add the extension's own buttons (show recommendations, close tab), and to check that its filters still match YouTube's layout. It runs on no other site; embeds are excluded.
    - **Remote code:** No, I am not using remote code.
    - **Data usage:** не отмечать ни одной категории.
