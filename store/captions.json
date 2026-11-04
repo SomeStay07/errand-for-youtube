@@ -23,7 +23,9 @@
         "Every switch in one menu. Settings stay in your browser."
       ]
     ],
-    "short": "Hides Shorts<br>and the feed."
+    "tile": "In for one video,<br>out when it’s done.",
+    "marquee": "“Just one video”<br>turns into hours.",
+    "marqueeSub": "Errand offers to close the tab when it ends."
   },
   "ru": {
     "tagline": "YouTube всегда подсунет ещё одно видео.<br>Errand прячет Shorts и ленту.",
@@ -49,7 +51,9 @@
         "Все настройки в одном меню. Они хранятся в браузере."
       ]
     ],
-    "short": "Прячет Shorts<br>и ленту."
+    "tile": "Сходить за одним видео<br>и обратно.",
+    "marquee": "Хотели одно видео,<br>а прошло три часа.",
+    "marqueeSub": "После видео Errand предложит закрыть вкладку."
   },
   "es": {
     "tagline": "YouTube siempre tiene otro vídeo.<br>Errand oculta los Shorts y el feed.",
@@ -75,7 +79,9 @@
         "Todos los ajustes en un menú, guardados en tu navegador."
       ]
     ],
-    "short": "Oculta los Shorts<br>y el feed."
+    "tile": "Entras a ver un vídeo<br>y sales cuando acaba.",
+    "marquee": "«Solo un vídeo»<br>y se van las horas.",
+    "marqueeSub": "Errand ofrece cerrar la pestaña cuando acaba."
   },
   "pt_BR": {
     "tagline": "O YouTube sempre tem mais um vídeo.<br>O Errand oculta os Shorts e o feed.",
@@ -101,7 +107,9 @@
         "Todas as opções em um menu, salvas no seu navegador."
       ]
     ],
-    "short": "Oculta os Shorts<br>e o feed."
+    "tile": "Entre para ver um vídeo<br>e saia quando acabar.",
+    "marquee": "“Só um vídeo”<br>e lá se vão horas.",
+    "marqueeSub": "No fim, o Errand sugere fechar a aba."
   },
   "de": {
     "tagline": "YouTube hat immer das nächste Video parat.<br>Errand blendet Shorts und Feed aus.",
@@ -127,6 +135,8 @@
         "Alle Schalter in einem Menü, gespeichert in deinem Browser."
       ]
     ],
-    "short": "Blendet Shorts<br>und Feed aus."
+    "tile": "Für ein Video rein,<br>danach wieder raus.",
+    "marquee": "Aus „nur einem Video“<br>werden Stunden.",
+    "marqueeSub": "Am Ende bietet Errand „Tab schließen“ an."
   }
 }

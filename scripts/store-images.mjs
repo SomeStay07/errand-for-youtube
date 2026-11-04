@@ -34,20 +34,32 @@ function screenshotPage(caption, image) {
   </div></body></html>`;
 }
 
-function tile(width, height, tagline, scale, tagSize = 24) {
+const BG = pathToFileURL(join(ROOT, "store/art/bg-v1.png")).href;
+
+function tile(width, height, text, o) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>${BASE_CSS}
-    .tile { width: ${width}px; height: ${height}px; display: flex; align-items: center; gap: ${28 * scale}px; padding: 0 ${48 * scale}px; }
-    svg { width: ${96 * scale}px; height: ${96 * scale}px; flex: none; }
-    .name { font-size: ${54 * scale}px; font-weight: 700; letter-spacing: -0.02em; }
-    .tag { font-size: ${tagSize * scale}px; opacity: 0.85; margin-top: ${8 * scale}px; line-height: 1.3; }
-  </style></head><body><div class="tile">
-    ${mark.replace("<svg ", '<svg style="border-radius:22%;box-shadow:0 0 0 2px rgba(244,235,217,0.12)" ')}
-    <div><div class="name">Errand</div><div class="tag">${tagline}</div></div>
-  </div></body></html>`;
+    .tile { position: relative; width: ${width}px; height: ${height}px; background: #14342E url(${BG}) no-repeat;
+      background-size: auto 100%; background-position: ${o.bgX} center; }
+    .tile::before { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, #14342E 0%, #14342E 45%, rgba(20,52,46,0) 70%); }
+    .text { position: absolute; left: ${o.pad}px; top: 0; bottom: 0; width: ${o.textW}px; display: flex; flex-direction: column; justify-content: center; }
+    .brand { display: flex; align-items: center; gap: ${o.icon * 0.3}px; margin-bottom: ${o.gap}px; }
+    svg { width: ${o.icon}px; height: ${o.icon}px; flex: none; border-radius: 22%; box-shadow: 0 0 0 ${o.icon / 40}px rgba(244,235,217,0.14); }
+    .name { font-size: ${o.name}px; font-weight: 700; letter-spacing: -0.02em; }
+    .slogan { white-space: ${o.sub ? "normal" : "nowrap"}; font-size: ${o.slogan}px; font-weight: 650; line-height: 1.15; letter-spacing: -0.015em; }
+    .sub { white-space: nowrap; font-size: ${o.sub}px; opacity: 0.78; margin-top: ${o.gap * 0.8}px; line-height: 1.3; }
+  </style></head><body><div class="tile"><div class="text">
+    <div class="brand">${mark}<div class="name">Errand</div></div>
+    <div class="slogan">${text.slogan}</div>
+    ${text.sub ? `<div class="sub">${text.sub}</div>` : ""}
+  </div></div></body></html>`;
 }
 
+const SMALL = { pad: 24, textW: 290, icon: 32, name: 22, slogan: 23, sub: 0, gap: 12, bgX: "-150px" };
+const LARGE = { pad: 96, textW: 760, icon: 84, name: 54, slogan: 58, sub: 30, gap: 28, bgX: "right" };
+
 for (const [locale, copy] of Object.entries(COPY)) {
-  copy.screens.forEach(([file, caption], index) => {
+  if (process.env.ONLY && process.env.ONLY !== locale) continue;
+  if (!process.env.TILES_ONLY) copy.screens.forEach(([file, caption], index) => {
     const image = join(SHOTS, locale, file);
     if (!existsSync(image)) {
       console.log(`skip ${locale}/${file} (no screenshot yet)`);
@@ -57,6 +69,6 @@ for (const [locale, copy] of Object.entries(COPY)) {
     shoot(screenshotPage(caption, image), 1280, 800, out);
     console.log(out);
   });
-  shoot(tile(440, 280, copy.short, 0.85, 34), 440, 280, join(OUT, locale, "promo-small-440x280.png"));
-  shoot(tile(1400, 560, copy.tagline, 1.6), 1400, 560, join(OUT, locale, "promo-marquee-1400x560.png"));
+  shoot(tile(440, 280, { slogan: copy.tile }, SMALL), 440, 280, join(OUT, locale, "promo-small-440x280.png"));
+  shoot(tile(1400, 560, { slogan: copy.marquee, sub: copy.marqueeSub }, LARGE), 1400, 560, join(OUT, locale, "promo-marquee-1400x560.png"));
 }
