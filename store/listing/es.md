@@ -6,7 +6,7 @@ Resumen (extDescription, 132/132): YouTube siempre tiene otro vídeo para ti. Er
 
 ## Descripción (pega lo que hay debajo de esta línea)
 
-Así es como un tutorial se come la tarde entera. En inglés, errand quiere decir "recado": entras a por un vídeo, como quien baja a por el pan, y te vas cuando lo tienes. Es gratis y de código abierto, y no hace falta cuenta. Si solo quieres quitar los Shorts, elige "Solo quitar Shorts" en la primera pantalla: el feed, las recomendaciones, los comentarios, la reproducción automática y la pantalla final se quedan como estaban.
+YouTube siempre tiene otro vídeo para ti. Así es como un tutorial se come la tarde entera. En inglés, errand quiere decir "recado": entras a por un vídeo, como quien baja a por el pan, y te vas cuando lo tienes. Es gratis y de código abierto, y no hace falta cuenta. Si solo quieres quitar los Shorts, elige "Solo quitar Shorts" en la primera pantalla: el feed, las recomendaciones, los comentarios, la reproducción automática y la pantalla final se quedan como estaban.
 
 Cuando acaba tu vídeo, la reproducción automática está desactivada, salvo en listas de reproducción. No aparecen la pantalla final ni sus tarjetas, y en pantalla completa tampoco la cuadrícula de vídeos. Errand te pregunta si encontraste lo que buscabas y te ofrece cerrar la pestaña.
 

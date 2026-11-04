@@ -6,7 +6,7 @@ Kurzbeschreibung (extDescription, 130/132): YouTube hat immer das nächste Video
 
 ## Beschreibung (alles unter dieser Zeile einfügen)
 
-So frisst ein Tutorial den ganzen Abend. "Errand" ist Englisch und heißt "Besorgung": Du gehst für ein Video zu YouTube, so wie man kurz Brötchen holen geht, und bist wieder draußen, sobald du es hast. Kostenlos und Open Source, ohne Konto. Willst du nur die Shorts loswerden, wähl auf dem ersten Bildschirm "Nur Shorts ausblenden": Feed, Empfehlungen, Kommentare, Autoplay und Endbildschirm bleiben dann, wie sie waren.
+YouTube hat immer das nächste Video parat. So frisst ein Tutorial den ganzen Abend. "Errand" ist Englisch und heißt "Besorgung": Du gehst für ein Video zu YouTube, so wie man kurz Brötchen holen geht, und bist wieder draußen, sobald du es hast. Kostenlos und Open Source, ohne Konto. Willst du nur die Shorts loswerden, wähl auf dem ersten Bildschirm "Nur Shorts ausblenden": Feed, Empfehlungen, Kommentare, Autoplay und Endbildschirm bleiben dann, wie sie waren.
 
 Am Ende deines Videos ist Autoplay aus, außer in Playlists. Der Endbildschirm und seine eingeblendeten Videos bleiben weg, im Vollbild auch das Raster mit weiteren Videos. Errand fragt, ob du gefunden hast, was du gesucht hast, und bietet an, den Tab zu schließen.
 
