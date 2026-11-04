@@ -3,7 +3,7 @@
     "message": "Errand для YouTube: скрыть Shorts, ленту и рекомендации"
   },
   "extDescription": {
-    "message": "YouTube всегда подсунет ещё одно видео. Errand прячет Shorts и ленту и в конце видео предлагает закрыть вкладку. Бесплатно."
+    "message": "YouTube всегда подсунет ещё одно видео. Errand прячет Shorts (шортсы) и ленту и в конце видео предлагает закрыть вкладку. Бесплатно."
   },
   "actionTitle": {
     "message": "Настройки Errand"
