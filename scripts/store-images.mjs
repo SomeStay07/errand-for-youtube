@@ -34,12 +34,12 @@ function screenshotPage(caption, image) {
   </div></body></html>`;
 }
 
-function tile(width, height, tagline, scale) {
+function tile(width, height, tagline, scale, tagSize = 24) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>${BASE_CSS}
     .tile { width: ${width}px; height: ${height}px; display: flex; align-items: center; gap: ${28 * scale}px; padding: 0 ${48 * scale}px; }
     svg { width: ${96 * scale}px; height: ${96 * scale}px; flex: none; }
     .name { font-size: ${54 * scale}px; font-weight: 700; letter-spacing: -0.02em; }
-    .tag { font-size: ${24 * scale}px; opacity: 0.8; margin-top: ${8 * scale}px; line-height: 1.3; }
+    .tag { font-size: ${tagSize * scale}px; opacity: 0.85; margin-top: ${8 * scale}px; line-height: 1.3; }
   </style></head><body><div class="tile">
     ${mark.replace("<svg ", '<svg style="border-radius:22%;box-shadow:0 0 0 2px rgba(244,235,217,0.12)" ')}
     <div><div class="name">Errand</div><div class="tag">${tagline}</div></div>
@@ -57,6 +57,6 @@ for (const [locale, copy] of Object.entries(COPY)) {
     shoot(screenshotPage(caption, image), 1280, 800, out);
     console.log(out);
   });
-  shoot(tile(440, 280, copy.tagline, 0.62), 440, 280, join(OUT, locale, "promo-small-440x280.png"));
+  shoot(tile(440, 280, copy.short, 0.85, 34), 440, 280, join(OUT, locale, "promo-small-440x280.png"));
   shoot(tile(1400, 560, copy.tagline, 1.6), 1400, 560, join(OUT, locale, "promo-marquee-1400x560.png"));
 }

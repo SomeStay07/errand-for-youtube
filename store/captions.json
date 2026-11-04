@@ -2,51 +2,131 @@
   "en": {
     "tagline": "YouTube always has one more video.<br>Errand hides Shorts and the feed.",
     "screens": [
-      ["home.png", "Home asks what you came for. No feed."],
-      ["search.png", "Search results without Shorts."],
-      ["watch.png", "No recommendations column. One click and 10 seconds bring it back."],
-      ["end.png", "The video ended. Autoplay is off, and Close tab is right there."],
-      ["popup.png", "Every switch in one menu. Settings stay in your browser."]
-    ]
+      [
+        "home.png",
+        "Home asks what you came for. No feed."
+      ],
+      [
+        "search.png",
+        "Search results without Shorts."
+      ],
+      [
+        "watch.png",
+        "No recommendations column. One click and 10 seconds bring it back."
+      ],
+      [
+        "end.png",
+        "The video ended. Autoplay is off, and Close tab is right there."
+      ],
+      [
+        "popup.png",
+        "Every switch in one menu. Settings stay in your browser."
+      ]
+    ],
+    "short": "Hides Shorts<br>and the feed."
   },
   "ru": {
     "tagline": "YouTube всегда подсунет ещё одно видео.<br>Errand прячет Shorts и ленту.",
     "screens": [
-      ["home.png", "Главная спрашивает, зачем вы пришли. Ленты нет."],
-      ["search.png", "Поиск без Shorts."],
-      ["watch.png", "Рекомендаций нет. Если нужны, кнопка покажет их через 10 секунд."],
-      ["end.png", "Видео закончилось. Автовоспроизведение выключено, и можно сразу закрыть вкладку."],
-      ["popup.png", "Все настройки в одном меню. Они хранятся в браузере."]
-    ]
+      [
+        "home.png",
+        "Главная спрашивает, зачем вы пришли. Ленты нет."
+      ],
+      [
+        "search.png",
+        "Поиск без Shorts."
+      ],
+      [
+        "watch.png",
+        "Рекомендаций нет. Если нужны, кнопка покажет их через 10 секунд."
+      ],
+      [
+        "end.png",
+        "Видео закончилось. Автовоспроизведение выключено, и можно сразу закрыть вкладку."
+      ],
+      [
+        "popup.png",
+        "Все настройки в одном меню. Они хранятся в браузере."
+      ]
+    ],
+    "short": "Прячет Shorts<br>и ленту."
   },
   "es": {
     "tagline": "YouTube siempre tiene otro vídeo.<br>Errand oculta los Shorts y el feed.",
     "screens": [
-      ["home.png", "Inicio te pregunta a qué vienes. Sin feed."],
-      ["search.png", "Resultados de búsqueda sin Shorts."],
-      ["watch.png", "Sin columna de recomendaciones. Un botón la abre en 10 s."],
-      ["end.png", "Se acabó el vídeo. La reproducción automática está desactivada y cerrar la pestaña está a un clic."],
-      ["popup.png", "Todos los ajustes en un menú, guardados en tu navegador."]
-    ]
+      [
+        "home.png",
+        "Inicio te pregunta a qué vienes. Sin feed."
+      ],
+      [
+        "search.png",
+        "Resultados de búsqueda sin Shorts."
+      ],
+      [
+        "watch.png",
+        "Sin columna de recomendaciones. Un botón la abre en 10 s."
+      ],
+      [
+        "end.png",
+        "Se acabó el vídeo. La reproducción automática está desactivada y cerrar la pestaña está a un clic."
+      ],
+      [
+        "popup.png",
+        "Todos los ajustes en un menú, guardados en tu navegador."
+      ]
+    ],
+    "short": "Oculta los Shorts<br>y el feed."
   },
   "pt_BR": {
     "tagline": "O YouTube sempre tem mais um vídeo.<br>O Errand oculta os Shorts e o feed.",
     "screens": [
-      ["home.png", "O Início pergunta o que você veio ver. Sem feed."],
-      ["search.png", "Resultados da pesquisa sem Shorts."],
-      ["watch.png", "Sem coluna de recomendações. Um botão mostra a coluna em 10 s."],
-      ["end.png", "O vídeo acabou. A reprodução automática fica desligada, e fechar a aba está a um clique."],
-      ["popup.png", "Todas as opções em um menu, salvas no seu navegador."]
-    ]
+      [
+        "home.png",
+        "O Início pergunta o que você veio ver. Sem feed."
+      ],
+      [
+        "search.png",
+        "Resultados da pesquisa sem Shorts."
+      ],
+      [
+        "watch.png",
+        "Sem coluna de recomendações. Um botão mostra a coluna em 10 s."
+      ],
+      [
+        "end.png",
+        "O vídeo acabou. A reprodução automática fica desligada, e fechar a aba está a um clique."
+      ],
+      [
+        "popup.png",
+        "Todas as opções em um menu, salvas no seu navegador."
+      ]
+    ],
+    "short": "Oculta os Shorts<br>e o feed."
   },
   "de": {
     "tagline": "YouTube hat immer das nächste Video parat.<br>Errand blendet Shorts und Feed aus.",
     "screens": [
-      ["home.png", "Die Startseite fragt, wofür du hier bist. Kein Feed."],
-      ["search.png", "Suchergebnisse ohne Shorts."],
-      ["watch.png", "Keine Empfehlungsspalte. Ein Button zeigt sie nach 10 s."],
-      ["end.png", "Das Video ist zu Ende. Autoplay ist aus, und der Tab ist mit einem Klick zu."],
-      ["popup.png", "Alle Schalter in einem Menü, gespeichert in deinem Browser."]
-    ]
+      [
+        "home.png",
+        "Die Startseite fragt, wofür du hier bist. Kein Feed."
+      ],
+      [
+        "search.png",
+        "Suchergebnisse ohne Shorts."
+      ],
+      [
+        "watch.png",
+        "Keine Empfehlungsspalte. Ein Button zeigt sie nach 10 s."
+      ],
+      [
+        "end.png",
+        "Das Video ist zu Ende. Autoplay ist aus, und der Tab ist mit einem Klick zu."
+      ],
+      [
+        "popup.png",
+        "Alle Schalter in einem Menü, gespeichert in deinem Browser."
+      ]
+    ],
+    "short": "Blendet Shorts<br>und Feed aus."
   }
 }
