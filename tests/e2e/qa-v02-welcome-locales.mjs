@@ -1,10 +1,8 @@
-import { execFileSync } from "node:child_process";
 import { join } from "node:path";
-import { launch, reporter, sleep, OUT } from "./harness.mjs";
+import { launch, reporter, sleep, OUT, setLang, resetLang } from "./harness.mjs";
 
 const { check, save } = reporter();
 const LOCALES = (process.env.LOCALES || "en-US,ru-RU,es-ES,pt-BR,de-DE").split(",");
-const setLang = (l) => execFileSync("defaults", ["write", "com.google.chrome.for.testing", "AppleLanguages", `("${l}")`]);
 
 try {
   for (const locale of LOCALES) {
@@ -79,7 +77,6 @@ try {
     await ctx.context.close();
   }
 } finally {
-  setLang("en-US");
-  console.log("AppleLanguages reset:", execFileSync("defaults", ["read", "com.google.chrome.for.testing", "AppleLanguages"]).toString().replace(/\s+/g, " "));
+  console.log("AppleLanguages reset:", resetLang());
 }
 save("R-welcome-locales.json");

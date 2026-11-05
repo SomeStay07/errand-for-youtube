@@ -1,6 +1,7 @@
 import { chromium } from "playwright-core";
-import { mkdirSync, rmSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { execFileSync } from "node:child_process";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 
 export const EXT = process.env.EXT || new URL("../../dist/chrome", import.meta.url).pathname;
 export const OUT = process.env.OUT || new URL("../../.e2e-out/v02", import.meta.url).pathname;
@@ -10,6 +11,57 @@ const CHROME = `${process.env.HOME}/Library/Caches/ms-playwright/chromium-1234/c
 mkdirSync(OUT, { recursive: true });
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const LANG_LOCK = new URL("../../.e2e-out/.lang.lock", import.meta.url).pathname;
+const LANG_WAIT_MS = Number(process.env.LANG_LOCK_WAIT_MS || 600000);
+let langLocked = false;
+
+const alive = (pid) => {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (e) {
+    return e.code === "EPERM";
+  }
+};
+
+function lockLang() {
+  if (langLocked) return;
+  mkdirSync(dirname(LANG_LOCK), { recursive: true });
+  const start = Date.now();
+  for (;;) {
+    try {
+      writeFileSync(LANG_LOCK, String(process.pid), { flag: "wx" });
+      langLocked = true;
+      process.on("exit", () => langLocked && rmSync(LANG_LOCK, { force: true }));
+      return;
+    } catch (e) {
+      if (e.code !== "EEXIST") throw e;
+    }
+    const holder = Number(readFileSync(LANG_LOCK, "utf8").trim());
+    if (!holder || !alive(holder)) {
+      rmSync(LANG_LOCK, { force: true });
+      continue;
+    }
+    if (Date.now() - start > LANG_WAIT_MS) throw new Error(`AppleLanguages is locked by pid ${holder} (${LANG_LOCK}); locale scripts must run one at a time`);
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1000);
+  }
+}
+
+const writeLang = (locale) => execFileSync("defaults", ["write", "com.google.chrome.for.testing", "AppleLanguages", `("${locale}")`]);
+
+export function setLang(locale) {
+  lockLang();
+  writeLang(locale);
+}
+
+export function resetLang() {
+  writeLang("en-US");
+  const now = execFileSync("defaults", ["read", "com.google.chrome.for.testing", "AppleLanguages"]).toString().replace(/\s+/g, " ");
+  if (langLocked) rmSync(LANG_LOCK, { force: true });
+  langLocked = false;
+  return now;
+}
 
 export function reporter() {
   const rows = [];
@@ -81,7 +133,7 @@ export async function launch({ name, locale = "en-US", port = 9339, extension = 
 
 export async function consent(page) {
   const reject = page
-    .locator('ytd-consent-bump-v2-lightbox button:has-text("Reject"), ytd-consent-bump-v2-lightbox button:has-text("Отклонить"), form button:has-text("Reject all")')
+    .locator(["Reject", "Отклонить", "Rechazar", "Rejeitar", "ablehnen"].flatMap((t) => [`ytd-consent-bump-v2-lightbox button:has-text("${t}")`, `form button:has-text("${t}")`]).join(", "))
     .first();
   await reject.waitFor({ state: "visible", timeout: 6000 }).catch(() => {});
   if (await reject.isVisible().catch(() => false)) {

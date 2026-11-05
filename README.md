@@ -34,7 +34,7 @@ Errand makes no network requests and needs no account. Permissions: `www.youtube
 
 - `npm test`: logic, i18n key parity and store length limits.
 - `node scripts/render.mjs`: icons from `assets/mark.svg`.
-- `node scripts/store-images.mjs`: store screenshots and promo tiles from `store/shots/`.
+- `node scripts/store-images.mjs`: store screenshots per locale from `store/shots/`, promo tiles for en only (tiles are global in the Chrome Web Store).
 - Languages: `_locales/{en,ru,es,pt_BR,de}`. The extension follows the browser's language.
 
 Something leaked through after a YouTube update? [Open an issue](https://github.com/SomeStay07/errand-for-youtube/issues) with a screenshot.

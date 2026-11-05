@@ -1,12 +1,10 @@
-import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { launch, reporter, sleep, OUT } from "./harness.mjs";
+import { launch, reporter, sleep, OUT, setLang, resetLang } from "./harness.mjs";
 
 const { check, save } = reporter();
 const LOCALES = (process.env.LOCALES || "en-US,de-DE,ru-RU").split(",");
 const FOLD = 600;
-const setLang = (l) => execFileSync("defaults", ["write", "com.google.chrome.for.testing", "AppleLanguages", `("${l}")`]);
 const messages = (locale) => {
   const dir = { en: "en", de: "de", ru: "ru", es: "es", pt: "pt_BR" }[locale.slice(0, 2)];
   return JSON.parse(readFileSync(new URL(`../../_locales/${dir}/messages.json`, import.meta.url), "utf8"));
@@ -114,6 +112,6 @@ try {
     await ctx.context.close();
   }
 } finally {
-  setLang("en-US");
+  console.log("AppleLanguages reset:", resetLang());
 }
 save("polish-popup-fold.json");

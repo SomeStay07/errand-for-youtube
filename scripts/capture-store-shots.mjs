@@ -1,7 +1,6 @@
-import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { consent, sleep } from "/Users/timurceberda/Developer/errand-for-youtube/tests/e2e/harness.mjs";
+import { consent, sleep, setLang, resetLang } from "/Users/timurceberda/Developer/errand-for-youtube/tests/e2e/harness.mjs";
 import { chromium } from "/Users/timurceberda/Developer/errand-for-youtube/node_modules/playwright-core/index.mjs";
 import { rmSync } from "node:fs";
 const CHROME = `${process.env.HOME}/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`;
@@ -22,7 +21,6 @@ const ROOT = "/Users/timurceberda/Developer/errand-for-youtube";
 const OUTDIR = process.env.SHOTS_OUT;
 const QUERY = "swiftui navigation stack tutorial";
 const LOCALES = (process.env.LOCALES || "en-US:en,ru-RU:ru,es-ES:es,pt-BR:pt_BR,de-DE:de").split(",").map((s) => s.split(":"));
-const setLang = (l) => execFileSync("defaults", ["write", "com.google.chrome.for.testing", "AppleLanguages", `("${l}")`]);
 
 const BLUR = `
   ytd-thumbnail, yt-thumbnail-view-model, .ytThumbnailViewModelImage, ytd-video-renderer img, yt-lockup-view-model img,
@@ -123,7 +121,6 @@ try {
     await ctx.context.close();
   }
 } finally {
-  setLang("en-US");
-  console.log("AppleLanguages reset:", execFileSync("defaults", ["read", "com.google.chrome.for.testing", "AppleLanguages"]).toString().replace(/\s+/g, " "));
+  console.log("AppleLanguages reset:", resetLang());
   writeFileSync(join(OUTDIR, "report.json"), JSON.stringify(report, null, 2));
 }

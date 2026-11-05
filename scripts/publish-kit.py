@@ -31,7 +31,7 @@ def card(title, value):
 parts = [f'<h2>1. Пакет</h2><p>Новый элемент или новая версия → загрузить <code>dist/errand-chrome-&lt;версия&gt;.zip</code>. Название и краткое описание подтягиваются из пакета.</p>',
          '<h2>2. Описание по языкам</h2>']
 for loc, name in LANGS:
-    parts.append(f"<h3>{name}</h3>" + card(f"Описание: {name}", description(loc)) + f'<p class="n">Картинки: <code>store/images/{loc}/</code></p>')
+    parts.append(f"<h3>{name}</h3>" + card(f"Описание: {name}", description(loc)) + f'<p class="n">Скриншоты: <code>store/images/{loc}/screenshot-*.png</code>' + (' · промо-тайлы одни на все языки: <code>store/images/en/promo-*.png</code>' if loc == "en" else "") + '</p>')
 parts.append("<h2>3. Общие поля</h2>" + card("Официальный сайт / главная", SITE) + card("URL поддержки", f"{GH}/issues"))
 parts.append("<h2>4. Конфиденциальность</h2>" + card("Единственная цель", SINGLE) + card("Обоснование: storage", STORAGE) + card("Обоснование: доступ к хосту", HOST) + card("URL политики", PRIVACY))
 parts.append("<p>Удалённый код: Нет. Данные: ни одной категории. Все три галочки.</p><h2>5. Распространение</h2><p>Бесплатно · Общедоступно · Все регионы.</p>")

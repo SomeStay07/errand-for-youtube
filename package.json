@@ -6,7 +6,8 @@
     "test": "node --test test/lib.test.js test/i18n.test.js",
     "build": "python3 -I scripts/publish-kit.py && node scripts/build.mjs",
     "e2e": "node tests/e2e/smoke.mjs && node tests/e2e/v02-strict-exit.mjs && node tests/e2e/qa-v02-health-recover.mjs",
-    "check:copy": "node scripts/check-copy.mjs"
+    "check:copy": "node scripts/check-copy.mjs",
+    "check:release": "node scripts/check-release.mjs"
   },
   "devDependencies": {
     "playwright-core": "1.56.1"

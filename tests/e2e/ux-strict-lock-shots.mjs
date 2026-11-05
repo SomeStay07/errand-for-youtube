@@ -1,7 +1,5 @@
-import { launch, sleep, OUT } from "./harness.mjs";
+import { launch, sleep, OUT, setLang, resetLang } from "./harness.mjs";
 import { join } from "node:path";
-import { execFileSync } from "node:child_process";
-const setLang = (l) => execFileSync("defaults", ["write", "com.google.chrome.for.testing", "AppleLanguages", `("${l}")`]);
 
 const ALL_DAY = { mode: "auto", strictStart: "00:00", strictEnd: "23:59", strictDays: [0, 1, 2, 3, 4, 5, 6] };
 const locales = [["en", "en-US", 9371], ["ru", "ru-RU", 9372], ["de", "de-DE", 9373]];
@@ -59,6 +57,6 @@ for (const [tag, locale, port] of locales) {
   await context.close();
 }
 } finally {
-  setLang("en-US");
+  console.log("AppleLanguages reset:", resetLang());
 }
 console.log(JSON.stringify(facts, null, 2));

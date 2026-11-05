@@ -69,6 +69,7 @@ for (const [locale, copy] of Object.entries(COPY)) {
     shoot(screenshotPage(caption, image), 1280, 800, out);
     console.log(out);
   });
+  if (locale !== "en") continue;
   shoot(tile(440, 280, { slogan: copy.tile }, SMALL), 440, 280, join(OUT, locale, "promo-small-440x280.png"));
   shoot(tile(1400, 560, { slogan: copy.marquee, sub: copy.marqueeSub }, LARGE), 1400, 560, join(OUT, locale, "promo-marquee-1400x560.png"));
 }
