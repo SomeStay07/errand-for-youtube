@@ -6,7 +6,7 @@ Summary (extDescription, 126/132): YouTube always has one more video for you. Er
 
 ## Description (paste below this line)
 
-YouTube always has one more video for you. That's how one tutorial takes the whole evening. Like an errand: you go for one video and leave once you have it. It's a distraction-free YouTube extension. Free and open source, and you don't need an account. If you only want Shorts gone, pick "Just hide Shorts" on the first screen: the feed, recommendations, comments, autoplay and the end screen stay as they were.
+That's how one tutorial takes the whole evening. Like an errand: you go for one video and leave once you have it. It's a distraction-free YouTube extension. Free and open source, and you don't need an account. If you only want Shorts gone, pick "Just hide Shorts" on the first screen: the feed, recommendations, comments, autoplay and the end screen stay as they were.
 
 When your video ends, autoplay is off unless it's a playlist. The end screen and end cards stay hidden, and so does the "More videos" grid in fullscreen. Errand asks "Got what you came for?" and offers Close tab.
 

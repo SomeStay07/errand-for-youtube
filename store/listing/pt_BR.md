@@ -6,7 +6,7 @@ Resumo (extDescription, 127/132): O YouTube sempre tem mais um vídeo para você
 
 ## Descrição (cole o que está abaixo desta linha)
 
-O YouTube sempre tem mais um vídeo para você. É assim que um tutorial come a noite inteira. Errand quer dizer "recado" em inglês: você entra por um vídeo, como quem dá um pulo na padaria, e vai embora quando já tem o que queria. É grátis e de código aberto, e não precisa de conta. Se você só quer tirar os Shorts, escolha "Só esconder Shorts" na primeira tela: o feed, as recomendações, os comentários, a reprodução automática e a tela final continuam como estavam.
+É assim que um tutorial come a noite inteira. Errand quer dizer "recado" em inglês: você entra por um vídeo, como quem dá um pulo na padaria, e vai embora quando já tem o que queria. É grátis e de código aberto, e não precisa de conta. Se você só quer tirar os Shorts, escolha "Só esconder Shorts" na primeira tela: o feed, as recomendações, os comentários, a reprodução automática e a tela final continuam como estavam.
 
 Quando o seu vídeo acaba, a reprodução automática fica desligada, a não ser numa playlist. A tela final e os cards não aparecem, nem a grade de vídeos em tela cheia. O Errand pergunta se você achou o que veio buscar e sugere fechar a aba.
 
