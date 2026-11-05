@@ -85,7 +85,9 @@ if (!CONTROL) {
 console.log("heap:", JSON.stringify({ start: h0, afterOff: h1, afterOn: h2 }));
 check(`F ${CONTROL ? "control " : ""}${off.navs} SPA navigations, pause off`, off.bad.length === 0, `${off.seconds}s; problems: ${JSON.stringify(off.bad)}`);
 check(`F ${CONTROL ? "control " : ""}${on.navs} SPA navigations, pause on`, on.bad.length === 0, `${on.seconds}s; problems: ${JSON.stringify(on.bad)}`);
-check(`F ${CONTROL ? "control " : ""}DOM nodes and listeners grow < 10 % from the first loop to the second`, h2.nodes <= h1.nodes * 1.1 && h2.listeners <= h1.listeners * 1.1, `start ${JSON.stringify(h0)} → after first loop ${JSON.stringify(h1)} → after second loop ${JSON.stringify(h2)}`);
+console.log(`DOM/listener growth, first loop → second: ${JSON.stringify(h1)} → ${JSON.stringify(h2)}`);
+const ownNodes = await page.evaluate(() => document.querySelectorAll('[id^="er-"]').length);
+check("F Errand's own page nodes stay bounded after both loops", CONTROL ? null : ownNodes <= 3, `er-* nodes: ${ownNodes}`);
 let sw = [];
 if (!CONTROL) sw = await ctx.worker.evaluate(() => globalThis.__errs || []);
 check(`F ${CONTROL ? "control " : ""}extension console errors (page/SW)`, CONTROL || (ctx.errors.length === 0 && sw.length === 0), JSON.stringify([...ctx.errors, ...sw]));

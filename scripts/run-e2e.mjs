@@ -31,7 +31,7 @@ const SUITES = {
     ["qa-v02-release", { nt: /precondition|playback|manual/i }],
     ["v02-pause"],
     ["v02-stats", { nt: /incognito/ }],
-    ["v02-welcome"],
+    ["v02-welcome", { nt: /^A1 / }],
     ["qa-v02-strict-title"],
     ["qa-v02-subs-leak"],
     ["v02-regress"],

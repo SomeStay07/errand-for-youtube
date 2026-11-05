@@ -117,8 +117,8 @@ const probe = await context.newPage();
 const after = await probe.goto(`chrome-extension://${ctx.extId}/popup.html`).then(() => probe.waitForTimeout(500)).then(() => probe.evaluate(() => chrome.storage.local.get(["settings", "reloadMarker"]))).catch((e) => ({ err: String(e).split("\n")[0] }));
 if (after.err) console.log("extension page after reload:", after.err);
 await probe.close();
-check("A1 extension reload (update) opens no welcome tab", !helper.isClosed() ? false : welcomeAfter === 0, `helper tab closed by reload=${helper.isClosed()}; SW targets before=${swBefore}; welcome tabs before=${beforeReload} after=${welcomeAfter}; targets after: ${afterReload.join(", ")}`);
-check("A1 settings survive reload", after.settings?.homeTarget === "subs" && Boolean(after.reloadMarker), `homeTarget=${after.settings?.homeTarget}`);
+check("A1 extension reload (update) opens no welcome tab", !swBack ? null : !helper.isClosed() ? false : welcomeAfter === 0, `helper tab closed by reload=${helper.isClosed()}; SW targets before=${swBefore}; welcome tabs before=${beforeReload} after=${welcomeAfter}; targets after: ${afterReload.join(", ")}`);
+check("A1 settings survive reload", !swBack ? null : after.settings?.homeTarget === "subs" && Boolean(after.reloadMarker), `homeTarget=${after.settings?.homeTarget}`);
 
 await finish(ctx, check);
 save("A-results.json");

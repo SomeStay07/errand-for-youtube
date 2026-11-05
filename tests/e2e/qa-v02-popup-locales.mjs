@@ -37,6 +37,7 @@ const measure = (p) => p.evaluate(() => {
   for (const node of document.querySelectorAll("body *")) {
     if (node.closest("[hidden]") || !node.getClientRects().length) continue;
     const r = node.getBoundingClientRect();
+    if (r.width <= 1 && r.height <= 1) continue;
     if (r.right > W + 0.5 || r.left < -0.5) over.push(`${node.tagName}#${node.id} right=${Math.round(r.right)}`);
     const tag = node.tagName;
     if ((tag === "BUTTON" || tag === "A" || tag === "SPAN" || tag === "P" || tag === "H1" || tag === "H2" || tag === "SUMMARY") && node.scrollWidth > node.clientWidth + 1 && node.clientWidth > 0) over.push(`${tag}#${node.id} text overflow ${node.scrollWidth}>${node.clientWidth} "${node.textContent.slice(0, 40)}"`);

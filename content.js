@@ -37,7 +37,11 @@
     }
   }
 
+  let isShutDown = false;
+
   function shutdown() {
+    if (isShutDown) return;
+    isShutDown = true;
     clearInterval(pollTimer);
     clearInterval(heartbeatTimer);
     clearTimeout(healthTimer);
@@ -45,6 +49,10 @@
     navToken += 1;
     document.removeEventListener("yt-navigate-finish", onNavigate);
     document.removeEventListener("ended", onEnded, true);
+    for (const id of ["er-intent", "er-pill", "er-reveal", "er-comments", "er-end"]) document.getElementById(id)?.remove();
+    document.addEventListener("yt-navigate-finish", () => {
+      root.dataset.erPage = L.pageType(location.pathname);
+    });
   }
 
   function el(tag, attrs = {}, ...children) {
