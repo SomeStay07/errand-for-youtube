@@ -27,7 +27,7 @@
     "message": "Verlauf"
   },
   "pillLabel": {
-    "message": "Ziel: $TEXT$",
+    "message": "Wofür du hier bist: $TEXT$",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -35,7 +35,7 @@
     }
   },
   "pillClear": {
-    "message": "Ziel löschen"
+    "message": "Löschen, wofür ich da bin"
   },
   "revealButton": {
     "message": "Empfehlungen anzeigen"
@@ -362,5 +362,48 @@
   },
   "welcomeReloadOpen": {
     "message": "Lade bereits offene YouTube-Tabs neu."
+  },
+  "noteUpdated": {
+    "message": "Errand ist jetzt auf $VERSION$.",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "noteUpdatedLink": {
+    "message": "Was ist neu"
+  },
+  "noteRate": {
+    "message": "Eine Bewertung im Store hilft anderen, Errand zu finden."
+  },
+  "noteDismiss": {
+    "message": "Nicht mehr anzeigen"
+  },
+  "pillBack": {
+    "message": "Errand: zurück zu den Ergebnissen für \"$TEXT$\"",
+    "placeholders": {
+      "text": {
+        "content": "$1"
+      }
+    }
+  },
+  "intentFooterOpera": {
+    "message": "Das ist Errand. Zum Ändern klick auf das Erweiterungssymbol (Würfel), dann auf Errand."
+  },
+  "intentFooterYandex": {
+    "message": "Das ist Errand. Zum Ändern klick auf das Errand-Symbol rechts neben der Adressleiste."
+  },
+  "intentFooterAny": {
+    "message": "Das ist Errand. Zum Ändern öffne Errand im Erweiterungsmenü deines Browsers."
+  },
+  "welcomePinOpera": {
+    "message": "Pinne Errand übers Erweiterungssymbol (Würfel) an. Dort sind Einstellungen und \"Problem melden\"."
+  },
+  "welcomePinYandex": {
+    "message": "Das Errand-Symbol sitzt rechts neben der Adressleiste. Dort sind Einstellungen und \"Problem melden\"."
+  },
+  "welcomePinAny": {
+    "message": "Errand findest du im Erweiterungsmenü deines Browsers. Dort sind Einstellungen und \"Problem melden\"."
   }
 }

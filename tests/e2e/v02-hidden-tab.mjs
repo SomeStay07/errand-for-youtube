@@ -21,10 +21,11 @@ async function run(label, url, rename) {
   const whileHidden = await js(`chrome.storage.session.get("health").then(d => (d.health || {})[${xId}] || null)`);
   const badgeHidden = await js(`chrome.action.getBadgeText({ tabId: ${xId} })`);
   const visStill = await x.evaluate("document.visibilityState");
+  if (rename) await x.evaluate(`if (typeof window.__ren === "undefined") window.__ren = setInterval(() => { const r = document.querySelector("ytd-watch-flexy #related"); if (r) r.id = "related-renamed"; }, 100); 1`);
   await js(`chrome.tabs.update(${xId}, { active: true }).then(() => 1)`);
   const t0 = Date.now();
   let after = null;
-  while (!after && Date.now() - t0 < 15000) {
+  while (!after && Date.now() - t0 < 20000) {
     after = await js(`chrome.storage.session.get("health").then(d => (d.health || {})[${xId}] || null)`);
     if (!after) await sleep(250);
   }
@@ -39,7 +40,7 @@ async function run(label, url, rename) {
 
 const r1 = await run("forced", VIDEOS[0], true);
 check("E2 hidden tab, forced missing #related: no health result while hidden", r1.vis === "hidden" && r1.visStill === "hidden" && r1.whileHidden === null && r1.badgeHidden !== "!", `visibility=${r1.vis}/${r1.visStill}; after 14.5 s hidden: health=${JSON.stringify(r1.whileHidden)} badge="${r1.badgeHidden}"`);
-check("E2 check runs ~6 s after the tab becomes visible", r1.after !== null && r1.ms >= 5500 && r1.ms <= 9000 && r1.after.missing.includes("related") && r1.badgeAfter === "!", `visible=${r1.visAfter}; result after ${r1.ms} ms: ${JSON.stringify(r1.after)} badge="${r1.badgeAfter}"`);
+check("E2 '!' shows after two checks, ~12 s after the tab becomes visible", r1.after !== null && r1.ms >= 11500 && r1.ms <= 15000 && r1.after.missing.includes("related") && r1.badgeAfter === "!", `visible=${r1.visAfter}; result after ${r1.ms} ms: ${JSON.stringify(r1.after)} badge="${r1.badgeAfter}"`);
 const r2 = await run("clean", VIDEOS[1], false);
 check("E2 healthy video opened in background: no false '!' after switching to it", r2.vis === "hidden" && r2.whileHidden === null && r2.after !== null && r2.after.missing.length === 0 && r2.badgeAfter !== "!", `while hidden: ${JSON.stringify(r2.whileHidden)}; after ${r2.ms} ms: ${JSON.stringify(r2.after)} badge="${r2.badgeAfter}"`);
 save("E2-results.json");

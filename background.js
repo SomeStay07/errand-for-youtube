@@ -99,6 +99,10 @@ chrome.runtime.onInstalled.addListener((details) => {
     chrome.runtime.setUninstallURL(`${L.SITE_URL}/bye/`);
   } catch {}
   if (details.reason === "install") chrome.tabs.create({ url: chrome.runtime.getURL("welcome.html") });
+  if (details.reason === "update") {
+    const note = L.updateNote(details.previousVersion, chrome.runtime.getManifest().version);
+    if (note) chrome.storage.local.set({ updateNote: note });
+  }
 });
 
 chrome.runtime.onStartup.addListener(() => {

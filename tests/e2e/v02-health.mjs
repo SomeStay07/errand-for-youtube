@@ -38,6 +38,9 @@ await W.evaluate(() => {
   }, 100);
 });
 await sleep(7500);
+const badgeEarly = await badge(wId);
+check("F8 forced missing #related: no '!' after one failed check (9 s)", badgeEarly !== "!", `badge="${badgeEarly}" health=${JSON.stringify((await health())[wId])}`);
+await sleep(4500);
 const hForced = (await health())[wId];
 const badgeForced = await badge(wId);
 popup = await openRealPopup(ctx, W);
@@ -61,6 +64,26 @@ if (newTab) {
 }
 await popup.close().catch(() => {});
 await W.evaluate(() => clearInterval(window.__ren));
+
+await W.goto(urls[4], { waitUntil: "domcontentloaded" });
+const glitchAt = Date.now();
+await sleep(4000);
+await W.evaluate(() => {
+  window.__ren = setInterval(() => {
+    const r = document.querySelector("ytd-watch-flexy #related");
+    if (r) r.id = "related-renamed";
+  }, 100);
+});
+await sleep(4000);
+await W.evaluate(() => {
+  clearInterval(window.__ren);
+  const r = document.getElementById("related-renamed");
+  if (r) r.id = "related";
+});
+await sleep(Math.max(0, 16000 - (Date.now() - glitchAt)));
+const hGlitch = (await health())[wId];
+const badgeGlitch = await badge(wId);
+check("F8 one-time glitch (#related gone 4–8 s around the first check) → no '!' at 16 s, entry clean", badgeGlitch !== "!" && hGlitch?.missing.length === 0 && Date.now() - hGlitch.ts < 12000, `badge="${badgeGlitch}" health=${JSON.stringify(hGlitch)}`);
 
 async function hiddenRun(label, rename) {
   const ids0 = new Set(await tabIds());
@@ -92,7 +115,7 @@ async function hiddenRun(label, rename) {
   await X.bringToFront();
   const frontAt = Date.now();
   let after = null;
-  while (Date.now() - frontAt < 12000 && !after) {
+  while (Date.now() - frontAt < 18000 && !after) {
     after = (await health())[xId] || null;
     if (!after) await sleep(250);
   }
@@ -105,7 +128,7 @@ async function hiddenRun(label, rename) {
 
 const h1 = await hiddenRun("forced", true);
 check("E2 no health result while the tab is hidden (forced missing #related)", h1.hidden && h1.whileHidden === undefined && h1.badgeHidden !== "!", `document.hidden=${h1.hidden}; 12 s hidden → health=${JSON.stringify(h1.whileHidden)} badge="${h1.badgeHidden}"`);
-check("E2 check runs after the tab comes to front", h1.after !== null && h1.ms >= 5500 && h1.after.missing.includes("related") && h1.badgeAfter === "!", `result ${h1.ms} ms after bringToFront: ${JSON.stringify(h1.after)} badge="${h1.badgeAfter}"`);
+check("E2 check runs after the tab comes to front", h1.after !== null && h1.ms >= 11500 && h1.after.missing.includes("related") && h1.badgeAfter === "!", `result ${h1.ms} ms after bringToFront: ${JSON.stringify(h1.after)} badge="${h1.badgeAfter}"`);
 const h2 = await hiddenRun("clean", false);
 check("E2 background-loaded healthy video: no false '!' after switching to it", h2.hidden && h2.whileHidden === undefined && h2.after && h2.after.missing.length === 0 && h2.badgeAfter !== "!", `hidden=${h2.hidden} whileHidden=${JSON.stringify(h2.whileHidden)} after ${h2.ms} ms: ${JSON.stringify(h2.after)} badge="${h2.badgeAfter}"`);
 

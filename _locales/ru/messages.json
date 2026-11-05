@@ -27,7 +27,7 @@
     "message": "История"
   },
   "pillLabel": {
-    "message": "Цель: $TEXT$",
+    "message": "Зачем пришли: $TEXT$",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -35,7 +35,7 @@
     }
   },
   "pillClear": {
-    "message": "Сбросить цель"
+    "message": "Стереть, зачем пришли"
   },
   "revealButton": {
     "message": "Показать рекомендации"
@@ -362,5 +362,48 @@
   },
   "welcomeReloadOpen": {
     "message": "Перезагрузите уже открытые вкладки YouTube."
+  },
+  "noteUpdated": {
+    "message": "Errand обновился до $VERSION$.",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "noteUpdatedLink": {
+    "message": "Что изменилось"
+  },
+  "noteRate": {
+    "message": "Оценка в магазине помогает другим найти Errand."
+  },
+  "noteDismiss": {
+    "message": "Больше не показывать"
+  },
+  "pillBack": {
+    "message": "Errand: вернуться к поиску \"$TEXT$\"",
+    "placeholders": {
+      "text": {
+        "content": "$1"
+      }
+    }
+  },
+  "intentFooterOpera": {
+    "message": "Это Errand. Чтобы это поменять, нажмите значок расширений (кубик), затем Errand."
+  },
+  "intentFooterYandex": {
+    "message": "Это Errand. Чтобы это поменять, нажмите значок Errand справа от Умной строки."
+  },
+  "intentFooterAny": {
+    "message": "Это Errand. Чтобы это поменять, откройте Errand в меню расширений браузера."
+  },
+  "welcomePinOpera": {
+    "message": "Закрепите Errand через значок расширений (кубик). Там же настройки и \"Сообщить о проблеме\"."
+  },
+  "welcomePinYandex": {
+    "message": "Значок Errand стоит справа от Умной строки. Там настройки и \"Сообщить о проблеме\"."
+  },
+  "welcomePinAny": {
+    "message": "Errand лежит в меню расширений браузера. В нём настройки и \"Сообщить о проблеме\"."
   }
 }

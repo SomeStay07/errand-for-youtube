@@ -55,7 +55,7 @@ async function run(label, { wrapper, hidden, home }) {
   const injectedMs = Date.now() - t0;
   await sleep(1000);
   const vis = await page.evaluate(() => ({ sectionHeight: Math.round((document.querySelector("#qa-leak ytd-rich-shelf-renderer")?.getBoundingClientRect().height ?? -1)), erPage: document.documentElement.dataset.erPage, showHome: document.documentElement.hasAttribute("data-er-show-home") }));
-  await sleep(8000);
+  await sleep(13000);
   const badge = await W().evaluate((id) => chrome.action.getBadgeText({ tabId: id }), yt);
   const { health = {} } = await W().evaluate(() => chrome.storage.session.get("health"));
   const { log = [] } = await W().evaluate(() => chrome.storage.local.get("log"));

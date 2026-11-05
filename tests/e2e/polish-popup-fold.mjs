@@ -36,6 +36,11 @@ const STATES = {
     await withStats({})(p);
     await health(["player", "related", "comments", "autoplay", "endscreen", "shorts", "home", "results"])(p);
   },
+  updateNote: async (p) => {
+    await withStats({})(p);
+    await health([])(p);
+    await p.evaluate(() => chrome.storage.local.set({ updateNote: { version: "0.3", shown: 0 } }));
+  },
   strictAuto: async (p) => {
     await withStats({ mode: "auto", strictStart: "00:00", strictEnd: "23:59", strictDays: [0, 1, 2, 3, 4, 5, 6] })(p);
     await health([])(p);
@@ -52,7 +57,8 @@ const measure = (p) => p.evaluate(() => {
   return {
     ui: chrome.i18n.getUILanguage(),
     height: document.documentElement.scrollHeight,
-    hScroll: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    hScroll: document.documentElement.scrollWidth > window.innerWidth,
+    health: box("health"),
     report: box("report"),
     reportHref: document.getElementById("report").href,
     strictOff: box("strictOff"),
@@ -96,6 +102,7 @@ try {
         const tag = `${locale} ${theme} ${state}`;
         check(`K1 ${tag}: Report above the ${FOLD}px fold`, Boolean(m.report) && m.report.bottom <= FOLD && m.ui.slice(0, 2) === locale.slice(0, 2), `report=${JSON.stringify(m.report)} h=${m.height} ui=${m.ui} → ${shot}`);
         check(`K3 ${tag}: Report link carries version diagnostics`, /entry\.870279470=0\.\d+\.\d+/.test(m.reportHref), m.reportHref.slice(0, 160));
+        if (state === "updateNote") check(`S6 ${tag}: update note in #health, Report above the fold`, Boolean(m.health?.text.includes(M.noteUpdatedLink.message)) && Boolean(m.report) && m.report.bottom <= FOLD, JSON.stringify({ health: m.health, report: m.report }));
         if (state === "strictAuto") check(`K2 ${tag}: Turn strict off above the fold`, Boolean(m.strictOff) && m.strictOff.bottom <= FOLD, JSON.stringify(m.strictOff));
         check(`P ${tag}: Rate and Copy link in the footer, store hrefs`, Boolean(m.rate && m.copy) && m.rateHref.endsWith("jhpaobkpbnidoaemnkojmkmnddoegdhg/reviews") && m.copyHref.endsWith("jhpaobkpbnidoaemnkojmkmnddoegdhg") && !m.hScroll && m.rate.text === M.rateErrand.message && m.copy.text === M.copyLink.message, JSON.stringify({ rate: m.rate, copy: m.copy, h: m.height }));
         check(`N ${tag}: status 600, day toggles >= 24x24`, Number(m.status) === 600 && m.days.every(([w, h]) => w >= 24 && h >= 24), JSON.stringify({ status: m.status, days: m.days }));

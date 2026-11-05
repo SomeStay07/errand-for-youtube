@@ -206,6 +206,25 @@ th {
   font-weight: 600;
 }
 
+#weekHint a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+#weekHint a:hover {
+  text-decoration: underline;
+}
+
+.dismiss {
+  margin: -4px 0;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+}
+
 .actions button,
 .actions .button {
   flex: 1;

@@ -149,7 +149,7 @@ function onStrictOffClick() {
 function renderPause() {
   const row = $("pause");
   const button = $("pauseButton");
-  if (healthEntry !== undefined) $("health").hidden = isPausedNow() || !healthEntry;
+  if (healthEntry !== undefined) $("health").hidden = isPausedNow() || (!healthEntry && !noteShown);
   clearTimeout(pauseTimer);
   const wasCounting = pauseCounting;
   pauseCounting = false;
@@ -207,7 +207,33 @@ function renderStats(stats) {
   if (done) $("summary").textContent = t("errandsSummary", done, closed);
 }
 
+function renderRate(stats, rateNote, flags) {
+  if (!L.shouldShowRate(stats, rateNote, new Date(), flags)) return;
+  const shown = (Number(rateNote?.shown) || 0) + 1;
+  chrome.storage.local.set({ rateNote: { shown, done: false } });
+  const finish = () => chrome.storage.local.set({ rateNote: { shown, done: true } });
+  const hint = $("weekHint");
+  const link = el("a", { href: `${L.STORE_URL}/reviews`, target: "_blank", rel: "noopener" }, t("rateErrand"));
+  link.addEventListener("click", finish);
+  const close = el("button", { type: "button", class: "dismiss", "aria-label": t("noteDismiss"), title: t("noteDismiss") }, "×");
+  close.addEventListener("click", () => {
+    finish();
+    hint.textContent = t("errandsHint");
+  });
+  hint.replaceChildren(t("noteRate"), " ", link, " ", close);
+}
+
 let healthEntry;
+let updateNote;
+let noteShown = false;
+
+function renderUpdateNote(node) {
+  chrome.storage.local.set({ updateNote: { ...updateNote, shown: (Number(updateNote.shown) || 0) + 1 } });
+  const link = el("a", { href: L.changesUrl(updateNote.version), target: "_blank", rel: "noopener" }, t("noteUpdatedLink"));
+  link.addEventListener("click", () => chrome.storage.local.remove("updateNote"));
+  node.className = "";
+  node.replaceChildren(t("noteUpdated", updateNote.version), " ", link);
+}
 
 async function renderHealth() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -216,7 +242,12 @@ async function renderHealth() {
   healthEntry = entry || null;
   $("report").href = reportLink(entry);
   const node = $("health");
-  node.hidden = !entry || isPausedNow();
+  noteShown = L.shouldShowUpdateNote(updateNote, { warn: Boolean(entry?.missing.length), paused: isPausedNow() });
+  node.hidden = isPausedNow() || (!entry && !noteShown);
+  if (noteShown) {
+    renderUpdateNote(node);
+    return;
+  }
   if (!entry) return;
   if (!entry.missing.length) {
     node.className = "ok";
@@ -340,8 +371,9 @@ function setupBackup() {
 
 async function init() {
   localize();
-  const data = await chrome.storage.local.get(["settings", "stats", "log", "pausedUntil", "pauseStartsAt", "strictOffAt"]);
+  const data = await chrome.storage.local.get(["settings", "stats", "log", "pausedUntil", "pauseStartsAt", "strictOffAt", "updateNote", "rateNote"]);
   diagnosticsLog = data.log || [];
+  updateNote = data.updateNote;
   settings = L.mergeSettings(data.settings);
   pausedUntil = data.pausedUntil ?? null;
   pauseStartsAt = data.pauseStartsAt ?? null;
@@ -363,6 +395,7 @@ async function init() {
   renderStatus();
   renderStats(data.stats || {});
   await renderHealth();
+  renderRate(data.stats || {}, data.rateNote, { warn: Boolean(healthEntry?.missing.length), noteShown });
 }
 
 init();

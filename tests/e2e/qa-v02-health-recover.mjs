@@ -18,7 +18,7 @@ await page.evaluate(() => {
   a.style.cssText = "position:fixed;top:70px;left:10px;z-index:99999;background:#c00;color:#fff;padding:8px";
   document.querySelector("ytd-app").append(a);
 });
-await sleep(8000);
+await sleep(14000);
 const state = async () => {
   const { health = {} } = await ctx.worker.evaluate(() => chrome.storage.session.get("health"));
   const [id, entry] = Object.entries(health).sort((a, b) => b[1].ts - a[1].ts)[0] || [];
@@ -31,7 +31,7 @@ const leak = await state();
 check("leak: visible /shorts/ link → '!' naming shorts", leak.badge === "!" && leak.entry?.missing.includes("shorts"), leak);
 check("leak: html[data-er-health] names the same filters as the background", leak.attr === leak.entry?.missing.join(","), leak.attr);
 await page.evaluate(() => document.getElementById("qa-leak").remove());
-const box = page.locator('input[name="search_query"]').first();
+const box = page.locator('[name="search_query"]').first();
 await box.fill("rust ownership");
 await box.press("Enter");
 await page.waitForURL(/rust/, { timeout: 15000 }).catch(() => {});

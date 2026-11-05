@@ -75,10 +75,10 @@ export function reporter() {
   return { rows, check, save };
 }
 
-export async function launch({ name, locale = "en-US", port = 9339, extension = true, width = 1280, height = 800, ext = EXT, keep = false }) {
+export async function launch({ name, locale = "en-US", port = 9339, extension = true, width = 1280, height = 800, ext = EXT, keep = false, args: extra = [] }) {
   const profile = join(OUT, `profile-${name}`);
   if (!keep) rmSync(profile, { recursive: true, force: true });
-  const args = [`--lang=${locale}`, ...(process.env.HEADED === "1" ? ["--window-position=-2000,0"] : ["--headless=new"]), "--disable-blink-features=AutomationControlled", "--use-mock-keychain", "--password-store=basic", `--remote-debugging-port=${port}`];
+  const args = [`--lang=${locale}`, ...(process.env.HEADED === "1" ? ["--window-position=-2000,0"] : ["--headless=new"]), "--disable-blink-features=AutomationControlled", "--use-mock-keychain", "--password-store=basic", `--remote-debugging-port=${port}`, ...extra];
   if (extension) args.unshift(`--disable-extensions-except=${ext}`, `--load-extension=${ext}`);
   const context = await chromium.launchPersistentContext(profile, {
     executablePath: CHROME,
@@ -133,13 +133,71 @@ export async function launch({ name, locale = "en-US", port = 9339, extension = 
 
 export async function consent(page) {
   const reject = page
-    .locator(["Reject", "Отклонить", "Rechazar", "Rejeitar", "ablehnen"].flatMap((t) => [`ytd-consent-bump-v2-lightbox button:has-text("${t}")`, `form button:has-text("${t}")`]).join(", "))
+    .locator(["Reject", "Отклонить", "Rechazar", "Rejeitar", "ablehnen", "すべてを拒否"].flatMap((t) => [`ytd-consent-bump-v2-lightbox button:has-text("${t}")`, `form button:has-text("${t}")`]).join(", "))
     .first();
   await reject.waitFor({ state: "visible", timeout: 6000 }).catch(() => {});
   if (await reject.isVisible().catch(() => false)) {
     await reject.click();
     await page.waitForTimeout(2500);
   }
+}
+
+export async function prefCookie(context, hl, gl = "US") {
+  await context.addCookies([{ name: "PREF", value: `hl=${hl}&gl=${gl}`, domain: ".youtube.com", path: "/", secure: true, sameSite: "Lax", expires: Math.floor(Date.now() / 1000) + 86400 }]);
+}
+
+export const WATCH_LAYOUT_FLAGS = [
+  "enable_web_side_rail",
+  "web_watch_split_scroll",
+  "swatcheroo_split_scroll",
+  "web_watch_fixed_default_panels",
+  "web_fixed_panel_watch_next",
+  "web_fixed_panel_watch_next_grid_swap",
+  "web_side_rail_dismissible_panels",
+  "web_side_rail_with_border",
+  "web_watch_eligible_to_switch_to_grid",
+  "web_watch_enable_single_column_grid_view",
+  "web_engagement_panel_show_description",
+  "web_watch_move_summary_to_sd",
+  "web_watch_hero_list",
+  "kevlar_watch_hide_comments_while_panel_open",
+  "disable_theater_mode",
+];
+
+export async function forceWatchLayout(page) {
+  await page.addInitScript((names) => {
+    const on = Object.fromEntries(names.map((n) => [n, true]));
+    const patch = (f) => {
+      if (f && typeof f === "object") Object.assign(f, on);
+      return f;
+    };
+    const hooked = new WeakSet();
+    const hookCfg = (cfg) => {
+      if (!cfg || typeof cfg !== "object" || hooked.has(cfg)) return;
+      hooked.add(cfg);
+      let v = patch(cfg.EXPERIMENT_FLAGS);
+      try {
+        Object.defineProperty(cfg, "EXPERIMENT_FLAGS", { configurable: true, enumerable: true, get: () => v, set: (n) => (v = patch(n)) });
+      } catch {}
+    };
+    const hookProp = (obj, name, onValue) => {
+      let v = obj[name];
+      if (v) onValue(v);
+      try {
+        Object.defineProperty(obj, name, {
+          configurable: true,
+          enumerable: true,
+          get: () => v,
+          set: (n) => {
+            v = n;
+            if (n) onValue(n);
+          },
+        });
+      } catch {}
+    };
+    hookProp(window, "yt", (y) => hookProp(y, "config_", hookCfg));
+    hookProp(window, "ytcfg", (c) => hookProp(c, "data_", hookCfg));
+  }, WATCH_LAYOUT_FLAGS);
 }
 
 export async function searchVideoUrls(page, query = QUERY, count = 16) {

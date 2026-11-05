@@ -50,9 +50,32 @@
   const SUBS_SHELF =
     'ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(> #content > ytd-rich-shelf-renderer:not([is-shorts]))';
 
+  const SEARCH_SHELF =
+    "ytd-search ytd-item-section-renderer > #contents > :is(ytd-shelf-renderer, ytd-horizontal-card-list-renderer)";
+
+  const WATCH_LEAK =
+    'html:not([data-er-reveal]) :is(ytd-watch-flexy, ytd-watch-grid) :is(yt-lockup-view-model, ytd-compact-video-renderer, ytd-compact-radio-renderer, ytd-compact-playlist-renderer):not(:is(#movie_player, ytd-playlist-panel-renderer, #description, ytd-structured-description-content-renderer, ytd-engagement-panel-section-list-renderer, ytd-comments, #player-ads, ytd-ad-slot-renderer) *)';
+
   const LEAKS = {
     subs: [["home", SUBS_SHELF.replace("> #content > ", "")]],
+    search: [["related", "ytd-search ytd-shelf-renderer, ytd-search ytd-horizontal-card-list-renderer:not(ytd-expandable-metadata-renderer *)"]],
+    watch: [["related", WATCH_LEAK]],
   };
+
+  const HEALTH_DELAY_MS = 6000;
+  const HEALTH_MAX_CHECKS = 3;
+
+  function confirmHealth(pending, missing) {
+    if (!missing.length) return { report: [], pending: null };
+    const confirmed = (pending || []).filter((name) => missing.includes(name));
+    return confirmed.length ? { report: confirmed, pending: null } : { report: null, pending: missing };
+  }
+
+  function isShortsTitle(title, guideLabel) {
+    const norm = (s) => String(s || "").trim().toLowerCase();
+    const t = norm(title);
+    return t === "shorts" || (Boolean(norm(guideLabel)) && t === norm(guideLabel));
+  }
 
   const CHOICES = {
     mode: ["relaxed", "auto", "strict"],
@@ -335,6 +358,75 @@
     return { count: false, last: prev };
   }
 
+  const BROWSER_HINTS = ["default", "edge", "opera", "yandex", "any"];
+
+  function browserHint(nav, rootStyle) {
+    const read = (get) => {
+      try {
+        return get();
+      } catch {
+        return undefined;
+      }
+    };
+    const arc = read(() => rootStyle.getPropertyValue("--arc-palette-title"));
+    if (typeof arc === "string" && arc.trim()) return "any";
+    const list = read(() => nav.userAgentData.brands);
+    const brands = Array.isArray(list) ? list.map((b) => read(() => String(b.brand))).filter(Boolean) : [];
+    const ua = read(() => nav.userAgent);
+    const agent = typeof ua === "string" ? ua : "";
+    const has = (re) => brands.some((b) => re.test(b));
+    if (has(/yandex|yabrowser/i) || /YaBrowser\//.test(agent)) return "yandex";
+    if (has(/^opera/i) || /\bOPR\/|\bOpera\b/.test(agent)) return "opera";
+    if (/\bVivaldi\//.test(agent)) return "any";
+    if (has(/^Microsoft Edge$/)) return "edge";
+    if (has(/^Brave$/) || read(() => typeof nav.brave.isBrave) === "function") return "default";
+    if (has(/^Google Chrome$/)) return "default";
+    return "any";
+  }
+
+  const RATE_MIN_DONE = 5;
+  const NOTE_MAX_SHOWS = 3;
+
+  function shouldShowRate(stats, rateNote, date, flags) {
+    if (flags?.warn || flags?.noteShown) return false;
+    const note = rateNote && typeof rateNote === "object" ? rateNote : {};
+    if (note.done === true || (Number(note.shown) || 0) >= NOTE_MAX_SHOWS) return false;
+    if (errandTotals(stats, date).done < 1) return false;
+    const source = stats && typeof stats === "object" ? stats : {};
+    const total = Object.values(source).reduce((sum, day) => sum + (Number(day?.done) || 0), 0);
+    return total >= RATE_MIN_DONE;
+  }
+
+  function minorOf(version) {
+    const match = /^(\d+)(?:\.(\d+))?(?:\.\d+)*$/.exec(typeof version === "string" ? version : "");
+    return match ? [Number(match[1]), Number(match[2] || 0)] : null;
+  }
+
+  function isNoteworthyUpdate(prev, next) {
+    const a = minorOf(prev);
+    const b = minorOf(next);
+    if (!a || !b) return false;
+    return b[0] > a[0] || (b[0] === a[0] && b[1] > a[1]);
+  }
+
+  function noteVersion(version) {
+    const v = minorOf(version);
+    return v ? `${v[0]}.${v[1]}` : null;
+  }
+
+  function updateNote(prev, next) {
+    return isNoteworthyUpdate(prev, next) ? { version: noteVersion(next), shown: 0 } : null;
+  }
+
+  function shouldShowUpdateNote(note, flags) {
+    if (flags?.warn || flags?.paused || !note || typeof note !== "object" || typeof note.version !== "string") return false;
+    return (Number(note.shown) || 0) < NOTE_MAX_SHOWS;
+  }
+
+  function changesUrl(version) {
+    return `${SITE_URL}/changes/#v${version}`;
+  }
+
   function errandTotals(stats, date) {
     const totals = { done: 0, closed: 0 };
     for (const key of lastDays(7, date)) {
@@ -352,7 +444,23 @@
     HEALTH,
     healthChecks,
     SUBS_SHELF,
+    SEARCH_SHELF,
+    WATCH_LEAK,
     LEAKS,
+    HEALTH_DELAY_MS,
+    HEALTH_MAX_CHECKS,
+    confirmHealth,
+    isShortsTitle,
+    BROWSER_HINTS,
+    browserHint,
+    RATE_MIN_DONE,
+    NOTE_MAX_SHOWS,
+    shouldShowRate,
+    isNoteworthyUpdate,
+    noteVersion,
+    updateNote,
+    shouldShowUpdateNote,
+    changesUrl,
     mergeSettings,
     patchSettings,
     isStrict,

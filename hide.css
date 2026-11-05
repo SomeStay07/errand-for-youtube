@@ -3,7 +3,8 @@ html:not([data-er-show-home]) :is(
   ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(> #content > ytd-rich-shelf-renderer:not([is-shorts])),
   ytd-guide-entry-renderer:has(a[href="/feed/trending"]),
   ytd-guide-entry-renderer:has(a[href^="/feed/explore"]),
-  yt-searchbox:has(input[name="search_query"]:placeholder-shown) .ytSearchboxComponentSuggestionsContainer
+  yt-searchbox:has(:is(input, textarea)[name="search_query"]:placeholder-shown) .ytSearchboxComponentSuggestionsContainer,
+  #home-container-skeleton
 ) {
   display: none !important;
 }
@@ -17,6 +18,7 @@ html:not([data-er-show-shorts]) :is(
   ytd-rich-item-renderer[is-slim-media],
   ytd-video-renderer:has(a[href^="/shorts/"]),
   ytd-grid-video-renderer:has(a[href^="/shorts/"]),
+  yt-lockup-view-model:has(a[href^="/shorts/"]),
   ytm-shorts-lockup-view-model,
   ytm-shorts-lockup-view-model-v2,
   ytd-guide-entry-renderer:has(a[href^="/shorts"]),
@@ -24,12 +26,20 @@ html:not([data-er-show-shorts]) :is(
   ytd-mini-guide-entry-renderer:has(a[href^="/shorts"]),
   ytd-mini-guide-entry-renderer[aria-label="Shorts"],
   yt-tab-shape[tab-title="Shorts"],
+  ytd-rich-section-renderer:has(ytd-mini-game-card-view-model),
+  ytd-guide-entry-renderer:has(a[href^="/playables"]),
+  ytd-mini-guide-entry-renderer:has(a[href^="/playables"]),
+  ytd-watch-flexy #related ytd-horizontal-card-list-renderer,
   [data-er-shorts]
 ) {
   display: none !important;
 }
 
 html:not([data-er-show-related]):not([data-er-reveal]) ytd-watch-flexy :is(#related, ytd-watch-next-secondary-results-renderer) {
+  display: none !important;
+}
+
+html:not([data-er-show-related]) ytd-search ytd-item-section-renderer > #contents > :is(ytd-shelf-renderer, ytd-horizontal-card-list-renderer) {
   display: none !important;
 }
 
@@ -41,6 +51,7 @@ html:not([data-er-show-endscreen]) :is(
   .ytp-endscreen-content,
   .ytp-suggestion-set,
   .ytp-ce-element,
+  .ytp-ce-hide-button-container,
   .ytp-fullscreen-grid,
   .ytp-fullscreen-grid-stills-container,
   .ytp-endscreen-previous,
@@ -210,15 +221,26 @@ html[data-er-page="home"]:not([data-er-show-home]) #er-intent {
   font: 13px Roboto, Arial, sans-serif;
 }
 
-html[data-er-page="watch"] #er-pill {
-  left: auto;
-  right: 16px;
-}
-
-#er-pill span {
+#er-pill :is(span, a) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+#er-pill a {
+  color: inherit;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+#er-pill a:hover,
+#er-pill a:focus-visible {
+  text-decoration: underline;
+}
+
+#er-pill a:focus-visible {
+  outline: 2px solid var(--er-accent);
+  outline-offset: 2px;
 }
 
 #er-pill button,

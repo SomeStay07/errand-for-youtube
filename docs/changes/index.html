@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What changed in Errand</title>
+  <meta name="description" content="Changes you'll notice, version by version. When a YouTube update breaks a filter, the fix is logged in Known issues.">
+  <link rel="canonical" href="https://somestay07.github.io/errand-for-youtube/changes/">
+  <link rel="alternate" hreflang="en" href="https://somestay07.github.io/errand-for-youtube/changes/">
+  <link rel="alternate" hreflang="ru" href="https://somestay07.github.io/errand-for-youtube/ru/changes/">
+  <link rel="alternate" hreflang="x-default" href="https://somestay07.github.io/errand-for-youtube/changes/">
+  <link rel="icon" href="../assets/favicon.png">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="../"><img src="../assets/icon.png" alt="" width="32" height="32"> Errand</a>
+    <nav><a href="../ru/changes/" hreflang="ru">Русский</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>What changed in Errand</h1>
+      <p class="lead">Changes you'll notice, version by version. When a YouTube update breaks a filter, the fix is logged in <a href="../breakage/">Known issues</a>.</p>
+    </section>
+    <section id="v0.3">
+      <h2>0.3</h2>
+      <ul>
+        <li>With Hide recommendations on (the default), search results no longer show recommendation shelves like "People also watched". Untick it to get them back.
+          <ul>
+            <li>The "Latest from" shelf of a channel is hidden too; the channel card and its videos in the results stay.</li>
+          </ul>
+        </li>
+        <li>With YouTube in a language that doesn't say "Shorts" (like Japanese), the Shorts tab and search chip are hidden too, after a brief flash.</li>
+        <li>The "!" now waits for a second failed check, so a slow page raises it less often. A real problem shows in about 12 s.</li>
+        <li>In YouTube's new video page layout, Show comments now moves keyboard focus to the comments.</li>
+        <li>The "Here for" label at the bottom of the page is now a link back to the search results for your errand.</li>
+        <li>The hint under the home question and on the welcome page no longer sends every browser to the puzzle icon: browsers Errand can't recognise get a general hint.</li>
+        <li>After an update like this one, the menu shows "What changed" for up to 3 opens. After 5 finished errands it asks for a store rating, at most 3 times; × ends it.</li>
+        <li>Smaller fixes: YouTube's button for hiding end cards no longer floats alone over the last seconds of a video.</li>
+      </ul>
+    </section>
+    <section id="v0.2">
+      <h2>0.2.1</h2>
+      <ul>
+        <li>Strict mode schedules that cross midnight (say 22:00-06:00) now count the night as the day it starts on.</li>
+        <li>The toolbar tooltip updates when a schedule window or a pause ends.</li>
+        <li>Picking "On a schedule" no longer locks the hours before you set them.</li>
+        <li>The end-of-video prompt closes with Escape and returns focus to the player.</li>
+        <li>Screen readers announce the 10-second countdown once instead of every second.</li>
+        <li>Smaller fixes: settings changes can't be lost while strict mode ends, a cleared time field keeps the saved time, Mixes stay visible on your playlists and library pages.</li>
+      </ul>
+    </section>
+  </main>
+  <footer><a href="../">Errand</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Report a problem</a> · <a href="../breakage/">Breakage log</a></footer>
+</body>
+</html>

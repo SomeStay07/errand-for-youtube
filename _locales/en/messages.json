@@ -362,5 +362,48 @@
   },
   "welcomeReloadOpen": {
     "message": "Reload any YouTube tab you already have open."
+  },
+  "noteUpdated": {
+    "message": "Errand updated to $VERSION$.",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "noteUpdatedLink": {
+    "message": "What changed"
+  },
+  "noteRate": {
+    "message": "A store rating helps other people find Errand."
+  },
+  "noteDismiss": {
+    "message": "Don't show again"
+  },
+  "pillBack": {
+    "message": "Errand: back to the results for \"$TEXT$\"",
+    "placeholders": {
+      "text": {
+        "content": "$1"
+      }
+    }
+  },
+  "intentFooterOpera": {
+    "message": "This is Errand. To change it, click the extensions icon (a cube), then Errand."
+  },
+  "intentFooterYandex": {
+    "message": "This is Errand. To change it, click the Errand icon right of the address bar."
+  },
+  "intentFooterAny": {
+    "message": "This is Errand. To change it, open Errand from your browser's extensions menu."
+  },
+  "welcomePinOpera": {
+    "message": "Pin Errand from the extensions icon (a cube). Settings and \"Report a problem\" live there."
+  },
+  "welcomePinYandex": {
+    "message": "Errand's icon sits right of the address bar. Settings and \"Report a problem\" live there."
+  },
+  "welcomePinAny": {
+    "message": "Find Errand in your browser's extensions menu. Settings and \"Report a problem\" live there."
   }
 }

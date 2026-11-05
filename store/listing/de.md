@@ -16,7 +16,7 @@ Was sich ändert
 • Shorts verschwinden von der Startseite, aus der Suche, den Abos, von Kanalseiten und aus der Seitenleiste. Ihre Links öffnen sich im normalen Player oder gar nicht, wenn du das so einstellst.
 • Videoseiten haben keine Empfehlungsspalte. Wenn du sie brauchst, klick auf "Empfehlungen anzeigen" und warte 10 Sekunden. Kommentare öffnest du mit dem Button "Kommentare anzeigen".
 • Hast du dein Ziel eingetippt, bringt dich am Ende "Zurück zu den Ergebnissen" wieder zur Suche. Playlists laufen wie gewohnt weiter.
-• Mit den Standardeinstellungen sind auch Mixes und die Vorschläge bei leerem Suchfeld ausgeblendet. Im Menü kannst du außerdem Livechat, die Benachrichtigungsglocke und Aufrufe-, Like- und Abonnentenzahlen ausblenden oder Thumbnails abdunkeln, bis du mit der Maus darüberfährst.
+• Mit den Standardeinstellungen sind auch Mixes, die Vorschläge bei leerem Suchfeld und Empfehlungsleisten in den Suchergebnissen ausgeblendet. Im Menü kannst du außerdem Livechat, die Benachrichtigungsglocke und Aufrufe-, Like- und Abonnentenzahlen ausblenden oder Thumbnails abdunkeln, bis du mit der Maus darüberfährst.
 • Der strenge Modus läuft nach Zeitplan, etwa werktags von 9 bis 18 Uhr, und nimmt in dieser Zeit die Buttons zum Wiedereinblenden weg.
 • "15 Min. Pause" schaltet nach 10 Sekunden Wartezeit alles aus und von selbst wieder ein. Im strengen Modus gibt es keine Pause. Auch der strenge Modus geht erst nach 10 Sekunden aus, und nach Zeitplan nur bis zum Ende dieser Stunden.
 • Das Menü zeigt, wie viele Besorgungen du in den letzten 7 Tagen erledigt hast.
@@ -25,7 +25,7 @@ Wenn YouTube etwas ändert, merkst du es
 
 Erweiterungen wie diese gehen meist auf dieselbe Art kaputt. Das Layout ändert sich, Ausgeblendetes taucht wieder auf, und in den Ein-Stern-Bewertungen steht "funktioniert seit dem Update nicht mehr". Auf der Startseite, in der Suche und auf Videoseiten prüft Errand, ob es noch findet, was es ausblendet, und ob Shorts durchgerutscht sind. Hat sich etwas geändert, zeigt das Icon ein "!" und das Menü sagt dir, was nicht mehr funktioniert. Jede Panne kommt in ein öffentliches Protokoll, mit dem Datum, an dem sie gefunden, behoben und im Store veröffentlicht wurde (auf Englisch): https://somestay07.github.io/errand-for-youtube/breakage/
 
-Die Werbeblocker-Warnung erscheint meist, wenn Anfragen oder Werbung blockiert werden. Errand blockiert weder das eine noch das andere: Es blendet Seitenteile aus und fügt ein paar eigene Buttons hinzu. Shorts, Feed und Empfehlungen sind ausgeblendet, bevor die Seite erscheint, also blitzen sie nicht auf.
+Die Werbeblocker-Warnung erscheint meist, wenn Anfragen oder Werbung blockiert werden. Errand blockiert weder das eine noch das andere: Es blendet Seitenteile aus und fügt ein paar eigene Buttons hinzu. Shorts, Feed und Empfehlungen sind ausgeblendet, bevor die Seite erscheint, also blitzen sie nicht auf. Eine Ausnahme: Läuft YouTube in manchen Sprachen, etwa auf Japanisch, können ihr Kanal-Tab und der Suchfilter kurz auftauchen.
 
 Datenschutz
 
@@ -38,6 +38,7 @@ Fragen
 Blockiert es Werbung? Nein. Nimm dafür uBlock Origin; beide vertragen sich.
 Muss ich mich anmelden? Nein.
 [Nur im Chrome Web Store] Brave, Vivaldi, Yandex Browser? Installier es aus dem Chrome Web Store.
+[Nur im Chrome Web Store] Installation hängt oder eine Warnung? Der erweiterte Schutz kennt Errand noch nicht, darum fragt Chrome nach. Hängt die Installation, wie in Arc, stell auf Standardschutz um (Einstellungen > Datenschutz und Sicherheit > Sicherheit), installier Errand und stell zurück.
 Handy? Noch nicht.
 Ist etwas durchgerutscht? Eröffne ein Issue auf GitHub mit einem Screenshot. Fixes nach Updates haben bei mir Vorrang.
 

@@ -2,6 +2,14 @@ const L = globalThis.ErrandLib;
 const t = (key, ...subs) => chrome.i18n.getMessage(key, subs.map(String));
 
 let settings = L.mergeSettings();
+const PIN_KEYS = { default: "welcomePin", edge: "welcomePin", opera: "welcomePinOpera", yandex: "welcomePinYandex", any: "welcomePinAny" };
+
+function pinStep() {
+  try {
+    const key = PIN_KEYS[L.browserHint(navigator, getComputedStyle(document.documentElement))];
+    if (key && t(key)) document.getElementById("pin").dataset.i18n = key;
+  } catch {}
+}
 
 function localize() {
   document.documentElement.lang = chrome.i18n.getUILanguage();
@@ -21,6 +29,7 @@ function renderLines(id) {
 }
 
 async function init() {
+  pinStep();
   localize();
   const data = await chrome.storage.local.get("settings");
   settings = L.mergeSettings(data.settings);

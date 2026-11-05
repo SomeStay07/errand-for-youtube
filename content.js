@@ -16,6 +16,9 @@
   const PLAYER_CHECKS = new Set(["autoplay", "endscreen"]);
   const AUTOPLAY_BUTTON = 'button[data-tooltip-target-id="ytp-autonav-toggle-button"]';
   const SHORTS_LINK_ALLOWED = "#description, ytd-text-inline-expander, ytd-comments, #er-intent";
+  const COMMENTS_PANEL = 'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"]';
+  const SHORTS_GUIDE = 'ytd-guide-entry-renderer a[href^="/shorts"], ytd-mini-guide-entry-renderer a[href^="/shorts"]';
+  const FOOTER_KEYS = { default: "intentFooter", edge: "intentFooter", opera: "intentFooterOpera", yandex: "intentFooterYandex", any: "intentFooterAny" };
 
   function send(message) {
     try {
@@ -143,9 +146,17 @@
         el("a", { href: "/playlist?list=WL" }, t("linkWatchLater")),
         el("a", { href: "/feed/history" }, t("linkHistory")),
       ),
-      el("p", { class: "er-footnote" }, t("intentFooter")),
+      el("p", { class: "er-footnote" }, footnote()),
     );
     document.body.append(el("div", { id: "er-intent" }, form));
+  }
+
+  function footnote() {
+    try {
+      const text = t(FOOTER_KEYS[L.browserHint(navigator, getComputedStyle(root))]);
+      if (text) return text;
+    } catch {}
+    return t("intentFooter");
   }
 
   function renderPill() {
@@ -166,7 +177,7 @@
       pill = el(
         "div",
         { id: "er-pill" },
-        el("span"),
+        el("a"),
         el(
           "button",
           { type: "button", "aria-label": t("pillClear"), title: t("pillClear"), onclick: () => chrome.storage.local.remove("intent") },
@@ -175,7 +186,14 @@
       );
       document.body.append(pill);
     }
-    pill.firstChild.textContent = t("pillLabel", text);
+    const link = pill.firstChild;
+    const back = t("pillBack", text);
+    link.textContent = t("pillLabel", text);
+    link.setAttribute("href", L.searchUrl(text));
+    for (const name of ["title", "aria-label"]) {
+      if (back) link.setAttribute(name, back);
+      else link.removeAttribute(name);
+    }
   }
 
   function mountReveal() {
@@ -212,7 +230,7 @@
     document.getElementById("er-comments")?.remove();
     root.removeAttribute("data-er-reveal-comments");
     const { hide, strict, paused } = effective();
-    document.querySelector("ytd-comments#comments")?.removeAttribute("tabindex");
+    for (const node of document.querySelectorAll(`ytd-comments#comments, ${COMMENTS_PANEL}`)) node.removeAttribute("tabindex");
     if (root.dataset.erPage !== "watch" || !hide.comments || strict || paused) return;
     waitFor("ytd-comments#comments", (comments) => {
       document.getElementById("er-comments")?.remove();
@@ -224,8 +242,9 @@
           onclick: () => {
             root.setAttribute("data-er-reveal-comments", "");
             button.remove();
-            comments.setAttribute("tabindex", "-1");
-            comments.focus({ preventScroll: true });
+            const target = (comments.hidden && document.querySelector(COMMENTS_PANEL)) || comments;
+            target.setAttribute("tabindex", "-1");
+            target.focus({ preventScroll: true });
           },
         },
         t("commentsButton"),
@@ -328,6 +347,8 @@
 
   function scheduleHealth() {
     clearTimeout(healthTimer);
+    let pending = null;
+    let runs = 0;
     const page = root.dataset.erPage;
     const checks = L.HEALTH[page];
     if (!checks) {
@@ -368,15 +389,20 @@
       for (const [name, selector] of L.LEAKS[page] || []) {
         if (effective().hide[name] && !missing.includes(name) && isVisible(selector)) missing.push(name);
       }
-      reportHealth(page, missing);
-    }, 6000);
+      runs += 1;
+      const verdict = L.confirmHealth(pending, missing);
+      pending = verdict.pending;
+      if (verdict.report) reportHealth(page, verdict.report);
+      else if (runs < L.HEALTH_MAX_CHECKS) healthTimer = setTimeout(check, L.HEALTH_DELAY_MS);
+    }, L.HEALTH_DELAY_MS);
   }
 
   function tagShorts() {
     if (!effective().hide.shorts) return;
+    const guide = document.querySelector(SHORTS_GUIDE);
+    const guideLabel = guide?.getAttribute("title") || guide?.textContent || "";
     for (const node of document.querySelectorAll("yt-tab-shape, yt-chip-cloud-chip-renderer")) {
-      const title = (node.getAttribute("tab-title") || node.textContent || "").trim().toLowerCase();
-      node.toggleAttribute("data-er-shorts", title === "shorts");
+      node.toggleAttribute("data-er-shorts", L.isShortsTitle(node.getAttribute("tab-title") || node.textContent, guideLabel));
     }
   }
 
@@ -413,8 +439,13 @@
   }
 
   function whenBody(callback) {
-    if (document.body) callback();
-    else document.addEventListener("DOMContentLoaded", callback, { once: true });
+    if (document.body) return callback();
+    const observer = new MutationObserver(() => {
+      if (!document.body) return;
+      observer.disconnect();
+      callback();
+    });
+    observer.observe(root, { childList: true });
   }
 
   function scheduleResume() {

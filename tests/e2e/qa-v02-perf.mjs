@@ -165,7 +165,7 @@ async function churn(n) {
         navs++;
         await sleep(1500);
       }
-      const box = page.locator('input[name="search_query"]').first();
+      const box = page.locator('[name="search_query"]').first();
       await box.click({ timeout: 5000 }).catch(() => {});
       await box.fill(QUERY).catch(() => {});
       await box.press("Enter").catch(() => {});

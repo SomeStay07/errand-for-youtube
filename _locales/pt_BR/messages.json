@@ -362,5 +362,48 @@
   },
   "welcomeReloadOpen": {
     "message": "Recarregue as abas do YouTube já abertas."
+  },
+  "noteUpdated": {
+    "message": "Errand atualizado para a $VERSION$.",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "noteUpdatedLink": {
+    "message": "O que mudou"
+  },
+  "noteRate": {
+    "message": "Uma avaliação na loja ajuda outras pessoas a achar o Errand."
+  },
+  "noteDismiss": {
+    "message": "Não mostrar de novo"
+  },
+  "pillBack": {
+    "message": "Errand: voltar aos resultados de \"$TEXT$\"",
+    "placeholders": {
+      "text": {
+        "content": "$1"
+      }
+    }
+  },
+  "intentFooterOpera": {
+    "message": "Isto é o Errand. Para mudar, clique no ícone de extensões (um cubo) e depois em Errand."
+  },
+  "intentFooterYandex": {
+    "message": "Isto é o Errand. Para mudar, clique no ícone do Errand à direita da barra de endereço."
+  },
+  "intentFooterAny": {
+    "message": "Isto é o Errand. Para mudar, abra o Errand no menu de extensões do navegador."
+  },
+  "welcomePinOpera": {
+    "message": "Fixe o Errand pelo ícone de extensões (um cubo). As configurações e \"Relatar um problema\" ficam lá."
+  },
+  "welcomePinYandex": {
+    "message": "O ícone do Errand fica à direita da barra de endereço. As configurações e \"Relatar um problema\" ficam lá."
+  },
+  "welcomePinAny": {
+    "message": "Procure o Errand no menu de extensões do navegador. As configurações e \"Relatar um problema\" ficam lá."
   }
 }

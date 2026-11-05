@@ -16,7 +16,7 @@ O que muda
 • Os Shorts somem do Início, da pesquisa, das Inscrições, das páginas de canal e da barra lateral. Os links deles abrem no player normal ou nem abrem, se você escolher assim.
 • A página do vídeo não tem coluna de recomendações. Se precisar dela, clique em "Mostrar recomendações" e espere 10 segundos. Os comentários abrem com um botão "Mostrar comentários".
 • Se você digitou o que veio ver, no fim "Voltar aos resultados" leva de volta à sua pesquisa. Playlists continuam tocando normalmente.
-• Com as configurações padrão, os Mixes e as sugestões com a caixa de pesquisa vazia também ficam ocultos. No menu dá para ocultar ainda o chat ao vivo, o sino de notificações e as contagens de visualizações, curtidas e inscritos, ou esmaecer as miniaturas até passar o mouse.
+• Com as configurações padrão, os Mixes, as sugestões com a caixa de pesquisa vazia e as seções de recomendações no meio dos resultados também ficam ocultos. No menu dá para ocultar ainda o chat ao vivo, o sino de notificações e as contagens de visualizações, curtidas e inscritos, ou esmaecer as miniaturas até passar o mouse.
 • O modo rígido segue um horário, por exemplo de segunda a sexta, das 9h às 18h, e nesse período tira os botões de "mostrar".
 • "Pausar 15 min" desliga tudo depois de 10 segundos de espera e liga de novo sozinho. No modo rígido não há pausa. Desligar o modo rígido também leva 10 segundos, e com horário ele fica desligado só até o fim daquele período.
 • O menu mostra quantos recados você concluiu nos últimos 7 dias.
@@ -25,7 +25,7 @@ Se o YouTube mudar algo, você fica sabendo
 
 Extensões assim costumam quebrar do mesmo jeito. O layout muda, o que estava oculto volta e as avaliações de uma estrela dizem "parou de funcionar depois de uma atualização". No Início, na pesquisa e na página do vídeo, o Errand confere se ainda encontra o que oculta e se nenhum Short escapou. Se algo mudou, o ícone mostra "!" e o menu diz o que parou de funcionar. Cada falha entra num registro público com a data em que foi encontrada, corrigida e publicada na loja (em inglês): https://somestay07.github.io/errand-for-youtube/breakage/
 
-O aviso de bloqueador de anúncios costuma aparecer quando requisições ou anúncios são bloqueados. O Errand não bloqueia nenhum dos dois: ele oculta partes da página e adiciona alguns botões próprios. Shorts, feed e recomendações somem antes de a página aparecer, então não piscam.
+O aviso de bloqueador de anúncios costuma aparecer quando requisições ou anúncios são bloqueados. O Errand não bloqueia nenhum dos dois: ele oculta partes da página e adiciona alguns botões próprios. Shorts, feed e recomendações somem antes de a página aparecer, então não piscam. Uma exceção: com o YouTube em alguns idiomas, como japonês, a aba deles nos canais e o filtro da pesquisa podem aparecer por um instante.
 
 Privacidade
 
@@ -38,6 +38,7 @@ Perguntas
 Bloqueia anúncios? Não. Para isso, use o uBlock Origin; os dois funcionam bem juntos.
 Preciso fazer login? Não.
 [Só na Chrome Web Store] Brave, Vivaldi, Yandex Browser? Instale pela Chrome Web Store.
+[Só na Chrome Web Store] A instalação travou ou apareceu um aviso? A proteção reforçada ainda não inclui o Errand, então o Chrome pede confirmação. Se a instalação ficar girando, como no Arc, mude para a proteção padrão (Configurações > Privacidade e segurança > Segurança), instale e volte como estava.
 Celular? Ainda não.
 Alguma coisa escapou? Abra uma issue no GitHub com uma captura de tela. Consertar o que as atualizações quebram vem sempre primeiro.
 

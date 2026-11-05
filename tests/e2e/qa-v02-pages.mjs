@@ -17,13 +17,20 @@ const health = async () => {
 const SHORTS_ALLOWED = "#description, ytd-text-inline-expander, ytd-comments, #er-intent";
 const scan = () => page.evaluate((allowed) => {
   const vis = (n) => n.getClientRects().length > 0 && getComputedStyle(n).visibility !== "hidden";
+  const guide = document.querySelector('ytd-guide-entry-renderer a[href^="/shorts"], ytd-mini-guide-entry-renderer a[href^="/shorts"]');
+  const label = (guide?.getAttribute("title") || guide?.textContent || "").trim().toLowerCase();
+  const isShorts = (text) => {
+    const t = String(text || "").trim().toLowerCase();
+    return t === "shorts" || (Boolean(label) && t === label);
+  };
   return {
     path: location.pathname + location.search,
     erPage: document.documentElement.dataset.erPage,
     shortsLinks: [...document.querySelectorAll('a[href^="/shorts/"]')].filter((a) => vis(a) && !a.closest(allowed)).length,
     shortsLinksTotal: document.querySelectorAll('a[href^="/shorts/"]').length,
-    shortsChips: [...document.querySelectorAll("yt-chip-cloud-chip-renderer, chip-view-model, yt-chip-cloud-chip-renderer button")].filter((c) => vis(c) && c.textContent.trim().toLowerCase() === "shorts").length,
-    shortsTabs: [...document.querySelectorAll("yt-tab-shape, tp-yt-paper-tab")].filter((t) => vis(t) && (t.getAttribute("tab-title") || t.textContent).trim().toLowerCase() === "shorts").length,
+    shortsChips: [...document.querySelectorAll("yt-chip-cloud-chip-renderer, chip-view-model, yt-chip-cloud-chip-renderer button")].filter((c) => vis(c) && isShorts(c.textContent)).length,
+    shortsTabs: [...document.querySelectorAll("yt-tab-shape, tp-yt-paper-tab")].filter((t) => vis(t) && isShorts(t.getAttribute("tab-title") || t.textContent)).length,
+    guideLabel: label,
     reelShelves: [...document.querySelectorAll("ytd-reel-shelf-renderer, grid-shelf-view-model, ytd-rich-shelf-renderer[is-shorts]")].filter(vis).length,
     videos: [...document.querySelectorAll("ytd-video-renderer, yt-lockup-view-model, ytd-rich-item-renderer, ytd-grid-video-renderer")].filter(vis).length,
     mixes: [...document.querySelectorAll('ytd-radio-renderer, yt-lockup-view-model:has(a[href*="start_radio=1"])')].filter(vis).length,
@@ -32,6 +39,12 @@ const scan = () => page.evaluate((allowed) => {
     relatedShorts: [...document.querySelectorAll('ytd-watch-flexy #related a[href^="/shorts/"]')].filter(vis).length,
     playlistAttr: document.documentElement.hasAttribute("data-er-playlist"),
     pill: document.getElementById("er-pill")?.getClientRects().length ? document.getElementById("er-pill").textContent : null,
+    pillLink: (() => {
+      const a = document.querySelector("#er-pill a");
+      return a ? { href: a.getAttribute("href"), text: a.textContent, title: a.getAttribute("title"), aria: a.getAttribute("aria-label") } : null;
+    })(),
+    pillButtons: document.querySelectorAll("#er-pill button").length,
+    footnote: document.querySelector("#er-intent .er-footnote")?.textContent ?? null,
     question: Boolean(document.getElementById("er-intent")?.getClientRects().length),
     focused: document.activeElement?.closest?.("#er-intent") ? "intent" : document.activeElement?.tagName,
   };
@@ -44,6 +57,34 @@ await sleep(4000);
 const home = await scan();
 await page.screenshot({ path: join(OUT, "G-home.png") });
 check("home: question shown, feed hidden, input focused", home.question && home.focused === "intent" && !(await page.evaluate(() => document.querySelector('ytd-browse[page-subtype="home"]')?.getClientRects().length)), home);
+const msg = (key, ...subs) => W.evaluate(([k, s]) => chrome.i18n.getMessage(k, s), [key, subs]);
+const footerAny = await msg("intentFooterAny");
+if (footerAny) check("B5 headless Chrome for Testing (no 'Google Chrome' brand): footnote = intentFooterAny, question keeps focus", home.footnote === footerAny && home.focused === "intent", { footnote: home.footnote, footerAny });
+else check("B5 footnote = intentFooterAny", null, `key intentFooterAny missing in _locales (Lane 3); footnote falls back to intentFooter: ${home.footnote === (await msg("intentFooter"))}`);
+const f3 = await page.evaluate(async () => {
+  const input = document.querySelector('yt-searchbox input[name="search_query"]');
+  const box = document.querySelector("yt-searchbox .ytSearchboxComponentSuggestionsContainer");
+  if (!input || !box) return { input: Boolean(input), box: Boolean(box) };
+  const area = document.createElement("textarea");
+  area.name = "search_query";
+  area.placeholder = "Search";
+  input.replaceWith(area);
+  box.hidden = false;
+  box.style.display = "block";
+  const child = document.createElement("div");
+  child.style.height = "20px";
+  box.append(child);
+  const height = () => Math.round(box.getBoundingClientRect().height);
+  const empty = height();
+  area.value = "a";
+  await new Promise((r) => requestAnimationFrame(r));
+  const typed = height();
+  area.replaceWith(input);
+  child.remove();
+  box.removeAttribute("style");
+  return { empty, typed };
+});
+check("F3 textarea search box: empty → suggestions container height 0, typed → visible", f3.empty === 0 && f3.typed > 0, f3);
 await sleep(5000);
 let h = await health();
 check("health home: no false '!'", h.badge !== "!" && h.entry?.missing.length === 0, h);
@@ -56,6 +97,21 @@ const s1 = await scan();
 const intent = await W.evaluate(() => chrome.storage.local.get("intent"));
 await page.screenshot({ path: join(OUT, "G-search-pill.png") });
 check("home question → search: intent stored, pill visible", intent.intent?.text === QUERY && s1.pill?.includes(QUERY), { pill: s1.pill, intent: intent.intent });
+const firstWatch = await page.evaluate(() => document.querySelector('ytd-video-renderer a#thumbnail[href^="/watch"], yt-lockup-view-model a[href^="/watch"]')?.getAttribute("href"));
+await page.goto(`https://www.youtube.com${firstWatch}`, { waitUntil: "domcontentloaded" });
+await page.waitForSelector("#er-pill a", { timeout: 15000 }).catch(() => {});
+const pw = await scan();
+const resultsPath = `/results?search_query=${encodeURIComponent(QUERY)}`;
+const pillBack = await msg("pillBack", QUERY);
+check("P1 watch page: pill label is a link to the results for the errand, × is the only button", pw.pillLink?.href === resultsPath && pw.pillLink.text === (await msg("pillLabel", QUERY)) && pw.pillButtons === 1, { pillLink: pw.pillLink, pillButtons: pw.pillButtons, url: page.url() });
+if (pillBack) check("P1 pill link title and aria-label = pillBack", pw.pillLink?.title === pillBack && pw.pillLink.aria === pillBack, { pillLink: pw.pillLink, pillBack });
+else check("P1 pill link title and aria-label = pillBack", null, `key pillBack missing in _locales (Lane 3); title=${pw.pillLink?.title ?? null}`);
+await page.locator("#er-pill a").focus();
+await page.keyboard.press("Enter");
+await page.waitForURL(/\/results\?search_query=/, { timeout: 15000 }).catch(() => {});
+await sleep(3000);
+const pBack = await scan();
+check("P1 Enter on the pill link → results for the errand, pill still there", new URL(page.url()).pathname === "/results" && new URL(page.url()).searchParams.get("search_query") === QUERY && Boolean(pBack.pill), { url: page.url(), pill: pBack.pill });
 check(`search "${QUERY}": no visible Shorts, no Shorts chip`, s1.shortsLinks === 0 && s1.shortsChips === 0 && s1.reelShelves === 0 && s1.videos > 5, s1);
 await sleep(3000);
 h = await health();
@@ -195,6 +251,55 @@ for (const q of ["minecraft", "how to tie a tie", "music video", "gaming highlig
     g1.at(-1).playable = await page.evaluate(() => Number.isFinite(document.querySelector("video.html5-main-video")?.duration));
   }
 }
+const fixtureHeights = () =>
+  page.evaluate(() => Object.fromEntries(["qa-lockup", "qa-watchplay", "qa-playables"].map((id) => [id, Math.round(document.getElementById(id)?.getBoundingClientRect().height ?? -1)])));
+await page.goto(page.url(), { waitUntil: "domcontentloaded" });
+await page.waitForSelector("ytd-watch-flexy #related", { state: "attached", timeout: 20000 }).catch(() => {});
+await page.evaluate(() => {
+  const related = document.querySelector("ytd-watch-flexy #related");
+  const lockup = document.createElement("yt-lockup-view-model");
+  lockup.id = "qa-lockup";
+  lockup.style.cssText = "display:block;height:40px";
+  const a = document.createElement("a");
+  a.href = "/shorts/qaLockup1";
+  a.textContent = "qa lockup";
+  lockup.append(a);
+  const play = document.createElement("ytd-horizontal-card-list-renderer");
+  play.id = "qa-watchplay";
+  play.style.cssText = "display:block;height:40px";
+  related?.prepend(lockup, play);
+});
+const f1At = Date.now();
+await sleep(1000);
+const f1Hidden = await fixtureHeights();
+await sleep(Math.max(0, 14000 - (Date.now() - f1At)));
+const f1Health = await health();
+check("F1/S1 'Just hide Shorts' watch: Shorts lockup and Watch & Play in #related height 0, no '!' after 14 s", f1Hidden["qa-lockup"] === 0 && f1Hidden["qa-watchplay"] === 0 && f1Health.badge !== "!", { f1Hidden, f1Health });
+await setSettings({ shortsMode: "show" });
+await sleep(800);
+const f1Shown = await fixtureHeights();
+check("F1/S1 shortsMode=show: the same lockup and Watch & Play visible", f1Shown["qa-lockup"] > 0 && f1Shown["qa-watchplay"] > 0, f1Shown);
+await setSettings({ shortsMode: "watch" });
+await page.goto("https://www.youtube.com/", { waitUntil: "domcontentloaded" });
+await page.waitForSelector('ytd-browse[page-subtype="home"]', { state: "attached", timeout: 20000 }).catch(() => {});
+await sleep(2500);
+const s1Card = await page.evaluate(async () => {
+  const section = document.createElement("ytd-rich-section-renderer");
+  section.id = "qa-playables";
+  section.style.cssText = "display:block;height:40px";
+  (document.querySelector('ytd-browse[page-subtype="home"] #contents') || document.querySelector("ytd-app")).prepend(section);
+  await new Promise((r) => setTimeout(r, 300));
+  section.append(document.createElement("ytd-mini-game-card-view-model"));
+  await new Promise((r) => setTimeout(r, 300));
+  return Boolean(section.querySelector("ytd-mini-game-card-view-model"));
+});
+await sleep(500);
+const s1Hidden = await fixtureHeights();
+await setSettings({ shortsMode: "show" });
+await sleep(800);
+const s1Shown = await fixtureHeights();
+await setSettings({ shortsMode: "watch" });
+check("S1 home Playables shelf: hidden with Shorts, visible with shortsMode=show", s1Hidden["qa-playables"] === 0 && s1Shown["qa-playables"] > 0, { s1Card, s1Hidden, s1Shown });
 await page.screenshot({ path: join(OUT, "G1-shorts-preset-watch.png") });
 check("G1 preset 'Just hide Shorts': 3 watch + 2+ searches, zero visible Shorts, column has normal videos", g1.every((x) => x.shortsLinks === 0 && (x.kind === "search" ? x.videos > 5 && x.shelves === 0 : x.related && x.relatedItems > 3)), g1);
 check("G2 (automated part) preset 'Just hide Shorts': no '!' on those watch pages", g1.filter((x) => x.kind === "watch").every((x) => x.badge !== "!"), g1.filter((x) => x.kind === "watch"));
@@ -205,11 +310,11 @@ await sleep(400);
 await page.goto(`https://www.youtube.com/results?search_query=minecraft`, { waitUntil: "domcontentloaded" });
 await sleep(5000);
 const total = await page.evaluate(() => document.querySelectorAll('a[href^="/shorts/"]').length);
-await page.addStyleTag({ content: `html:not([data-er-show-shorts]):not([data-qa]):not([data-qb]) :is(ytd-reel-shelf-renderer, grid-shelf-view-model, ytd-video-renderer, ytm-shorts-lockup-view-model, ytm-shorts-lockup-view-model-v2, [data-er-shorts]) { display: block !important; }` });
-await page.locator('input[name="search_query"]').first().fill("minecraft shorts");
-await page.locator('input[name="search_query"]').first().press("Enter");
+await page.addStyleTag({ content: `html:not([data-er-show-shorts]):not(#qa-a):not(#qa-b) :is(ytd-reel-shelf-renderer, grid-shelf-view-model, ytd-video-renderer, ytm-shorts-lockup-view-model, ytm-shorts-lockup-view-model-v2, yt-lockup-view-model, ytd-shelf-renderer, ytd-horizontal-card-list-renderer, [data-er-shorts]) { display: block !important; }` });
+await page.locator('[name="search_query"]').first().fill("minecraft shorts");
+await page.locator('[name="search_query"]').first().press("Enter");
 await page.waitForURL(/minecraft\+shorts|minecraft%20shorts/, { timeout: 15000 }).catch(() => {});
-await sleep(9000);
+await sleep(14000);
 const leak = await scan();
 h = await health();
 await page.screenshot({ path: join(OUT, "G-forced-leak.png") });

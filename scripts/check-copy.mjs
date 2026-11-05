@@ -38,7 +38,7 @@ for (const lang of ["en", "ru", "es", "pt_BR", "de"]) {
   multi[`_locales/${lang}`] = [lang, Object.values(msgs).map((m) => m.message).join("\n")];
 }
 multi["docs/index.html"] = ["en", strip(readFileSync(join(ROOT, "docs/index.html"), "utf8"))];
-for (const page of ["hide-youtube-shorts", "youtube-without-recommendations", "alternatives", "hide-youtube-end-screen", "breakage", "bye"]) {
+for (const page of ["hide-youtube-shorts", "youtube-without-recommendations", "alternatives", "hide-youtube-end-screen", "breakage", "bye", "changes"]) {
   const file = join(ROOT, "docs", page, "index.html");
   if (existsSync(file)) multi[`docs/${page}`] = ["en", strip(readFileSync(file, "utf8"))];
 }
@@ -70,7 +70,7 @@ const sources = {
   "_locales/ru": Object.values(messages).map((m) => m.message.replace(/\$\w+\$/g, "X")).join(".\n"),
   "docs/ru/index.html": strip(readFileSync(join(ROOT, "docs/ru/index.html"), "utf8")),
 };
-for (const page of ["kak-ubrat-shorts-youtube", "youtube-bez-rekomendaciy", "kak-ubrat-konechnuyu-zastavku-youtube"]) {
+for (const page of ["kak-ubrat-shorts-youtube", "youtube-bez-rekomendaciy", "kak-ubrat-konechnuyu-zastavku-youtube", "changes"]) {
   const file = join(ROOT, "docs/ru", page, "index.html");
   if (existsSync(file)) sources[`docs/ru/${page}`] = strip(readFileSync(file, "utf8"));
 }

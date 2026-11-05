@@ -448,3 +448,181 @@ test("patchSettings keeps the stored value when a patch value would be rejected"
   assert.deepEqual(L.patchSettings(stored, { strictDays: [9] }).strictDays, L.DEFAULTS.strictDays);
   assert.deepEqual(L.patchSettings(stored, { strictDays: [] }).strictDays, []);
 });
+
+const hideCss = () => require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "hide.css"), "utf8");
+
+function cssGroup(css, start) {
+  const from = css.indexOf(start);
+  assert.ok(from >= 0, start);
+  return css.slice(from, css.indexOf("}", from));
+}
+
+test("Shorts inside the new lockup, Playables and Watch & Play follow the Shorts setting", () => {
+  const css = hideCss();
+  const shorts = cssGroup(css, "html:not([data-er-show-shorts])");
+  for (const part of [
+    'yt-lockup-view-model:has(a[href^="/shorts/"])',
+    "ytd-rich-section-renderer:has(ytd-mini-game-card-view-model)",
+    'ytd-guide-entry-renderer:has(a[href^="/playables"])',
+    'ytd-mini-guide-entry-renderer:has(a[href^="/playables"])',
+    "ytd-watch-flexy #related ytd-horizontal-card-list-renderer",
+  ]) {
+    assert.ok(shorts.includes(part), part);
+  }
+  assert.ok(!shorts.includes("start_radio"));
+  const radio = cssGroup(css, 'html:not([data-er-page="channel"]');
+  assert.ok(radio.includes('yt-lockup-view-model:has(a[href*="start_radio=1"])'));
+});
+
+test("end-card hide button goes with the end cards, and HEALTH does not check it", () => {
+  const endscreen = cssGroup(hideCss(), "html:not([data-er-show-endscreen])");
+  assert.ok(endscreen.includes(".ytp-ce-element"));
+  assert.ok(endscreen.includes(".ytp-ce-hide-button-container"));
+  assert.ok(!L.HEALTH.watch.some(([, selector]) => selector.includes("ytp-ce-hide-button-container")));
+});
+
+test("empty-search suggestions stay hidden whether the box is an input or a textarea", () => {
+  const css = hideCss();
+  const homeGroup = css.slice(0, css.indexOf("}"));
+  assert.ok(homeGroup.includes(':is(input, textarea)[name="search_query"]:placeholder-shown'));
+  assert.match(homeGroup, /,\n  #home-container-skeleton\n\) \{/);
+  assert.ok(!css.includes('has(input[name="search_query"]'));
+});
+
+test("search shelves follow the related filter", () => {
+  const css = hideCss();
+  const group = cssGroup(css, `html:not([data-er-show-related]) ${L.SEARCH_SHELF}`);
+  assert.ok(group.startsWith("html:not([data-er-show-related]) "));
+  assert.ok(group.includes(L.SEARCH_SHELF));
+  assert.match(L.SEARCH_SHELF, /^ytd-search ytd-item-section-renderer > #contents > /);
+  assert.ok(!group.includes(":has("));
+  assert.ok(!group.includes("data-er-reveal"));
+  assert.doesNotMatch(group, /People|Latest|watched/i);
+  assert.deepEqual(L.LEAKS.search.map(([name]) => name), ["related"]);
+  const [, leak] = L.LEAKS.search[0];
+  assert.ok(leak.includes("ytd-search ytd-shelf-renderer"));
+  assert.ok(leak.includes(":not(ytd-expandable-metadata-renderer *)"));
+  assert.deepEqual(L.HEALTH.search, [["results", "ytd-search"]]);
+});
+
+test("a related card outside the related column on watch pages counts as a leak", () => {
+  assert.deepEqual(L.LEAKS.watch.map(([name]) => name), ["related"]);
+  const [, leak] = L.LEAKS.watch[0];
+  assert.equal(leak, L.WATCH_LEAK);
+  assert.ok(leak.startsWith("html:not([data-er-reveal]) "));
+  for (const part of ["ytd-watch-grid", "#movie_player", "ytd-playlist-panel-renderer", "ytd-engagement-panel-section-list-renderer", "#player-ads"]) {
+    assert.ok(leak.includes(part), part);
+  }
+  assert.deepEqual(
+    L.HEALTH.watch.map(([name]) => name),
+    ["player", "related", "comments", "autoplay", "endscreen"],
+  );
+  assert.deepEqual(L.LEAKS.subs.map(([name]) => name), ["home"]);
+});
+
+test("confirmHealth reports a filter only after it fails two checks in a row", () => {
+  assert.deepEqual(L.confirmHealth(null, []), { report: [], pending: null });
+  assert.deepEqual(L.confirmHealth(null, ["a"]), { report: null, pending: ["a"] });
+  assert.deepEqual(L.confirmHealth(["a"], ["a"]), { report: ["a"], pending: null });
+  assert.deepEqual(L.confirmHealth(["a", "b"], ["b"]), { report: ["b"], pending: null });
+  assert.deepEqual(L.confirmHealth(["a"], ["b"]), { report: null, pending: ["b"] });
+  assert.deepEqual(L.confirmHealth(["a"], []), { report: [], pending: null });
+  assert.equal(L.HEALTH_DELAY_MS, 6000);
+  assert.equal(L.HEALTH_MAX_CHECKS, 3);
+});
+
+test("isShortsTitle matches YouTube's own Shorts label in any language", () => {
+  assert.equal(L.isShortsTitle("ショート", "ショート"), true);
+  assert.equal(L.isShortsTitle("動画", "ショート"), false);
+  assert.equal(L.isShortsTitle("shorts", ""), true);
+  assert.equal(L.isShortsTitle("short", "shorts"), false);
+  assert.equal(L.isShortsTitle(" Shorts ", null), true);
+  assert.equal(L.isShortsTitle("", ""), false);
+  assert.equal(L.isShortsTitle(undefined, undefined), false);
+});
+
+test("browserHint picks the wording for the browser and falls back to neutral", () => {
+  const nav = (brands, extra = {}) => ({ userAgentData: { brands: brands.map((brand) => ({ brand, version: "151" })) }, ...extra });
+  const style = (value) => ({ getPropertyValue: (name) => (name === "--arc-palette-title" ? value : "") });
+  const chromeUa = "Mozilla/5.0 (Macintosh) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36";
+  assert.equal(L.browserHint(nav(["Google Chrome", "Chromium", "Not.A/Brand"]), style("")), "default");
+  assert.equal(L.browserHint(nav(["Microsoft Edge", "Chromium"])), "edge");
+  assert.equal(L.browserHint(nav(["Brave", "Chromium"], { brave: { isBrave: () => Promise.resolve(true) } })), "default");
+  assert.equal(L.browserHint(nav(["Google Chrome", "Chromium"]), style("#123")), "any");
+  assert.equal(L.browserHint(nav(["Opera", "Chromium"])), "opera");
+  assert.equal(L.browserHint({ userAgent: `${chromeUa} Vivaldi/7.0` }), "any");
+  assert.equal(L.browserHint({ userAgent: `${chromeUa} YaBrowser/25.2` }), "yandex");
+  assert.equal(L.browserHint(nav(["Chromium", "Not.A/Brand"])), "any");
+  assert.equal(L.browserHint({}), "any");
+  for (const garbage of [null, undefined, "x", 1, { userAgentData: { brands: "x" } }, { userAgentData: { brands: [null] } }]) {
+    assert.doesNotThrow(() => L.browserHint(garbage, garbage));
+    assert.equal(L.browserHint(garbage, garbage), "any");
+  }
+});
+
+test("browserHint never lets a copied Chrome brand outrank a fork signal", () => {
+  const throwing = new Proxy({}, { get() { throw new Error("boom"); } });
+  assert.equal(L.browserHint(throwing, throwing), "any");
+  assert.equal(L.browserHint({ userAgentData: { brands: [{ brand: "Google Chrome" }] } }, throwing), "default");
+  assert.equal(L.browserHint({ userAgentData: { brands: [{ brand: "Google Chrome" }] }, userAgent: "Chrome/151 OPR/120.0" }), "opera");
+  assert.equal(L.browserHint({ userAgentData: { brands: [{ brand: "Yandex" }, { brand: "Chromium" }] } }), "yandex");
+  assert.equal(L.browserHint({ userAgentData: { brands: [{ brand: "Opera GX" }] } }), "opera");
+  assert.equal(L.browserHint({ userAgentData: { brands: [{ brand: "Google Chrome" }] }, userAgent: "Chrome/151 Vivaldi/7.0" }), "any");
+  assert.equal(L.browserHint({ brave: { isBrave() {} } }), "default");
+  assert.equal(L.browserHint({ userAgentData: { brands: [{ brand: "Google Chrome" }] } }, { getPropertyValue: () => "  " }), "default");
+  assert.deepEqual(L.BROWSER_HINTS, ["default", "edge", "opera", "yandex", "any"]);
+});
+
+test("shouldShowRate asks once enough errands are done, then never again", () => {
+  const date = new Date(2026, 10, 20, 12);
+  const days = (counts) => Object.fromEntries(counts.map(([back, done]) => [L.dayKey(new Date(2026, 10, 20 - back)), { done }]));
+  const five = days([[0, 2], [3, 1], [12, 2]]);
+  assert.equal(L.shouldShowRate(days([[0, 2], [3, 1], [12, 1]]), undefined, date), false);
+  assert.equal(L.shouldShowRate(five, undefined, date), true);
+  assert.equal(L.shouldShowRate(five, { shown: 2, done: false }, date), true);
+  assert.equal(L.shouldShowRate(five, { shown: 3, done: false }, date), false);
+  assert.equal(L.shouldShowRate(five, { shown: 0, done: true }, date), false);
+  assert.equal(L.shouldShowRate(five, null, date, { warn: true }), false);
+  assert.equal(L.shouldShowRate(five, null, date, { noteShown: true }), false);
+  assert.equal(L.shouldShowRate(days([[10, 3], [20, 2]]), null, date), false);
+  assert.equal(L.shouldShowRate(undefined, undefined, date), false);
+  assert.equal(L.shouldShowRate(five, "x", date, null), true);
+  assert.equal(L.RATE_MIN_DONE, 5);
+  assert.equal(L.NOTE_MAX_SHOWS, 3);
+});
+
+test("only a major or minor version change is worth an update note", () => {
+  assert.equal(L.isNoteworthyUpdate("0.2.1", "0.3.0"), true);
+  assert.equal(L.isNoteworthyUpdate("0.3.0", "0.3.1"), false);
+  assert.equal(L.isNoteworthyUpdate("0.3.1", "1.0.0"), true);
+  assert.equal(L.isNoteworthyUpdate(undefined, "0.3.0"), false);
+  assert.equal(L.isNoteworthyUpdate("x", "0.3.0"), false);
+  assert.equal(L.isNoteworthyUpdate("0.3.0", "0.2.9"), false);
+  assert.equal(L.isNoteworthyUpdate("0.3.0", "0.3.0"), false);
+  assert.equal(L.isNoteworthyUpdate("0.2.1", "y"), false);
+  assert.equal(L.noteVersion("0.3.0"), "0.3");
+  assert.equal(L.noteVersion("1.12.4.2"), "1.12");
+  assert.equal(L.noteVersion("x"), null);
+  assert.deepEqual(L.updateNote("0.2.1", "0.3.0"), { version: "0.3", shown: 0 });
+  assert.equal(L.updateNote("0.3.0", "0.3.1"), null);
+  assert.equal(L.updateNote(undefined, "0.3.0"), null);
+});
+
+test("the update note shows up to three times and gives way to a broken filter or a pause", () => {
+  const note = { version: "0.3", shown: 0 };
+  assert.equal(L.shouldShowUpdateNote(note), true);
+  assert.equal(L.shouldShowUpdateNote({ version: "0.3", shown: 2 }), true);
+  assert.equal(L.shouldShowUpdateNote({ version: "0.3", shown: 3 }), false);
+  assert.equal(L.shouldShowUpdateNote(note, { warn: true }), false);
+  assert.equal(L.shouldShowUpdateNote(note, { paused: true }), false);
+  assert.equal(L.shouldShowUpdateNote(undefined), false);
+  assert.equal(L.shouldShowUpdateNote({ shown: 0 }), false);
+  assert.equal(L.changesUrl("0.3"), `${L.SITE_URL}/changes/#v0.3`);
+});
+
+test("the pill text is a link that keeps its colour and shows a focus ring", () => {
+  const css = hideCss();
+  assert.match(css, /#er-pill :is\(span, a\) \{[^}]*text-overflow: ellipsis/);
+  assert.match(css, /#er-pill a \{[^}]*color: inherit;[^}]*text-decoration: none;/);
+  assert.match(css, /#er-pill a:focus-visible \{[^}]*outline: 2px solid var\(--er-accent\)/);
+});

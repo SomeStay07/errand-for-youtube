@@ -16,7 +16,7 @@ Qué cambia
 • Los Shorts desaparecen de Inicio, la búsqueda, Suscripciones, las páginas de canal y el menú lateral. Sus enlaces se abren en el reproductor normal o no se abren, si así lo eliges.
 • La página del vídeo no tiene columna de recomendaciones. Si la necesitas, pulsa "Mostrar recomendaciones" y espera 10 segundos. Los comentarios se abren con un botón "Mostrar comentarios".
 • Si escribiste a qué venías, al final "Volver a los resultados" te devuelve a tu búsqueda. Las listas de reproducción siguen como siempre.
-• Con los ajustes por defecto también se ocultan los Mixes y las sugerencias con el cuadro de búsqueda vacío. En el menú puedes ocultar además el chat en directo, la campana y los contadores de visualizaciones, "me gusta" y suscriptores, o atenuar las miniaturas hasta que pases el ratón por encima.
+• Con los ajustes por defecto también se ocultan los Mixes, las sugerencias con el cuadro de búsqueda vacío y las secciones de recomendaciones dentro de los resultados. En el menú puedes ocultar además el chat en directo, la campana y los contadores de visualizaciones, "me gusta" y suscriptores, o atenuar las miniaturas hasta que pases el ratón por encima.
 • El modo estricto se activa según un horario, por ejemplo de lunes a viernes de 9 a 18, y en esas horas quita los botones de "mostrar".
 • "Pausar 15 min" lo desactiva todo tras 10 segundos de espera y vuelve a activarlo solo. En modo estricto no hay pausa. Desactivar el modo estricto también lleva 10 segundos, y con horario solo queda desactivado hasta que acaban esas horas.
 • El menú muestra cuántos recados terminaste en los últimos 7 días.
@@ -25,7 +25,7 @@ Si YouTube cambia algo, te enteras
 
 Las extensiones como esta suelen romperse igual. Cambia el diseño, lo oculto vuelve a asomar y las reseñas de una estrella dicen "dejó de funcionar tras una actualización". En Inicio, en la búsqueda y en la página del vídeo, Errand comprueba que sigue encontrando lo que oculta y que no se ha colado ningún Short. Si algo cambió, el icono muestra "!" y el menú te dice qué ha dejado de funcionar. Cada fallo se apunta en un registro público con la fecha en que se encontró, se arregló y llegó a la tienda (en inglés): https://somestay07.github.io/errand-for-youtube/breakage/
 
-El aviso de bloqueador de anuncios suele saltar cuando se bloquean peticiones o anuncios. Errand no bloquea ni lo uno ni lo otro: oculta partes de la página y añade algunos botones propios. Los Shorts, el feed y las recomendaciones se ocultan antes de que aparezca la página, así que no parpadean.
+El aviso de bloqueador de anuncios suele saltar cuando se bloquean peticiones o anuncios. Errand no bloquea ni lo uno ni lo otro: oculta partes de la página y añade algunos botones propios. Los Shorts, el feed y las recomendaciones se ocultan antes de que aparezca la página, así que no parpadean. Una excepción: con YouTube en algunos idiomas, como el japonés, su pestaña en los canales y el filtro de búsqueda pueden verse un momento.
 
 Privacidad
 
@@ -38,6 +38,7 @@ Preguntas
 ¿Bloquea anuncios? No. Para eso usa uBlock Origin; funcionan bien juntos.
 ¿Tengo que iniciar sesión? No.
 [Solo en Chrome Web Store] ¿Brave, Vivaldi, Yandex Browser? Instálala desde Chrome Web Store.
+[Solo en Chrome Web Store] ¿La instalación no avanza o hay un aviso? La protección mejorada aún no incluye Errand, así que Chrome te pide confirmar. Si la instalación no avanza, como en Arc, pasa a protección estándar (Configuración > Privacidad y seguridad > Seguridad), instala y vuelve a cambiarla.
 ¿Móvil? Todavía no.
 ¿Se ha colado algo? Abre una incidencia en GitHub con una captura de pantalla. Lo que rompen las actualizaciones es lo primero que arreglo.
 

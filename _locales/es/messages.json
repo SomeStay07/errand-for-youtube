@@ -362,5 +362,48 @@
   },
   "welcomeReloadOpen": {
     "message": "Recarga las pestañas de YouTube que ya tengas abiertas."
+  },
+  "noteUpdated": {
+    "message": "Errand se ha actualizado a la $VERSION$.",
+    "placeholders": {
+      "version": {
+        "content": "$1"
+      }
+    }
+  },
+  "noteUpdatedLink": {
+    "message": "Qué ha cambiado"
+  },
+  "noteRate": {
+    "message": "Una valoración en la tienda ayuda a otros a encontrar Errand."
+  },
+  "noteDismiss": {
+    "message": "No volver a mostrar"
+  },
+  "pillBack": {
+    "message": "Errand: volver a los resultados de \"$TEXT$\"",
+    "placeholders": {
+      "text": {
+        "content": "$1"
+      }
+    }
+  },
+  "intentFooterOpera": {
+    "message": "Esto es Errand. Para cambiarlo, pulsa el icono de extensiones (un cubo) y luego Errand."
+  },
+  "intentFooterYandex": {
+    "message": "Esto es Errand. Para cambiarlo, pulsa el icono de Errand a la derecha de la barra de direcciones."
+  },
+  "intentFooterAny": {
+    "message": "Esto es Errand. Para cambiarlo, abre Errand desde el menú de extensiones del navegador."
+  },
+  "welcomePinOpera": {
+    "message": "Fija Errand desde el icono de extensiones (un cubo). Ahí están los ajustes e \"Informar de un problema\"."
+  },
+  "welcomePinYandex": {
+    "message": "El icono de Errand está a la derecha de la barra de direcciones. Ahí están los ajustes e \"Informar de un problema\"."
+  },
+  "welcomePinAny": {
+    "message": "Busca Errand en el menú de extensiones del navegador. Ahí están los ajustes e \"Informar de un problema\"."
   }
 }

@@ -47,7 +47,7 @@ await page.evaluate(() => {
   a.style.cssText = "position:fixed;top:70px;left:10px;z-index:99999;background:#c00;color:#fff;padding:8px";
   document.querySelector("ytd-app").append(a);
 });
-const sLeak = await waitFor((s) => s.badge === "!", 15000);
+const sLeak = await waitFor((s) => s.badge === "!", 18000);
 check("S1 search: visible Shorts link → '!' and html[data-er-health] = stored missing list", sLeak.badge === "!" && sLeak.entry?.missing.includes("shorts") && sLeak.attr === sLeak.entry.missing.join(","), sLeak);
 await page.screenshot({ path: join(OUT, "HS-search-leak.png") });
 await setSettings({ shortsMode: "show" });
@@ -69,7 +69,7 @@ await page.evaluate(() => {
   document.querySelector("ytd-watch-flexy #related")?.remove();
 });
 await setSettings({ endPrompt: false });
-const wLeak = await waitFor((s) => s.badge === "!", 12000);
+const wLeak = await waitFor((s) => s.badge === "!", 18000);
 check("S2 watch: #related removed + unrelated settings change → '!' naming related, attr matches", wLeak.badge === "!" && wLeak.entry?.missing.includes("related") && wLeak.attr === wLeak.entry.missing.join(","), wLeak);
 await page.screenshot({ path: join(OUT, "HS-watch-related-missing.png") });
 await setSettings({ hide: { related: false } });

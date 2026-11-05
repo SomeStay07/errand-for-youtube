@@ -8,7 +8,7 @@ SITE = "https://somestay07.github.io/errand-for-youtube/"
 GH = "https://github.com/SomeStay07/errand-for-youtube"
 PRIVACY = f"{GH}/blob/main/PRIVACY.md"
 SINGLE = "Errand reduces distraction on youtube.com. It hides Shorts, the home feed, recommendations and end-screen suggestions, replaces the home page with a \"What are you here for?\" search box, and offers to close the tab when a video ends. All features act only on www.youtube.com pages."
-STORAGE = "Saves the user's settings, the optional goal typed on the home page (deleted after 3 hours), daily counts of errands for the last 30 days, pause and strict-mode timer times, and a short local log of filters that stopped working, in local extension storage. Nothing is transmitted."
+STORAGE = "Saves in local extension storage: the user's settings; the optional answer typed into the home page question (cleared once older than 3 hours); daily counts of errands for the last 30 days and a timestamp of the last counted errand, so one errand is not counted twice; pause and strict-mode timer times; a short local log of filters that stopped working; which version's update note was shown and how many times; whether the rating note was shown or dismissed. Saves in session storage, cleared when the browser closes: each open YouTube tab's page type, broken filter names and check time, for the toolbar badge. Nothing is transmitted."
 HOST = "The content script and CSS must run on YouTube pages to hide Shorts, the feed, recommendations and comments before the page draws, to add the extension's own buttons (show recommendations, close tab), and to check that its filters still match YouTube's layout. It runs on no other site; embeds are excluded."
 
 

@@ -46,6 +46,10 @@ try {
           buttonRows: rows(document.getElementById("open")),
           hintRows: rows(document.querySelector(".hint")),
           empty: [...document.querySelectorAll("[data-i18n]")].filter((n) => !n.textContent.trim()).map((n) => n.dataset.i18n),
+          pin: document.getElementById("pin")?.textContent ?? null,
+          pinKey: document.getElementById("pin")?.dataset.i18n ?? null,
+          pinAny: chrome.i18n.getMessage("welcomePinAny"),
+          pinDefault: chrome.i18n.getMessage("welcomePin"),
         };
       });
       const shot = join(OUT, `B-welcome-${locale}-${id}.png`);
@@ -54,6 +58,10 @@ try {
       const ok = !m.hScroll && m.over.length === 0 && maxRows <= 3 && m.empty.length === 0 && m.dir === "ltr";
       check(`A6 ${locale} ${id}: no overflow at 420px, lines ≤3 rows`, ok, `ui=${m.ui} lang=${m.lang} dir=${m.dir} title="${m.title}" hScroll=${m.hScroll} overflowing=${JSON.stringify(m.over)} lineRows=${m.lines.map((l) => l.rows).join("/")} labelRows=${m.maxLabelRows} h1Rows=${m.h1Rows} buttonRows=${m.buttonRows} hintRows=${m.hintRows} empty=${m.empty.join(",")} → ${shot}`);
       if (id === "ask") check(`A6 ${locale} UI language applied`, m.ui.slice(0, 2) === locale.slice(0, 2), m.ui);
+      if (id === "ask") {
+        const expected = m.pinAny || m.pinDefault;
+        check(`B5 ${locale} pin step present, no raw key, ${m.pinAny ? "welcomePinAny" : "welcomePin fallback (welcomePinAny missing)"} in headless Chrome for Testing`, Boolean(m.pin?.trim()) && !/^welcomePin/.test(m.pin) && m.pin === expected, `key=${m.pinKey} "${m.pin}"`);
+      }
     }
     const popup = await ctx.context.newPage();
     await popup.setViewportSize({ width: 420, height: 900 });
