@@ -21,6 +21,11 @@ function clock(ms) {
   return new Intl.DateTimeFormat(chrome.i18n.getUILanguage(), { hour: "numeric", minute: "2-digit" }).format(new Date(ms));
 }
 
+async function patchSettings(patch) {
+  const { settings } = await chrome.storage.local.get("settings");
+  await chrome.storage.local.set({ settings: L.patchSettings(settings, patch) });
+}
+
 async function syncHealthyTitles(title) {
   const { health = {} } = await chrome.storage.session.get("health");
   for (const [tabId, entry] of Object.entries(health)) {
@@ -79,6 +84,10 @@ chrome.runtime.onMessage.addListener((message, sender) => {
       enqueue(() => recordErrand("closed", message.errand));
     }
     chrome.tabs.remove(tabId);
+  }
+  const fromExtension = typeof sender.url === "string" && sender.url.startsWith(chrome.runtime.getURL(""));
+  if (message.type === "patch" && fromExtension && message.patch && typeof message.patch === "object") {
+    enqueue(() => patchSettings(message.patch));
   }
   if (message.type === "health" && tabId !== undefined && Array.isArray(message.missing)) {
     enqueue(() => recordHealth(tabId, message.page, message.missing));

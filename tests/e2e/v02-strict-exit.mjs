@@ -41,7 +41,7 @@ const controls = (page) => page.evaluate(() => {
     offText: $("strictOff").textContent,
     pauseHidden: $("pause").hidden,
     importHint: $("import").closest("label").title,
-    live: [$("strictOff").getAttribute("aria-live"), $("pauseButton").getAttribute("aria-live")],
+    live: [$("strictOff").getAttribute("aria-live"), $("pauseButton").getAttribute("aria-live"), $("announce").getAttribute("aria-live"), $("status").getAttribute("aria-live")],
   };
 });
 const stored = (page) => page.evaluate(() => chrome.storage.local.get(["settings", "strictOffAt"]));
@@ -67,7 +67,7 @@ await popup.close();
 popup = await openPopup({ mode: "strict" });
 const strict = await controls(popup);
 check("K2 strict: select and Import disabled, 'Turn off strict mode' shown", locked(strict) && strict.offText === msg("strictOffButton"), strict);
-check("K countdown buttons are aria-live polite", strict.live.join() === "polite,polite", strict.live);
+check("K countdown buttons are not live regions; the announcer and status line are polite", strict.live.join() === ",,polite,polite", strict.live);
 
 await popup.click("#strictOff");
 await sleep(300);
@@ -86,6 +86,13 @@ await sleep(11000);
 const s4 = await stored(popup);
 check("K2 cancelled countdown keeps strict", s4.settings.mode === "strict", JSON.stringify(s4));
 
+await popup.evaluate(() => {
+  globalThis.__spoken = [];
+  for (const id of ["announce", "status"]) {
+    const node = document.getElementById(id);
+    new MutationObserver(() => globalThis.__spoken.push(`${id}: ${node.textContent}`)).observe(node, { childList: true, characterData: true, subtree: true });
+  }
+});
 await popup.click("#strictOff");
 const seq = [];
 const clickAt = Date.now();
@@ -100,6 +107,8 @@ const done = seq.at(-1);
 const live = await controls(popup);
 const s5 = await stored(popup);
 check("K2 countdown 10…1, then mode = relaxed", countdown.join(",") === "10,9,8,7,6,5,4,3,2,1" && s5.settings.mode === "relaxed" && s5.strictOffAt === undefined, `${countdown.join(",")}; done at ${done.t} ms; ${JSON.stringify(s5)}`);
+const spoken = await popup.evaluate(() => globalThis.__spoken);
+check("K live regions speak only at the countdown start and end", spoken.length === 2 && spoken[0].startsWith("announce: ") && countdownRe.test(spoken[0].slice(10)) && spoken[1] === `status: ${msg("statusNormal")}`, spoken);
 check("K2 open popup unlocks live when the countdown ends", unlocked(live) && live.mode === "relaxed" && !live.pauseHidden, live);
 await popup.close();
 

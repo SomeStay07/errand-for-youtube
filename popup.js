@@ -32,6 +32,11 @@ let pauseStartsAt = null;
 let pauseTimer = 0;
 let strictOffAt = null;
 let strictTimer = 0;
+let pickedAuto = false;
+let lastStrict = false;
+let editedSchedule = false;
+let pauseCounting = false;
+let strictCounting = false;
 
 const $ = (id) => document.getElementById(id);
 
@@ -65,9 +70,18 @@ function weekdayName(day, style = "short") {
   return new Intl.DateTimeFormat(LANG, { weekday: style }).format(new Date(2026, 10, 1 + day));
 }
 
-function save() {
-  chrome.storage.local.set({ settings });
+function save(patch) {
+  editedSchedule = ["mode", "strictStart", "strictEnd", "strictDays"].some((key) => key in patch);
+  settings = L.patchSettings(settings, patch);
   renderStatus();
+  chrome.runtime.sendMessage({ type: "patch", patch }).catch(async () => {
+    const { settings: stored } = await chrome.storage.local.get("settings");
+    await chrome.storage.local.set({ settings: L.patchSettings(stored, patch) });
+  });
+}
+
+function announce(text) {
+  $("announce").textContent = text;
 }
 
 function isPausedNow() {
@@ -82,14 +96,18 @@ function renderStatus() {
     const time = new Intl.DateTimeFormat(LANG, { hour: "numeric", minute: "2-digit" }).format(new Date(pausedUntil));
     text = t("statusPaused", time);
   }
-  $("status").textContent = text;
+  if ($("status").textContent !== text) $("status").textContent = text;
   $("schedule").hidden = settings.mode !== "auto";
   renderPause();
   renderStrictLock();
 }
 
 function renderStrictLock() {
-  const locked = L.isStrict(settings, new Date());
+  const strictNow = L.isStrict(settings, new Date());
+  if (settings.mode !== "auto" || (strictNow && !lastStrict && !editedSchedule)) pickedAuto = false;
+  lastStrict = strictNow;
+  editedSchedule = false;
+  const locked = strictNow && !pickedAuto;
   for (const node of [$("mode"), $("strictStart"), $("strictEnd"), $("import"), ...$("days").querySelectorAll("input")]) {
     node.disabled = locked;
   }
@@ -107,9 +125,12 @@ function renderStrictLock() {
   clearTimeout(strictTimer);
   if (locked && L.strictExit(settings, strictOffAt, new Date()) === "waiting") {
     button.textContent = t("strictOffCountdown", Math.max(1, Math.ceil((strictOffAt - Date.now()) / 1000)));
+    if (!strictCounting) announce(button.textContent);
+    strictCounting = true;
     strictTimer = setTimeout(renderStatus, 250);
     return;
   }
+  strictCounting = false;
   button.textContent = settings.mode === "auto" ? t("strictOffUntil", settings.strictEnd) : t("strictOffButton");
   if (settings.mode === "auto") strictTimer = setTimeout(renderStatus, 60_000 - (Date.now() % 60_000) + 50);
 }
@@ -130,6 +151,8 @@ function renderPause() {
   const button = $("pauseButton");
   if (healthEntry !== undefined) $("health").hidden = isPausedNow() || !healthEntry;
   clearTimeout(pauseTimer);
+  const wasCounting = pauseCounting;
+  pauseCounting = false;
   if (L.isStrict(settings, new Date())) {
     row.hidden = true;
     return;
@@ -138,6 +161,8 @@ function renderPause() {
   if (L.isPauseStarting(pauseStartsAt, Date.now())) {
     const left = Math.max(1, Math.ceil((pauseStartsAt - Date.now()) / 1000));
     button.textContent = t("pauseCountdown", left);
+    if (!wasCounting) announce(button.textContent);
+    pauseCounting = true;
     pauseTimer = setTimeout(renderPause, 250);
     return;
   }
@@ -229,27 +254,23 @@ function renderForm() {
     host.replaceChildren();
     for (const [key, label] of keys) {
       const box = el("input", { type: "checkbox", checked: Boolean(settings.hide[key]) });
-      box.addEventListener("change", () => {
-        settings.hide = { ...settings.hide, [key]: box.checked };
-        save();
-      });
+      box.addEventListener("change", () => save({ hide: { [key]: box.checked } }));
       host.append(el("label", { class: "row" }, el("span", {}, t(label)), box));
     }
   }
 
   for (const key of ["stopAutoplay", "endPrompt"]) {
     $(key).checked = Boolean(settings[key]);
-    $(key).addEventListener("change", () => {
-      settings[key] = $(key).checked;
-      save();
-    });
+    $(key).addEventListener("change", () => save({ [key]: $(key).checked }));
   }
 
   for (const key of ["homeTarget", "shortsMode", "mode", "strictStart", "strictEnd"]) {
     $(key).value = settings[key];
     $(key).addEventListener("change", () => {
-      settings[key] = $(key).value;
-      save();
+      const patch = { [key]: $(key).value };
+      if (key === "mode") pickedAuto = patch.mode === "auto";
+      save(patch);
+      $(key).value = settings[key];
     });
   }
 
@@ -261,8 +282,7 @@ function renderForm() {
       const set = new Set(settings.strictDays);
       if (box.checked) set.add(day);
       else set.delete(day);
-      settings.strictDays = [...set];
-      save();
+      save({ strictDays: [...set] });
     });
     box.setAttribute("aria-label", weekdayName(day, "long"));
     days.append(el("label", { title: weekdayName(day, "long") }, box, weekdayName(day, "narrow")));
@@ -334,6 +354,7 @@ async function init() {
     chrome.storage.local.remove("pausedUntil");
     pausedUntil = null;
   }
+  chrome.runtime.sendMessage({ type: "sync" }).catch(() => {});
   $("pauseButton").addEventListener("click", onPauseClick);
   $("strictOff").addEventListener("click", onStrictOffClick);
   renderForm();

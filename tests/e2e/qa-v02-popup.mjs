@@ -20,6 +20,14 @@ await sleep(800);
 
 const attrs = () => Y.evaluate(() => Object.fromEntries([...document.documentElement.attributes].filter((a) => a.name.startsWith("data-er")).map((a) => [a.name, a.value])));
 const settings = async () => (await storage(ctx, "settings")).settings;
+const storedAs = async (key, value) => {
+  for (let i = 0; i < 40; i++) {
+    const s = await settings();
+    if (s[key] === value) return s;
+    await sleep(50);
+  }
+  return settings();
+};
 const loadId = () => Y.evaluate(() => (window.__qaLoad ??= Math.random()));
 const marker = await loadId();
 
@@ -37,7 +45,7 @@ const homeExpect = { ask: false, subs: false, wl: false, feed: true };
 for (const value of ["subs", "wl", "feed", "ask"]) {
   await P.selectOption("#homeTarget", value);
   const ms = await waitAttr("data-er-show-home", homeExpect[value]);
-  const s = await settings();
+  const s = await storedAs("homeTarget", value);
   check(`popup Home=${value}: stored and applied live on the open watch tab`, s.homeTarget === value && ms !== null, `stored=${s.homeTarget} data-er-show-home flip ${ms} ms`);
 }
 
@@ -69,7 +77,7 @@ const shortsExpect = { watch: false, block: false, show: true };
 for (const value of ["show", "block", "watch"]) {
   await P.selectOption("#shortsMode", value);
   const ms = await waitAttr("data-er-show-shorts", shortsExpect[value]);
-  const s = await settings();
+  const s = await storedAs("shortsMode", value);
   check(`popup Shorts=${value}: stored and applied live`, s.shortsMode === value && ms !== null, `stored=${s.shortsMode} flip ${ms} ms`);
 }
 
@@ -97,9 +105,9 @@ const ap2 = await waitAttr("data-er-no-autoplay", true);
 const sa2 = await settings();
 check("popup autoplay checkbox round-trip", sa1.stopAutoplay === false && sa2.stopAutoplay === true && ap1 !== null && ap2 !== null, `${ap1} ms / ${ap2} ms`);
 await P.uncheck("#endPrompt");
-const se1 = await settings();
+const se1 = await storedAs("endPrompt", false);
 await P.check("#endPrompt");
-const se2 = await settings();
+const se2 = await storedAs("endPrompt", true);
 check("popup end prompt checkbox round-trip (storage only)", se1.endPrompt === false && se2.endPrompt === true, `${se1.endPrompt} → ${se2.endPrompt}`);
 
 await P.click("details > summary");
@@ -124,6 +132,25 @@ const metricsState = await Y.evaluate(() => [...document.querySelectorAll("#owne
 check("metrics opt-in hides counts on the watch page", metricsState.length > 0 && metricsState.every((v) => v === "hidden"), metricsState);
 await P.locator("#more input").nth(2).uncheck();
 
+const hhmmAt = (ms) => new Date(ms).toTimeString().slice(0, 5);
+await P.evaluate(async ({ start, end }) => {
+  const { settings } = await chrome.storage.local.get("settings");
+  await chrome.storage.local.set({ settings: { ...globalThis.ErrandLib.mergeSettings(settings), mode: "relaxed", strictStart: start, strictEnd: end, strictDays: [0, 1, 2, 3, 4, 5, 6] } });
+}, { start: hhmmAt(Date.now() - 3600e3), end: hhmmAt(Date.now() + 3600e3) });
+await P.reload();
+await sleep(800);
+await P.selectOption("#mode", "auto");
+const insideWindow = await waitAttr("data-er-strict", true, 3000);
+const editable = await P.evaluate(() => ["mode", "strictStart", "strictEnd"].every((id) => !document.getElementById(id).disabled) && [...document.querySelectorAll("#days input")].every((b) => !b.disabled));
+check("picking On a schedule inside the window leaves hours and days editable", insideWindow !== null && editable, { insideWindow, editable });
+await P.selectOption("#mode", "relaxed");
+for (let i = 0; i < 40 && (await settings()).mode !== "relaxed"; i++) await sleep(50);
+await P.evaluate(async () => {
+  const { settings } = await chrome.storage.local.get("settings");
+  await chrome.storage.local.set({ settings: { ...settings, strictStart: "09:00", strictEnd: "18:00", strictDays: [1, 2, 3, 4, 5] } });
+});
+await P.reload();
+await sleep(800);
 await P.selectOption("#mode", "auto");
 await sleep(200);
 const schedVisible = await P.evaluate(() => !document.getElementById("schedule").hidden);

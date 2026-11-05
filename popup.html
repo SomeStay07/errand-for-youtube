@@ -10,14 +10,15 @@
     <img src="icons/icon-48.png" alt="" width="28" height="28">
     <div>
       <h1 data-i18n="brandName"></h1>
-      <p id="status"></p>
+      <p id="status" aria-live="polite"></p>
     </div>
   </header>
 
   <div id="pause" hidden>
-    <button type="button" id="pauseButton" aria-live="polite"></button>
+    <button type="button" id="pauseButton"></button>
   </div>
-  <button type="button" id="strictOff" aria-live="polite" hidden></button>
+  <button type="button" id="strictOff" hidden></button>
+  <p id="announce" class="sr-only" aria-live="polite"></p>
 
   <p id="health"></p>
 

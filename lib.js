@@ -75,6 +75,19 @@
     return out;
   }
 
+  function patchSettings(stored, patch) {
+    const next = mergeSettings(stored);
+    for (const [key, value] of Object.entries(patch || {})) {
+      if (key === "hide") {
+        for (const [name, on] of Object.entries(value || {})) if (name in next.hide && typeof on === "boolean") next.hide[name] = on;
+        continue;
+      }
+      const tried = mergeSettings({ ...next, [key]: value });
+      if (JSON.stringify(tried[key]) === JSON.stringify(value)) next[key] = value;
+    }
+    return mergeSettings(next);
+  }
+
   function toMinutes(hhmm) {
     const [h, m] = String(hhmm).split(":").map(Number);
     return (h || 0) * 60 + (m || 0);
@@ -84,12 +97,14 @@
     if (settings.mode === "strict") return true;
     if (settings.mode !== "auto") return false;
     if (isSkipped(settings, date)) return false;
-    if (!settings.strictDays.includes(date.getDay())) return false;
     const now = date.getHours() * 60 + date.getMinutes();
     const start = toMinutes(settings.strictStart);
     const end = toMinutes(settings.strictEnd);
     if (start === end) return false;
-    return start < end ? now >= start && now < end : now >= start || now < end;
+    const day = date.getDay();
+    if (start < end) return now >= start && now < end && settings.strictDays.includes(day);
+    if (now >= start) return settings.strictDays.includes(day);
+    return now < end && settings.strictDays.includes((day + 6) % 7);
   }
 
   function isSkipped(settings, date) {
@@ -339,6 +354,7 @@
     SUBS_SHELF,
     LEAKS,
     mergeSettings,
+    patchSettings,
     isStrict,
     isSkipped,
     nextStrictEnd,

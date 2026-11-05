@@ -358,3 +358,93 @@ test("end prompt takes focus only from the page body or the player, never from a
   assert.equal(L.canTakeFocus(node(false, true), body, player), false);
   assert.equal(L.canTakeFocus(node(true, true), body, player), false);
 });
+
+function inZone(zone, run) {
+  const saved = process.env.TZ;
+  process.env.TZ = zone;
+  try {
+    run();
+  } finally {
+    if (saved === undefined) delete process.env.TZ;
+    else process.env.TZ = saved;
+  }
+}
+
+test("a night window belongs to the day it starts on, not the day it ends on", () => {
+  inZone("Europe/Madrid", () => {
+    const s = L.mergeSettings({ mode: "auto", strictStart: "22:00", strictEnd: "06:00", strictDays: [1, 2, 3, 4, 5] });
+    assert.equal(at(5, 23).getDay(), 5);
+    assert.equal(L.isStrict(s, at(5, 23)), true);
+    assert.equal(L.isStrict(s, at(6, 1)), true);
+    assert.equal(L.isStrict(s, at(6, 5, 59)), true);
+    assert.equal(L.isStrict(s, at(6, 6)), false);
+    assert.equal(L.isStrict(s, at(6, 23)), false);
+    assert.equal(L.isStrict(s, at(7, 1)), false);
+    assert.equal(L.isStrict(s, at(8, 1)), false);
+    assert.equal(L.isStrict(s, at(8, 23)), true);
+    assert.equal(L.isStrict(s, at(9, 1)), true);
+  });
+});
+
+test("a night window keeps its day across the autumn DST change in Madrid", () => {
+  inZone("Europe/Madrid", () => {
+    const sat = L.mergeSettings({ mode: "auto", strictStart: "22:00", strictEnd: "06:00", strictDays: [6] });
+    const d = (date, hh, mm = 0) => new Date(2026, 9, date, hh, mm);
+    assert.equal(d(24, 23).getDay(), 6);
+    assert.equal(new Date(2026, 9, 25, 4).getTime() - new Date(2026, 9, 25, 1).getTime(), 4 * 60 * 60 * 1000);
+    assert.equal(L.isStrict(sat, d(24, 23)), true);
+    assert.equal(L.isStrict(sat, d(25, 1)), true);
+    assert.equal(L.isStrict(sat, new Date(Date.UTC(2026, 9, 25, 0, 30))), true);
+    assert.equal(L.isStrict(sat, new Date(Date.UTC(2026, 9, 25, 1, 30))), true);
+    assert.equal(L.isStrict(sat, d(25, 5, 59)), true);
+    assert.equal(L.isStrict(sat, d(25, 6)), false);
+    assert.equal(L.isStrict(sat, d(25, 23)), false);
+    assert.equal(L.isStrict(sat, d(26, 1)), false);
+    const skip = L.endStrict(sat, d(25, 2, 30));
+    assert.equal(skip.strictSkipUntil, d(25, 6).getTime());
+    assert.equal(L.isStrict(skip, d(25, 5)), false);
+  });
+});
+
+test("a night window keeps its day across the spring DST change in Madrid", () => {
+  inZone("Europe/Madrid", () => {
+    const sat = L.mergeSettings({ mode: "auto", strictStart: "22:00", strictEnd: "06:00", strictDays: [6] });
+    const skipped = new Date(2026, 2, 29, 2, 30);
+    assert.equal(skipped.getHours(), 3);
+    assert.equal(L.isStrict(sat, new Date(2026, 2, 28, 23)), true);
+    assert.equal(L.isStrict(sat, skipped), true);
+    assert.equal(L.isStrict(sat, new Date(2026, 2, 29, 6)), false);
+    assert.equal(L.isStrict(sat, new Date(2026, 2, 30, 1)), false);
+  });
+});
+
+test("a night window from Sunday wraps into Monday and back to Sunday", () => {
+  inZone("America/New_York", () => {
+    const sun = L.mergeSettings({ mode: "auto", strictStart: "23:30", strictEnd: "00:30", strictDays: [0] });
+    assert.equal(at(0, 23, 45).getDay(), 0);
+    assert.equal(L.isStrict(sun, at(0, 23, 45)), true);
+    assert.equal(L.isStrict(sun, at(1, 0, 15)), true);
+    assert.equal(L.isStrict(sun, at(0, 0, 15)), false);
+    assert.equal(L.isStrict(sun, at(1, 23, 45)), false);
+  });
+});
+
+test("patchSettings writes one change over the stored settings", () => {
+  const stored = { mode: "auto", strictSkipUntil: at(1, 18).getTime(), hide: { related: false, chat: true } };
+  const next = L.patchSettings(stored, { hide: { comments: false } });
+  assert.equal(next.mode, "auto");
+  assert.equal(next.strictSkipUntil, at(1, 18).getTime());
+  assert.deepEqual(next.hide, { ...L.DEFAULTS.hide, related: false, chat: true, comments: false });
+  assert.equal(L.patchSettings({ mode: "relaxed" }, { stopAutoplay: false }).mode, "relaxed");
+  assert.deepEqual(L.patchSettings(undefined, { strictDays: [0] }).strictDays, [0]);
+});
+
+test("patchSettings keeps the stored value when a patch value would be rejected", () => {
+  const stored = { mode: "auto", strictStart: "22:00", strictEnd: "06:00", hide: { comments: false } };
+  assert.equal(L.patchSettings(stored, { strictStart: "" }).strictStart, "22:00");
+  assert.equal(L.patchSettings(stored, { strictStart: "23:15" }).strictStart, "23:15");
+  assert.equal(L.patchSettings(stored, { mode: "chaos" }).mode, "auto");
+  assert.equal(L.patchSettings(stored, { hide: { comments: "yes" } }).hide.comments, false);
+  assert.deepEqual(L.patchSettings(stored, { strictDays: [9] }).strictDays, L.DEFAULTS.strictDays);
+  assert.deepEqual(L.patchSettings(stored, { strictDays: [] }).strictDays, []);
+});

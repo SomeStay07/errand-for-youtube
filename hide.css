@@ -55,7 +55,7 @@ html[data-er-autoplay-off]:not([data-er-playlist]) :is(.ytp-next-button, .ytp-au
   display: none !important;
 }
 
-html:not([data-er-show-related]):not([data-er-reveal]) :is(
+html:not([data-er-page="channel"], [data-er-page="playlist"], [data-er-page="subs"], [data-er-page="library"]):not([data-er-show-related]):not([data-er-reveal]) :is(
   ytd-radio-renderer,
   ytd-rich-item-renderer:has(a[href*="start_radio=1"]),
   yt-lockup-view-model:has(a[href*="start_radio=1"])

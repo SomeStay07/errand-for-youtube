@@ -45,7 +45,7 @@ try {
           maxLabelRows: Math.max(...[...document.querySelectorAll("label.choice span")].map(rows)),
           h1Rows: rows(document.querySelector("h1")),
           buttonRows: rows(document.getElementById("open")),
-          hintRows: rows(document.querySelector(".hint")),
+          stepsRows: rows(document.querySelector(".steps")),
           empty: [...document.querySelectorAll("[data-i18n]")].filter((n) => !n.textContent.trim()).map((n) => n.dataset.i18n),
         };
       });
@@ -53,7 +53,7 @@ try {
       await page.screenshot({ path: shot, fullPage: true });
       const maxRows = Math.max(...m.lines.map((l) => l.rows));
       const ok = !m.hScroll && m.over.length === 0 && maxRows <= 3 && m.empty.length === 0 && m.dir === "ltr";
-      check(`A6 ${locale} ${id}: no overflow at 420px, lines ≤3 rows`, ok, `ui=${m.ui} lang=${m.lang} dir=${m.dir} title="${m.title}" hScroll=${m.hScroll} overflowing=${JSON.stringify(m.over)} lineRows=${m.lines.map((l) => l.rows).join("/")} labelRows=${m.maxLabelRows} h1Rows=${m.h1Rows} buttonRows=${m.buttonRows} hintRows=${m.hintRows} empty=${m.empty.join(",")} → ${shot}`);
+      check(`A6 ${locale} ${id}: no overflow at 420px, lines ≤3 rows`, ok, `ui=${m.ui} lang=${m.lang} dir=${m.dir} title="${m.title}" hScroll=${m.hScroll} overflowing=${JSON.stringify(m.over)} lineRows=${m.lines.map((l) => l.rows).join("/")} labelRows=${m.maxLabelRows} h1Rows=${m.h1Rows} buttonRows=${m.buttonRows} stepsRows=${m.stepsRows} empty=${m.empty.join(",")} → ${shot}`);
       if (id === "ask") check(`A6 ${locale} UI language applied`, m.ui.slice(0, 2) === locale.slice(0, 2), m.ui);
     }
     const popup = await ctx.context.newPage();

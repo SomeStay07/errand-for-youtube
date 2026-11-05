@@ -2,6 +2,7 @@
   const L = globalThis.ErrandLib;
   const t = (key, ...subs) => chrome.i18n.getMessage(key, subs.map(String));
   const root = document.documentElement;
+  root.dataset.erPage = L.pageType(location.pathname);
   let settings = L.mergeSettings();
   let intent = null;
   let pausedUntil = null;
@@ -271,7 +272,12 @@
   function showEndPrompt(player) {
     document.getElementById("er-end")?.remove();
     const text = L.activeIntent(intent, Date.now());
-    const dismiss = () => document.getElementById("er-end")?.remove();
+    const dismiss = () => {
+      const prompt = document.getElementById("er-end");
+      const hadFocus = Boolean(prompt?.contains(document.activeElement));
+      prompt?.remove();
+      if (hadFocus) player.focus({ preventScroll: true });
+    };
     const actions = [
       el(
         "button",
@@ -284,7 +290,13 @@
     }
     actions.push(el("button", { type: "button", onclick: dismiss }, t("endStay")));
     const question = text ? t("endQuestionWithIntent", text) : t("endQuestion");
-    const prompt = el("div", { id: "er-end", role: "dialog", tabindex: "-1", "aria-label": question }, el("p", {}, question), el("div", { class: "er-actions" }, ...actions));
+    const onkeydown = (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      dismiss();
+    };
+    const prompt = el("div", { id: "er-end", role: "dialog", tabindex: "-1", "aria-label": question, onkeydown }, el("p", {}, question), el("div", { class: "er-actions" }, ...actions));
     const focusable = L.canTakeFocus(document.activeElement, document.body, player);
     player.append(prompt);
     if (focusable) prompt.focus({ preventScroll: true });
@@ -362,9 +374,9 @@
 
   function tagShorts() {
     if (!effective().hide.shorts) return;
-    for (const node of document.querySelectorAll("yt-tab-shape:not([data-er-shorts]), yt-chip-cloud-chip-renderer:not([data-er-shorts])")) {
+    for (const node of document.querySelectorAll("yt-tab-shape, yt-chip-cloud-chip-renderer")) {
       const title = (node.getAttribute("tab-title") || node.textContent || "").trim().toLowerCase();
-      if (title === "shorts") node.setAttribute("data-er-shorts", "");
+      node.toggleAttribute("data-er-shorts", title === "shorts");
     }
   }
 
@@ -482,8 +494,11 @@
   }
 
   setInterval(() => {
-    const before = revealState();
+    const wasStrict = root.hasAttribute("data-er-strict");
     apply();
-    remountIfChanged(before);
+    if (root.hasAttribute("data-er-strict") === wasStrict) return;
+    send({ type: "sync" });
+    mountReveal();
+    mountCommentsButton();
   }, 60_000);
 })();
