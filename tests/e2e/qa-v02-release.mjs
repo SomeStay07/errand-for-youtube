@@ -1,13 +1,12 @@
 import { join } from "node:path";
-import { launch, reporter, consent, sleep, heap, OUT, QUERY } from "./harness.mjs";
+import { launch, reporter, consent, sleep, heap, OUT, QUERY, closeWelcome } from "./harness.mjs";
 
 const { check, save } = reporter();
 const ONLY = (process.env.ONLY || "churn,settings,pause,strict").split(",");
 const CYCLES = Number(process.env.CYCLES || 5);
-const ctx = await launch({ name: "qa-release", port: 9411 });
+const ctx = await launch({ name: "qa-release" });
 const { context, errors } = ctx;
-await sleep(1500);
-for (const p of context.pages()) if (p.url().includes("welcome.html")) await p.close();
+await closeWelcome(ctx);
 const page = context.pages().find((p) => !p.url().startsWith("chrome-extension://")) || (await context.newPage());
 const pageErrors = [];
 page.on("pageerror", (e) => pageErrors.push(String(e.stack || e).slice(0, 300)));

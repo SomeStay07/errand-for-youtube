@@ -1,11 +1,12 @@
 import { join } from "node:path";
-import { launch, reporter, consent, searchVideoUrls, storage, sleep, openRealPopup, OUT } from "./harness.mjs";
+import { launch, reporter, consent, searchVideoUrls, storage, sleep, until, openRealPopup, closeWelcome, finish, messages, OUT } from "./harness.mjs";
 
 const { check, save } = reporter();
-const ctx = await launch({ name: "pause", port: 9344 });
+const { msg } = messages();
+const ctx = await launch({ name: "pause" });
 const { context } = ctx;
-await sleep(1500);
-for (const p of context.pages()) if (p.url().includes("welcome.html")) await p.close();
+await closeWelcome(ctx);
+const popupErrors = [];
 
 const A = context.pages()[0] || (await context.newPage());
 const urls = await searchVideoUrls(A, undefined, 3);
@@ -79,11 +80,10 @@ while (Date.now() - tc < 5200) {
 }
 await popup.close();
 const closedAt = Date.now();
-await sleep(7500);
-const afterClose = await storage(ctx, "pausedUntil");
-const aAfterClose = await stateA();
+const { value: afterClose } = await until(() => storage(ctx, "pausedUntil"), (x) => Number.isFinite(x.pausedUntil), 12000, 250);
+const { value: aAfterClose } = await until(stateA, (a) => a.showHome, 3000, 100);
 const lastBeforeClose = cancelSamples.at(-1).text;
-check("C1 closing popup mid-countdown does not cancel; the background starts the pause", Number.isFinite(afterClose.pausedUntil) && aAfterClose.showHome, `closed at "${lastBeforeClose}", 7.5 s later pausedUntil=${afterClose.pausedUntil}, home feed shown=${aAfterClose.showHome}`);
+check("C1 closing popup mid-countdown does not cancel; the background starts the pause", Number.isFinite(afterClose.pausedUntil) && aAfterClose.showHome, `closed at "${lastBeforeClose}", then pausedUntil=${afterClose.pausedUntil}, home feed shown=${aAfterClose.showHome}`);
 await ctx.worker.evaluate(() => chrome.storage.local.remove("pausedUntil"));
 await sleep(1500);
 
@@ -95,12 +95,15 @@ const clickAt = Date.now();
 const seq = [];
 while (Date.now() - clickAt < 13000) {
   const s = await pstate();
-  if (!seq.length || seq.at(-1).text !== s.text) seq.push({ t: Date.now() - clickAt, text: s.text });
+  if (!seq.length || seq.at(-1).text !== s.text) seq.push({ t: Date.now() - clickAt, text: s.text, disabled: s.disabled });
   if (s.text === "Turn back on") break;
   await sleep(100);
 }
 const countdown = seq.filter((x) => /Pausing in/.test(x.text)).map((x) => Number(x.text.match(/\d+/)[0]));
-check("C1 countdown 10…1", countdown.join(",") === "10,9,8,7,6,5,4,3,2,1", `${countdown.join(",")}; seq=${seq.map((x) => `${x.t}ms:${x.text}`).join(" | ")}`);
+const gaps = countdown.slice(1).reduce((n, v, i) => n + (countdown[i] - v - 1), 0);
+const doneAt = seq.at(-1).text === "Turn back on" ? seq.at(-1).t : null;
+check("C1 countdown runs 10…1 (decreasing, ≤ 1 missed sample), 'Turn back on' after 9.5–11.5 s", [9, 10].includes(countdown[0]) && countdown.at(-1) === 1 && countdown.every((v, i) => i === 0 || v < countdown[i - 1]) && gaps <= 1 && doneAt !== null && doneAt >= 9500 && doneAt <= 11500, `${countdown.join(",")}; seq=${seq.map((x) => `${x.t}ms:${x.text}`).join(" | ")}`);
+check("C1 countdown button stays enabled so a second click can cancel", seq.filter((x) => /Pausing/.test(x.text)).every((x) => !x.disabled), seq.map((x) => x.disabled).join(","));
 await popup.screenshot(join(OUT, "C-popup-paused.png"));
 await sleep(1600);
 const setAt = await ctx.worker.evaluate(() => globalThis.__pauseSet);
@@ -143,10 +146,20 @@ const badgeAfterResume = await badge();
 const aR = await stateA();
 check("C4 'Turn back on' instant: hiding + buttons back, storage cleared", resumedIn !== null && resumedIn < 1500 && afterResume.pausedUntil === undefined && !aR.showHome, `watch tab restored in ${resumedIn} ms; home question back=${!aR.showHome}`);
 check("C4 badge cleared after 'Turn back on'", badgeAfterResume === "", `"${badgeAfterResume}"`);
+await popup.click("#pauseButton");
+const { value: started } = await until(() => storage(ctx, ["pauseStartsAt", "pausedUntil"]), (s) => Number.isFinite(s.pauseStartsAt), 2000, 50);
+await popup.click("#pauseButton");
+const { value: cancelled } = await until(() => storage(ctx, ["pauseStartsAt", "pausedUntil"]), (s) => s.pauseStartsAt === undefined, 2000, 50);
+const cancelText = await pstate();
+check("C second click during the countdown cancels it", Number.isFinite(started.pauseStartsAt) && cancelled.pauseStartsAt === undefined && cancelled.pausedUntil === undefined && cancelText.text === msg("pauseButton"), { started, cancelled, button: cancelText.text });
+await sleep(11500);
+const afterCancel = await storage(ctx, "pausedUntil");
+check("C cancelled countdown never starts a pause", afterCancel.pausedUntil === undefined && (await stateA()).showHome === false, afterCancel);
+popupErrors.push(...popup.consoleErrors);
 await popup.close().catch(() => {});
 
-const until = Date.now() + 20000;
-await ctx.worker.evaluate((u) => chrome.storage.local.set({ pausedUntil: u }), until);
+const pauseEnd = Date.now() + 20000;
+await ctx.worker.evaluate((u) => chrome.storage.local.set({ pausedUntil: u }), pauseEnd);
 await sleep(2000);
 const bMid = await stateB();
 const aMid = await stateA();
@@ -155,16 +168,16 @@ check("C5 pausedUntil=now+20s takes effect", bMid.showRelated && bMid.reveal ===
 let hidingBackAt = null;
 let buttonsBackAt = null;
 let badgeClearAt = null;
-const deadline = until + 75000;
+const deadline = pauseEnd + 75000;
 while (Date.now() < deadline) {
   const b = await stateB();
   const a = await stateA();
   const now = Date.now();
-  if (hidingBackAt === null && !b.showRelated && !a.showHome) hidingBackAt = now - until;
-  if (buttonsBackAt === null && b.reveal === 1 && b.commentsBtn === 1) buttonsBackAt = now - until;
-  if (badgeClearAt === null && (await badge()) === "") badgeClearAt = now - until;
+  if (hidingBackAt === null && !b.showRelated && !a.showHome) hidingBackAt = now - pauseEnd;
+  if (buttonsBackAt === null && b.reveal === 1 && b.commentsBtn === 1) buttonsBackAt = now - pauseEnd;
+  if (badgeClearAt === null && (await badge()) === "") badgeClearAt = now - pauseEnd;
   if (hidingBackAt !== null && buttonsBackAt !== null && badgeClearAt !== null) break;
-  if (now > until + 5000 && hidingBackAt !== null && buttonsBackAt === null && now < until + 6000) await B.screenshot({ path: join(OUT, "C-auto-resume-watch.png") });
+  if (now > pauseEnd + 5000 && hidingBackAt !== null && buttonsBackAt === null && now < pauseEnd + 6000) await B.screenshot({ path: join(OUT, "C-auto-resume-watch.png") });
   await sleep(250);
 }
 const bEnd = await stateB();
@@ -229,7 +242,6 @@ await popup.screenshot(join(OUT, "C-popup-strict-mid-countdown.png"));
 check("C edge: strict toggled on/off mid-countdown leaves a usable button", !stuck.disabled && stuck.text === "Pause 15 min" && stuckStorage.pausedUntil === undefined, { button: stuck.text, disabled: stuck.disabled, pausedUntil: stuckStorage.pausedUntil });
 await popup.close().catch(() => {});
 
-const swErrs = await ctx.worker.evaluate(() => globalThis.__errs || []);
-console.log("errors:", JSON.stringify([...ctx.errors, ...swErrs, ...(popup.consoleErrors || [])], null, 1));
+await finish(ctx, check, { extra: [...popupErrors, ...(popup.consoleErrors || [])] });
 save("C-results.json");
 await context.close();

@@ -1,19 +1,16 @@
 import { join } from "node:path";
-import { launch, reporter, consent, sleep, OUT, QUERY } from "./harness.mjs";
+import { launch, reporter, consent, sleep, until, closeWelcome, healthOf, recheck, settingsApi, finish, OUT, QUERY } from "./harness.mjs";
 
 const { check, save } = reporter();
-const ctx = await launch({ name: "qa-pages", port: 9385 });
+const ctx = await launch({ name: "qa-pages" });
 const { context } = ctx;
-await sleep(1500);
-for (const p of context.pages()) if (p.url().includes("welcome.html")) await p.close();
+await closeWelcome(ctx);
 const page = context.pages()[0] || (await context.newPage());
 const W = ctx.worker;
-const setSettings = (patch) => W.evaluate((p) => chrome.storage.local.get("settings").then(({ settings }) => chrome.storage.local.set({ settings: { ...globalThis.ErrandLib.mergeSettings(settings), ...p } })), patch);
-const health = async () => {
-  const { health: h = {} } = await W.evaluate(() => chrome.storage.session.get("health"));
-  const [id, entry] = Object.entries(h).sort((a, b) => b[1].ts - a[1].ts)[0] || [];
-  return { tab: id, entry: entry ? { ...entry, age: Date.now() - entry.ts } : null, badge: id ? await W.evaluate((i) => chrome.action.getBadgeText({ tabId: i }), Number(id)) : null };
-};
+const { set: setSettings, preset } = settingsApi(ctx);
+const health = () => healthOf(ctx);
+const reportAfter = async (at, ms = 20000) => (await until(health, (h) => h.entry?.ts > at, ms, 500)).value;
+const verdict = async () => reportAfter(await recheck(ctx));
 const SHORTS_ALLOWED = "#description, ytd-text-inline-expander, ytd-comments, #er-intent";
 const scan = () => page.evaluate((allowed) => {
   const vis = (n) => n.getClientRects().length > 0 && getComputedStyle(n).visibility !== "hidden";
@@ -56,11 +53,14 @@ await page.reload({ waitUntil: "domcontentloaded" });
 await sleep(4000);
 const home = await scan();
 await page.screenshot({ path: join(OUT, "G-home.png") });
-check("home: question shown, feed hidden, input focused", home.question && home.focused === "intent" && !(await page.evaluate(() => document.querySelector('ytd-browse[page-subtype="home"]')?.getClientRects().length)), home);
+const homeFeed = await page.evaluate(() => {
+  const browse = document.querySelector('ytd-browse[page-subtype="home"]');
+  return { attached: Boolean(browse), visible: Boolean(browse?.getClientRects().length) };
+});
+check("home: question shown, feed rendered and hidden, input focused", home.question && home.focused === "intent" && homeFeed.attached && !homeFeed.visible, { ...home, homeFeed });
 const msg = (key, ...subs) => W.evaluate(([k, s]) => chrome.i18n.getMessage(k, s), [key, subs]);
 const footerAny = await msg("intentFooterAny");
-if (footerAny) check("B5 headless Chrome for Testing (no 'Google Chrome' brand): footnote = intentFooterAny, question keeps focus", home.footnote === footerAny && home.focused === "intent", { footnote: home.footnote, footerAny });
-else check("B5 footnote = intentFooterAny", null, `key intentFooterAny missing in _locales (Lane 3); footnote falls back to intentFooter: ${home.footnote === (await msg("intentFooter"))}`);
+check("B5 headless Chrome for Testing (no 'Google Chrome' brand): footnote = intentFooterAny, question keeps focus", Boolean(footerAny) && home.footnote === footerAny && home.focused === "intent", { footnote: home.footnote, footerAny });
 const f3 = await page.evaluate(async () => {
   const input = document.querySelector('yt-searchbox input[name="search_query"]');
   const box = document.querySelector("yt-searchbox .ytSearchboxComponentSuggestionsContainer");
@@ -85,8 +85,7 @@ const f3 = await page.evaluate(async () => {
   return { empty, typed };
 });
 check("F3 textarea search box: empty → suggestions container height 0, typed → visible", f3.empty === 0 && f3.typed > 0, f3);
-await sleep(5000);
-let h = await health();
+let h = await verdict();
 check("health home: no false '!'", h.badge !== "!" && h.entry?.missing.length === 0, h);
 
 await page.locator("#er-intent input").fill(QUERY);
@@ -104,8 +103,7 @@ const pw = await scan();
 const resultsPath = `/results?search_query=${encodeURIComponent(QUERY)}`;
 const pillBack = await msg("pillBack", QUERY);
 check("P1 watch page: pill label is a link to the results for the errand, × is the only button", pw.pillLink?.href === resultsPath && pw.pillLink.text === (await msg("pillLabel", QUERY)) && pw.pillButtons === 1, { pillLink: pw.pillLink, pillButtons: pw.pillButtons, url: page.url() });
-if (pillBack) check("P1 pill link title and aria-label = pillBack", pw.pillLink?.title === pillBack && pw.pillLink.aria === pillBack, { pillLink: pw.pillLink, pillBack });
-else check("P1 pill link title and aria-label = pillBack", null, `key pillBack missing in _locales (Lane 3); title=${pw.pillLink?.title ?? null}`);
+check("P1 pill link title = pillBack, no aria-label (accessible name is the visible label)", Boolean(pillBack) && pw.pillLink?.title === pillBack && pw.pillLink.aria === null, { pillLink: pw.pillLink, pillBack });
 await page.locator("#er-pill a").focus();
 await page.keyboard.press("Enter");
 await page.waitForURL(/\/results\?search_query=/, { timeout: 15000 }).catch(() => {});
@@ -113,12 +111,10 @@ await sleep(3000);
 const pBack = await scan();
 check("P1 Enter on the pill link → results for the errand, pill still there", new URL(page.url()).pathname === "/results" && new URL(page.url()).searchParams.get("search_query") === QUERY && Boolean(pBack.pill), { url: page.url(), pill: pBack.pill });
 check(`search "${QUERY}": no visible Shorts, no Shorts chip`, s1.shortsLinks === 0 && s1.shortsChips === 0 && s1.reelShelves === 0 && s1.videos > 5, s1);
-await sleep(3000);
-h = await health();
+h = await verdict();
 check("health search: no false '!'", h.badge !== "!" && h.entry?.missing.length === 0, h);
 await page.locator("#er-pill button").click();
-await sleep(600);
-const pillGone = await scan();
+const { value: pillGone } = await until(scan, (x) => x.pill === null, 3000, 100);
 const intentGone = await W.evaluate(() => chrome.storage.local.get("intent"));
 check("pill × clears the errand", pillGone.pill === null && intentGone.intent === undefined, { pill: pillGone.pill });
 
@@ -134,8 +130,7 @@ for (const q of ["minecraft", "how to tie a tie", "funny cats"]) {
   await page.screenshot({ path: join(OUT, `G-search-${q.replace(/\W+/g, "-")}.png`) });
   check(`search "${q}" (default): no visible Shorts links/shelves/chips, results present`, s.shortsLinks === 0 && s.shortsChips === 0 && s.reelShelves === 0 && s.videos > 5, s);
 }
-await sleep(4000);
-h = await health();
+h = await verdict();
 check("health search after scroll: no false '!'", h.badge !== "!" && h.entry?.missing.length === 0, h);
 
 await page.goto("https://www.youtube.com/@mkbhd", { waitUntil: "domcontentloaded" });
@@ -143,8 +138,7 @@ await sleep(6000);
 const ch = await scan();
 await page.screenshot({ path: join(OUT, "G-channel.png") });
 check("channel page: Shorts tab hidden, no visible Shorts", ch.shortsTabs === 0 && ch.shortsLinks === 0 && ch.erPage === "channel", ch);
-await sleep(3000);
-h = await health();
+h = await verdict();
 check("health channel: no false '!' (channel has no checks; entry must be clean)", h.badge !== "!" && h.entry?.page === "channel" && h.entry.missing.length === 0, h);
 await page.goto("https://www.youtube.com/@mkbhd/videos", { waitUntil: "domcontentloaded" });
 await sleep(5000);
@@ -156,9 +150,11 @@ const chs = await scan();
 await page.screenshot({ path: join(OUT, "G-channel-shorts-url.png") });
 check("channel /shorts URL typed directly: no visible Shorts items (observation)", chs.shortsLinks === 0, chs);
 
-await page.goto("https://www.youtube.com/feed/subscriptions", { waitUntil: "domcontentloaded" });
-await sleep(9000);
-h = await health();
+h = await reportAfter(await (async () => {
+  const at = Date.now();
+  await page.goto("https://www.youtube.com/feed/subscriptions", { waitUntil: "domcontentloaded" });
+  return at;
+})());
 await page.screenshot({ path: join(OUT, "G-subs-signed-out.png") });
 check("health subscriptions (signed out): no false '!'", h.badge !== "!" && h.entry?.page === "subs" && h.entry.missing.length === 0, h);
 
@@ -166,8 +162,7 @@ if (shortsId) {
   await page.goto(`https://www.youtube.com/shorts/${shortsId}`, { waitUntil: "domcontentloaded" });
   await page.waitForURL(/\/watch\?v=/, { timeout: 15000 }).catch(() => {});
   check("Shorts URL (watch mode) → /watch", page.url().includes(`/watch?v=${shortsId}`), page.url());
-  await sleep(8000);
-  h = await health();
+  h = await verdict();
   check("health watch: no false '!'", h.badge !== "!" && h.entry?.missing.length === 0, h);
   const navBefore = page.url();
   await page.evaluate((id) => {
@@ -193,7 +188,7 @@ if (shortsId) {
   check("Shorts URL (show mode) stays on /shorts/", page.url().includes(`/shorts/${shortsId}`), page.url());
   await setSettings({ shortsMode: "watch" });
 } else {
-  check("Shorts redirect", null, "no /shorts/ link found in 3 searches");
+  check("Shorts redirect", null, "precondition: no /shorts/ link found in 3 searches");
 }
 
 const firstVideo = async (q) => {
@@ -227,10 +222,9 @@ if (listId) {
     await page.screenshot({ path: join(OUT, "G-playlist-watch.png") });
     check("real playlist watch: data-er-playlist on, playlist panel visible", pl.playlistAttr && panel && pl.erPage === "watch", { ...pl, panel });
   }
-} else check("real playlist", null, "no PL playlist found in search");
+} else check("real playlist", null, "precondition: no PL playlist found in search");
 
-await setSettings({ ...(await W.evaluate(() => globalThis.ErrandLib.applyPreset({}, "shorts"))) });
-await sleep(400);
+await preset("shorts");
 const g1 = [];
 for (const q of ["minecraft", "how to tie a tie", "music video", "gaming highlights", "how to fix a bike"]) {
   const v = await firstVideo(q);
@@ -243,8 +237,7 @@ for (const q of ["minecraft", "how to tie a tie", "music video", "gaming highlig
     await sleep(2500);
     const w = await scan();
     g1.push({ q, kind: "watch", shortsLinks: w.shortsLinks, relatedShorts: w.relatedShorts, relatedItems: w.relatedItems, related: w.related });
-    await sleep(2000);
-    const hw = await health();
+    const hw = await verdict();
     g1.at(-1).badge = hw.badge;
     g1.at(-1).missing = hw.entry?.missing;
     g1.at(-1).attr = await page.evaluate(() => document.documentElement.getAttribute("data-er-health"));
@@ -269,15 +262,11 @@ await page.evaluate(() => {
   play.style.cssText = "display:block;height:40px";
   related?.prepend(lockup, play);
 });
-const f1At = Date.now();
-await sleep(1000);
-const f1Hidden = await fixtureHeights();
-await sleep(Math.max(0, 14000 - (Date.now() - f1At)));
-const f1Health = await health();
-check("F1/S1 'Just hide Shorts' watch: Shorts lockup and Watch & Play in #related height 0, no '!' after 14 s", f1Hidden["qa-lockup"] === 0 && f1Hidden["qa-watchplay"] === 0 && f1Health.badge !== "!", { f1Hidden, f1Health });
+const { value: f1Hidden } = await until(fixtureHeights, (x) => x["qa-lockup"] === 0 && x["qa-watchplay"] === 0, 2000, 100);
+const f1Health = await verdict();
+check("F1/S1 'Just hide Shorts' watch: Shorts lockup and Watch & Play in #related height 0, health verdict without '!'", f1Hidden["qa-lockup"] === 0 && f1Hidden["qa-watchplay"] === 0 && Boolean(f1Health.entry) && f1Health.badge !== "!", { f1Hidden, f1Health });
 await setSettings({ shortsMode: "show" });
-await sleep(800);
-const f1Shown = await fixtureHeights();
+const { value: f1Shown } = await until(fixtureHeights, (x) => x["qa-lockup"] > 0 && x["qa-watchplay"] > 0, 3000, 100);
 check("F1/S1 shortsMode=show: the same lockup and Watch & Play visible", f1Shown["qa-lockup"] > 0 && f1Shown["qa-watchplay"] > 0, f1Shown);
 await setSettings({ shortsMode: "watch" });
 await page.goto("https://www.youtube.com/", { waitUntil: "domcontentloaded" });
@@ -293,19 +282,16 @@ const s1Card = await page.evaluate(async () => {
   await new Promise((r) => setTimeout(r, 300));
   return Boolean(section.querySelector("ytd-mini-game-card-view-model"));
 });
-await sleep(500);
-const s1Hidden = await fixtureHeights();
+const { value: s1Hidden } = await until(fixtureHeights, (x) => x["qa-playables"] === 0, 2000, 100);
 await setSettings({ shortsMode: "show" });
-await sleep(800);
-const s1Shown = await fixtureHeights();
+const { value: s1Shown } = await until(fixtureHeights, (x) => x["qa-playables"] > 0, 3000, 100);
 await setSettings({ shortsMode: "watch" });
 check("S1 home Playables shelf: hidden with Shorts, visible with shortsMode=show", s1Hidden["qa-playables"] === 0 && s1Shown["qa-playables"] > 0, { s1Card, s1Hidden, s1Shown });
 await page.screenshot({ path: join(OUT, "G1-shorts-preset-watch.png") });
 check("G1 preset 'Just hide Shorts': 3 watch + 2+ searches, zero visible Shorts, column has normal videos", g1.every((x) => x.shortsLinks === 0 && (x.kind === "search" ? x.videos > 5 && x.shelves === 0 : x.related && x.relatedItems > 3)), g1);
 check("G2 (automated part) preset 'Just hide Shorts': no '!' on those watch pages", g1.filter((x) => x.kind === "watch").every((x) => x.badge !== "!"), g1.filter((x) => x.kind === "watch"));
 check("G2 preset 'Just hide Shorts': html[data-er-health] = ok on those watch pages", g1.filter((x) => x.kind === "watch").every((x) => x.attr === "ok"), g1.filter((x) => x.kind === "watch").map((x) => ({ q: x.q, attr: x.attr, playable: x.playable })));
-await setSettings(await W.evaluate(() => globalThis.ErrandLib.applyPreset({}, "ask")));
-await sleep(400);
+await preset("ask");
 
 await page.goto(`https://www.youtube.com/results?search_query=minecraft`, { waitUntil: "domcontentloaded" });
 await sleep(5000);
@@ -313,24 +299,22 @@ const total = await page.evaluate(() => document.querySelectorAll('a[href^="/sho
 await page.addStyleTag({ content: `html:not([data-er-show-shorts]):not(#qa-a):not(#qa-b) :is(ytd-reel-shelf-renderer, grid-shelf-view-model, ytd-video-renderer, ytm-shorts-lockup-view-model, ytm-shorts-lockup-view-model-v2, yt-lockup-view-model, ytd-shelf-renderer, ytd-horizontal-card-list-renderer, [data-er-shorts]) { display: block !important; }` });
 await page.locator('[name="search_query"]').first().fill("minecraft shorts");
 await page.locator('[name="search_query"]').first().press("Enter");
+const leakNavAt = Date.now();
 await page.waitForURL(/minecraft\+shorts|minecraft%20shorts/, { timeout: 15000 }).catch(() => {});
-await sleep(14000);
+({ value: h } = await until(health, (x) => x.badge === "!" && x.entry?.ts > leakNavAt, 25000, 500));
 const leak = await scan();
-h = await health();
 await page.screenshot({ path: join(OUT, "G-forced-leak.png") });
 check("forced Shorts leak + SPA navigation → '!' with 'shorts'", h.badge === "!" && h.entry?.missing.includes("shorts"), { leakLinks: leak.shortsLinks, shortsAnchorsBefore: total, h });
 
 const titleOf = (id) => W.evaluate((i) => chrome.action.getTitle({ tabId: i }), Number(id));
 const leakTitle = h.tab ? await titleOf(h.tab) : null;
+const healAt = Date.now();
 await page.goto(`https://www.youtube.com/results?search_query=${encodeURIComponent(QUERY)}`, { waitUntil: "domcontentloaded" });
-await sleep(10000);
-const healed = await health();
+const healed = await reportAfter(healAt, 25000);
 const healedTitle = healed.tab ? await titleOf(healed.tab) : null;
 const swNow = await W.evaluate(() => globalThis.__errs || []);
-check("after the leak is gone (reload, clean search): badge cleared, popup entry and tooltip back to OK", healed.badge !== "!" && healed.entry?.missing.length === 0 && healed.entry?.age < 6000 && healedTitle !== leakTitle, { healed, leakTitle, healedTitle, swErrs: swNow });
+check("after the leak is gone (reload, clean search): badge cleared, popup entry and tooltip back to OK", healed.badge !== "!" && healed.entry?.missing.length === 0 && healed.entry.ts > healAt && healedTitle !== leakTitle, { healed, leakTitle, healedTitle, swErrs: swNow });
 
-const swErrs = await W.evaluate(() => globalThis.__errs || []);
-const errors = [...ctx.errors, ...swErrs];
-check("no extension errors (page, SW)", errors.length === 0, errors);
+await finish(ctx, check, { name: "no extension errors (page, SW)" });
 save("G-pages-results.json");
 await context.close();

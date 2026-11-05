@@ -1,11 +1,10 @@
 import { join } from "node:path";
-import { launch, reporter, consent, sleep, storage, OUT, QUERY } from "./harness.mjs";
+import { launch, reporter, consent, sleep, storage, closeWelcome, finish, OUT, QUERY } from "./harness.mjs";
 
 const { check, save } = reporter();
-const ctx = await launch({ name: "stats", port: 9346 });
+const ctx = await launch({ name: "stats" });
 const { context } = ctx;
-await sleep(1500);
-for (const p of context.pages()) if (p.url().includes("welcome.html")) await p.close();
+await closeWelcome(ctx);
 const today = () => ctx.worker.evaluate(() => chrome.storage.local.get(["stats", "errandLast"]).then((d) => ({ day: (d.stats || {})[globalThis.ErrandLib.dayKey(new Date())] || {}, last: d.errandLast })));
 
 const ext = await context.newPage();
@@ -99,7 +98,6 @@ await sleep(600);
 check("B popup after content flow: 'Errands done: 1 · closed after: 1'", (await ext.locator("#summary").textContent()) === "Errands done: 1 · closed after: 1" && !(await ext.locator("#week").isHidden()));
 check("B incognito not counted", null, "Playwright persistent context cannot open an incognito tab with the extension allowed; check by hand");
 
-const swErrs = await ctx.worker.evaluate(() => globalThis.__errs || []);
-console.log("errors:", JSON.stringify([...ctx.errors, ...swErrs], null, 1));
+await finish(ctx, check);
 save("B-stats-results.json");
 await context.close();

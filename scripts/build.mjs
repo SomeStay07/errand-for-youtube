@@ -1,6 +1,6 @@
-import { cpSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -50,16 +50,49 @@ const TARGETS = {
   firefox,
 };
 
+function referencedFiles(manifest, out) {
+  const refs = new Set([`_locales/${manifest.default_locale}/messages.json`]);
+  const add = (value) => {
+    if (typeof value === "string") refs.add(value);
+    else if (Array.isArray(value)) value.forEach(add);
+    else if (value && typeof value === "object") Object.values(value).forEach(add);
+  };
+  add(manifest.icons);
+  add(manifest.action?.default_icon);
+  add(manifest.action?.default_popup);
+  add(manifest.background?.service_worker);
+  add(manifest.background?.scripts);
+  add(manifest.options_page);
+  add(manifest.options_ui?.page);
+  for (const script of manifest.content_scripts || []) add([script.js, script.css]);
+  for (const entry of manifest.web_accessible_resources || []) add(entry.resources);
+  for (const file of readdirSync(out).filter((f) => /\.(html|js)$/.test(f))) {
+    const text = readFileSync(join(out, file), "utf8");
+    const pattern = file.endsWith(".html") ? /(?:src|href)="([^"]+)"/g : /(?:importScripts|getURL)\("([^"]+)"\)/g;
+    for (const [, ref] of text.matchAll(pattern)) refs.add(ref);
+  }
+  return [...refs].map((ref) => ref.split(/[?#]/)[0]).filter((ref) => ref && !/^[a-z]+:|^\/\//i.test(ref));
+}
+
 const only = process.argv.length > 2 ? process.argv.slice(2) : ["chrome"];
-rmSync(DIST, { recursive: true, force: true });
+const unknown = only.filter((name) => !TARGETS[name]);
+if (unknown.length) throw new Error(`unknown target: ${unknown.join(", ")}`);
 
 for (const [name, transform] of Object.entries(TARGETS)) {
-  if (only.length && !only.includes(name)) continue;
+  if (!only.includes(name)) continue;
   const out = join(DIST, name);
-  mkdirSync(out, { recursive: true });
-  for (const file of FILES) cpSync(join(ROOT, file), join(out, file), { recursive: true });
-  writeFileSync(join(out, "manifest.json"), `${JSON.stringify(transform(base), null, 2)}\n`);
   const zip = join(DIST, `errand-${name}-${base.version}.zip`);
-  execFileSync("zip", ["-qrX", zip, "."], { cwd: out });
+  rmSync(out, { recursive: true, force: true });
+  const stale = existsSync(DIST) ? readdirSync(DIST).filter((f) => f.startsWith(`errand-${name}-`) && f.endsWith(".zip")) : [];
+  for (const file of stale) rmSync(join(DIST, file), { force: true });
+  mkdirSync(out, { recursive: true });
+  for (const file of FILES) {
+    cpSync(join(ROOT, file), join(out, file), { recursive: true, filter: (src) => basename(src) !== ".DS_Store" });
+  }
+  const manifest = transform(base);
+  writeFileSync(join(out, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+  const missing = referencedFiles(manifest, out).filter((ref) => !existsSync(join(out, ref)));
+  if (missing.length) throw new Error(`${name}: referenced but not shipped: ${missing.join(", ")}`);
+  execFileSync("zip", ["-qrX", zip, ".", "-x", "*.DS_Store"], { cwd: out });
   console.log(`${name}: ${zip}`);
 }

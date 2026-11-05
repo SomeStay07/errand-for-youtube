@@ -1,5 +1,6 @@
+import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -69,6 +70,52 @@ else {
   const shotsTime = Number(git("log", "-1", "--format=%ct", "--", "store/shots")) || 0;
   if (shotsTime >= uiTime) pass(`store/shots newer than changed UI files (${[...changed].join(", ")})`);
   else warn(`UI changed since ${tag || "start"} (${[...changed].join(", ")}) after the last store/shots commit; recapture screenshots if the change is visible`);
+}
+
+const [major, minor] = version.split(".");
+const changesPage = "docs/changes/index.html";
+if (!existsSync(join(ROOT, changesPage))) fail(`${changesPage} missing`);
+else if (read(changesPage).includes(`id="v${major}.${minor}"`)) pass(`${changesPage} has the #v${major}.${minor} anchor the update note links to`);
+else fail(`${changesPage} has no id="v${major}.${minor}": the update note for ${version} would link to a missing anchor`);
+
+const DIST = join(ROOT, "dist/chrome");
+const BUILD_FILES = [...(/const FILES = \[([^\]]*)\]/.exec(read("scripts/build.mjs"))?.[1] || "").matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+const files = (rel) => {
+  const full = join(ROOT, rel);
+  if (!existsSync(full)) return [];
+  return statSync(full).isDirectory() ? readdirSync(full, { recursive: true }).map((f) => join(rel, String(f))).filter((f) => statSync(join(ROOT, f)).isFile() && !f.endsWith(".DS_Store")) : [rel];
+};
+const digest = (path, rel) => {
+  const raw = readFileSync(path);
+  return createHash("sha256").update(rel.endsWith(".json") ? JSON.stringify(JSON.parse(raw)) : raw).digest("hex");
+};
+if (!BUILD_FILES.length) fail("FILES list not found in scripts/build.mjs");
+else if (!existsSync(DIST)) fail("dist/chrome missing: run npm run build");
+else {
+  const stale = BUILD_FILES.flatMap(files).filter((rel) => !existsSync(join(DIST, rel)) || digest(join(ROOT, rel), rel) !== digest(join(DIST, rel), rel));
+  if (stale.length) fail(`dist/chrome differs from the sources (${stale.join(", ")}): run npm run build before packing`);
+  else pass(`dist/chrome matches the sources (${BUILD_FILES.flatMap(files).length} files)`);
+  const built = JSON.parse(readFileSync(join(DIST, "manifest.json"), "utf8"));
+  const refs = new Set([`_locales/${built.default_locale}/messages.json`]);
+  const add = (v) => (typeof v === "string" ? refs.add(v) : Array.isArray(v) ? v.forEach(add) : v && typeof v === "object" ? Object.values(v).forEach(add) : null);
+  add([built.icons, built.action?.default_icon, built.action?.default_popup, built.background?.service_worker, built.background?.scripts, built.options_page, built.options_ui?.page]);
+  for (const cs of built.content_scripts || []) add([cs.js, cs.css]);
+  for (const w of built.web_accessible_resources || []) add(w.resources);
+  for (const html of readdirSync(DIST).filter((f) => f.endsWith(".html"))) for (const [, ref] of readFileSync(join(DIST, html), "utf8").matchAll(/(?:src|href)="([^"]+)"/g)) refs.add(ref);
+  const missing = [...refs].map((r) => r.split(/[?#]/)[0]).filter((r) => r && !/^[a-z]+:|^\/\//i.test(r) && !existsSync(join(DIST, r)));
+  if (missing.length) fail(`dist/chrome references files it does not ship: ${missing.join(", ")}`);
+  else pass(`every manifest path and HTML src/href in dist/chrome is shipped (${refs.size})`);
+  const zip = join(ROOT, "dist", `errand-chrome-${version}.zip`);
+  if (!existsSync(zip)) fail(`dist/errand-chrome-${version}.zip missing`);
+  else {
+    const entries = execFileSync("unzip", ["-Z1", zip]).toString().split("\n").filter(Boolean);
+    const dot = entries.filter((e) => e.split("/").some((part) => part.startsWith(".")));
+    const zipped = new Set(entries.filter((e) => !e.endsWith("/")));
+    const absent = BUILD_FILES.flatMap(files).filter((rel) => !zipped.has(rel));
+    if (dot.length || absent.length) fail(`zip ${dot.length ? `ships hidden files (${dot.join(", ")})` : ""}${absent.length ? ` misses ${absent.join(", ")}` : ""}`);
+    else if (statSync(zip).mtimeMs < statSync(join(DIST, "manifest.json")).mtimeMs - 5000) fail("zip is older than dist/chrome: run npm run build");
+    else pass(`zip has ${zipped.size} files, no hidden files`);
+  }
 }
 
 const roadmap = join(ROOT, "notes/roadmap.md");

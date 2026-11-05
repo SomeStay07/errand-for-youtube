@@ -1,18 +1,60 @@
 import { chromium } from "playwright-core";
+import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
-export const EXT = process.env.EXT || new URL("../../dist/chrome", import.meta.url).pathname;
-export const OUT = process.env.OUT || new URL("../../.e2e-out/v02", import.meta.url).pathname;
+const ROOT = new URL("../..", import.meta.url).pathname;
+export const EXT = process.env.EXT || join(ROOT, "dist/chrome");
+export const OUT = process.env.OUT || join(ROOT, ".e2e-out/v02");
 export const QUERY = process.env.QUERY || "swiftui navigation stack tutorial";
-const CHROME = `${process.env.HOME}/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`;
+export const CHROME = resolveChrome();
 
 mkdirSync(OUT, { recursive: true });
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-const LANG_LOCK = new URL("../../.e2e-out/.lang.lock", import.meta.url).pathname;
+function resolveChrome() {
+  if (process.env.CHROME) return process.env.CHROME;
+  const base = join(process.env.HOME, "Library/Caches/ms-playwright");
+  const tails = ["chrome-mac-arm64", "chrome-mac", "chrome-mac-x64"].map((d) => `${d}/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`);
+  const dirs = (existsSync(base) ? readdirSync(base) : []).filter((d) => /^chromium-\d+$/.test(d)).sort((a, b) => Number(b.split("-")[1]) - Number(a.split("-")[1]));
+  for (const d of dirs) for (const t of tails) if (existsSync(join(base, d, t))) return join(base, d, t);
+  throw new Error(`Chrome for Testing not found under ${base}; set CHROME=<path>`);
+}
+
+const DIST_FILES = ["lib.js", "content.js", "background.js", "hide.css", "popup.html", "popup.css", "popup.js", "welcome.html", "welcome.css", "welcome.js", "manifest.json", "_locales"];
+
+function listFiles(dir, rel = "") {
+  const full = join(dir, rel);
+  if (!existsSync(full)) return [];
+  if (!statSync(full).isDirectory()) return [rel];
+  return readdirSync(full).flatMap((n) => listFiles(dir, rel ? join(rel, n) : n));
+}
+
+const fileHash = (path, rel) => {
+  const raw = readFileSync(path);
+  const body = rel.endsWith(".json") ? JSON.stringify(JSON.parse(raw)) : raw;
+  return createHash("sha256").update(body).digest("hex");
+};
+
+export function distStale(ext = join(ROOT, "dist/chrome")) {
+  const stale = [];
+  for (const rel of DIST_FILES.flatMap((f) => listFiles(ROOT, f))) {
+    const built = join(ext, rel);
+    if (!existsSync(built)) stale.push(`${rel} (missing in dist)`);
+    else if (fileHash(join(ROOT, rel), rel) !== fileHash(built, rel)) stale.push(rel);
+  }
+  return stale;
+}
+
+export function sourceHash() {
+  const h = createHash("sha256");
+  for (const rel of DIST_FILES.flatMap((f) => listFiles(ROOT, f)).sort()) h.update(rel).update(readFileSync(join(ROOT, rel)));
+  return h.digest("hex").slice(0, 12);
+}
+
+const LANG_LOCK = join(ROOT, ".e2e-out/.lang.lock");
 const LANG_WAIT_MS = Number(process.env.LANG_LOCK_WAIT_MS || 600000);
 let langLocked = false;
 
@@ -25,6 +67,41 @@ const alive = (pid) => {
   }
 };
 
+const writeLang = (locale) => execFileSync("defaults", ["write", "com.google.chrome.for.testing", "AppleLanguages", `("${locale}")`]);
+const readLang = () => {
+  try {
+    return execFileSync("defaults", ["read", "com.google.chrome.for.testing", "AppleLanguages"], { stdio: ["ignore", "pipe", "ignore"] }).toString().replace(/\s+/g, " ").trim();
+  } catch {
+    return null;
+  }
+};
+
+function releaseLang() {
+  if (!langLocked) return;
+  writeLang("en-US");
+  rmSync(LANG_LOCK, { force: true });
+  langLocked = false;
+}
+
+let signalsHooked = false;
+function hookSignals() {
+  if (signalsHooked) return;
+  signalsHooked = true;
+  process.on("exit", () => {
+    try {
+      releaseLang();
+    } catch {}
+  });
+  for (const sig of ["SIGINT", "SIGTERM", "SIGHUP"]) {
+    process.once(sig, () => {
+      try {
+        releaseLang();
+      } catch {}
+      process.exit(128 + ({ SIGINT: 2, SIGTERM: 15, SIGHUP: 1 })[sig]);
+    });
+  }
+}
+
 function lockLang() {
   if (langLocked) return;
   mkdirSync(dirname(LANG_LOCK), { recursive: true });
@@ -33,7 +110,7 @@ function lockLang() {
     try {
       writeFileSync(LANG_LOCK, String(process.pid), { flag: "wx" });
       langLocked = true;
-      process.on("exit", () => langLocked && rmSync(LANG_LOCK, { force: true }));
+      hookSignals();
       return;
     } catch (e) {
       if (e.code !== "EEXIST") throw e;
@@ -48,19 +125,32 @@ function lockLang() {
   }
 }
 
-const writeLang = (locale) => execFileSync("defaults", ["write", "com.google.chrome.for.testing", "AppleLanguages", `("${locale}")`]);
-
 export function setLang(locale) {
   lockLang();
   writeLang(locale);
 }
 
 export function resetLang() {
-  writeLang("en-US");
-  const now = execFileSync("defaults", ["read", "com.google.chrome.for.testing", "AppleLanguages"]).toString().replace(/\s+/g, " ");
-  if (langLocked) rmSync(LANG_LOCK, { force: true });
-  langLocked = false;
-  return now;
+  if (!langLocked) return null;
+  releaseLang();
+  return readLang();
+}
+
+function assertEnglishBrowser() {
+  if (langLocked) return;
+  const start = Date.now();
+  for (;;) {
+    const holder = existsSync(LANG_LOCK) ? Number(readFileSync(LANG_LOCK, "utf8").trim()) : 0;
+    if (!holder || !alive(holder) || holder === process.pid) break;
+    if (Date.now() - start > LANG_WAIT_MS) break;
+    if (Date.now() - start < 1000) console.log(`waiting for the AppleLanguages lock held by pid ${holder}`);
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 1000);
+  }
+  const now = readLang();
+  if (now !== null && !/^\(\s*"?en-US"?\s*\)$/.test(now)) {
+    const holder = existsSync(LANG_LOCK) ? readFileSync(LANG_LOCK, "utf8").trim() : null;
+    throw new Error(`Chrome for Testing AppleLanguages is ${now}, expected en-US${holder ? ` (locale lock held by pid ${holder}: wait for it)` : " (stale: run `defaults write com.google.chrome.for.testing AppleLanguages '(\"en-US\")'`)"}`);
+  }
 }
 
 export function reporter() {
@@ -68,17 +158,143 @@ export function reporter() {
   const check = (name, ok, detail = "") => {
     const status = ok === null ? "NOT TESTABLE" : ok ? "PASS" : "FAIL";
     if (status === "FAIL") process.exitCode = 1;
-    rows.push({ name, status, detail: typeof detail === "string" ? detail : JSON.stringify(detail) });
-    console.log(`${status} ${name}${detail ? ` — ${typeof detail === "string" ? detail : JSON.stringify(detail)}` : ""}`);
+    const text = typeof detail === "string" ? detail : JSON.stringify(detail);
+    rows.push({ name, status, detail: text });
+    console.log(`${status} ${name}${text ? ` — ${text}` : ""}`);
   };
   const save = (file) => writeFileSync(join(OUT, file), JSON.stringify(rows, null, 2));
+  process.on("exit", (code) => {
+    const n = (s) => rows.filter((r) => r.status === s).length;
+    const pass = n("PASS");
+    const fail = n("FAIL");
+    const nt = n("NOT TESTABLE");
+    const allNT = rows.length > 0 && pass === 0 && fail === 0;
+    console.log(`RESULT pass=${pass} fail=${fail} nt=${nt}${rows.length === 0 ? " (no checks ran)" : allNT ? " (every check NOT TESTABLE)" : ""}`);
+    if (code === 0 && (rows.length === 0 || allNT)) process.exitCode = 1;
+  });
   return { rows, check, save };
 }
 
-export async function launch({ name, locale = "en-US", port = 9339, extension = true, width = 1280, height = 800, ext = EXT, keep = false, args: extra = [] }) {
+export async function until(probe, pred, ms = 15000, step = 250) {
+  const t0 = Date.now();
+  let value = await probe();
+  while (!pred(value) && Date.now() - t0 < ms) {
+    await sleep(step);
+    value = await probe();
+  }
+  return { value, ok: Boolean(pred(value)), ms: Date.now() - t0 };
+}
+
+export function messages(locale = "en") {
+  const M = JSON.parse(readFileSync(join(ROOT, `_locales/${locale}/messages.json`), "utf8"));
+  const msg = (key, value = "") => M[key].message.replace(/\$\w+\$/, value);
+  return { M, msg };
+}
+
+export async function closeWelcome(ctx, ms = 5000) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < ms && !ctx.context.pages().some((p) => p.url().includes("welcome.html"))) await sleep(100);
+  for (const p of ctx.context.pages()) if (p.url().includes("welcome.html")) await p.close();
+}
+
+export function settingsApi(ctx) {
+  const get = () => ctx.worker.evaluate(() => chrome.storage.local.get("settings").then(({ settings }) => globalThis.ErrandLib.mergeSettings(settings)));
+  const set = (patch) =>
+    ctx.worker.evaluate(
+      (p) =>
+        chrome.storage.local.get("settings").then(({ settings }) => {
+          const s = globalThis.ErrandLib.mergeSettings(settings);
+          return chrome.storage.local.set({ settings: { ...s, ...p, hide: { ...s.hide, ...(p.hide || {}) } } });
+        }),
+      patch,
+    );
+  const preset = async (name) => set(await ctx.worker.evaluate((n) => globalThis.ErrandLib.applyPreset({}, n), name));
+  return { get, set, preset };
+}
+
+export async function recheck(ctx) {
+  const { get, set } = settingsApi(ctx);
+  const { endPrompt } = await get();
+  await set({ endPrompt: !endPrompt });
+  await sleep(200);
+  await set({ endPrompt });
+  return Date.now();
+}
+
+export async function healthOf(ctx, tabId = null) {
+  const { health = {} } = await ctx.worker.evaluate(() => chrome.storage.session.get("health"));
+  const [id, entry] = tabId === null ? Object.entries(health).sort((a, b) => b[1].ts - a[1].ts)[0] || [] : [tabId, health[tabId]];
+  const tab = id === undefined ? null : Number(id);
+  return {
+    tab,
+    entry: entry ? { ...entry, age: Date.now() - entry.ts } : null,
+    badge: tab === null ? null : await ctx.worker.evaluate((i) => chrome.action.getBadgeText({ tabId: i }), tab),
+    title: tab === null ? null : await ctx.worker.evaluate((i) => chrome.action.getTitle({ tabId: i }), tab),
+  };
+}
+
+export const tabIds = (ctx) => ctx.worker.evaluate(() => chrome.tabs.query({}).then((t) => t.map((x) => x.id)));
+
+export async function newTab(ctx) {
+  const before = new Set(await tabIds(ctx));
+  const page = await ctx.context.newPage();
+  const { value } = await until(async () => (await tabIds(ctx)).find((id) => !before.has(id)), (id) => id !== undefined, 3000, 100);
+  return { page, tabId: value ?? null };
+}
+
+export async function trackHealthCycles(page) {
+  await page.addInitScript(() => {
+    window.__erCycles = [];
+    let last = location.href;
+    new MutationObserver((_, obs) => {
+      if (!document.getElementById("er-intent")) return;
+      window.__erCycles.push({ at: Date.now(), why: "load" });
+      last = location.href;
+      obs.disconnect();
+    }).observe(document, { childList: true, subtree: true });
+    document.addEventListener("yt-navigate-finish", () => {
+      if (location.href === last) return;
+      last = location.href;
+      window.__erCycles.push({ at: Date.now(), why: "navigate" });
+    });
+  });
+}
+
+export const healthCycles = (page) => page.evaluate(() => window.__erCycles || []);
+
+export async function injectShortsLeak(page) {
+  await page.evaluate(() => {
+    const a = document.createElement("a");
+    a.href = "/shorts/qaLeak12345";
+    a.id = "qa-leak";
+    a.textContent = "QA leaked Short";
+    a.style.cssText = "position:fixed;top:70px;left:10px;z-index:99999;background:#c00;color:#fff;padding:8px";
+    document.querySelector("ytd-app").append(a);
+  });
+}
+
+export async function finish(ctx, check, { extra = [], name = "no extension errors" } = {}) {
+  const sw = await ctx.worker?.evaluate(() => globalThis.__errs || []).catch(() => []) ?? [];
+  const errors = [...ctx.errors, ...sw, ...extra];
+  check(name, errors.length === 0, errors);
+  return errors;
+}
+
+function devtoolsPort(profile) {
+  const file = join(profile, "DevToolsActivePort");
+  return existsSync(file) ? Number(readFileSync(file, "utf8").split("\n")[0]) : null;
+}
+
+export async function launch({ name, locale = "en-US", extension = true, width = 1280, height = 800, ext = EXT, keep = false, args: extra = [], video = null }) {
+  assertEnglishBrowser();
+  if (ext === join(ROOT, "dist/chrome") && !process.env.E2E_GATE && !process.env.E2E_ALLOW_STALE) {
+    const stale = distStale(ext);
+    if (stale.length) throw new Error(`${ext} is older than the sources (${stale.slice(0, 5).join(", ")}${stale.length > 5 ? ", …" : ""}); run npm run build (or E2E_ALLOW_STALE=1)`);
+  }
   const profile = join(OUT, `profile-${name}`);
   if (!keep) rmSync(profile, { recursive: true, force: true });
-  const args = [`--lang=${locale}`, ...(process.env.HEADED === "1" ? ["--window-position=-2000,0"] : ["--headless=new"]), "--disable-blink-features=AutomationControlled", "--use-mock-keychain", "--password-store=basic", `--remote-debugging-port=${port}`, ...extra];
+  rmSync(join(profile, "DevToolsActivePort"), { force: true });
+  const args = [`--lang=${locale}`, ...(process.env.HEADED === "1" ? ["--window-position=-2000,0"] : ["--headless=new"]), "--disable-blink-features=AutomationControlled", "--use-mock-keychain", "--password-store=basic", "--remote-debugging-port=0", ...extra];
   if (extension) args.unshift(`--disable-extensions-except=${ext}`, `--load-extension=${ext}`);
   const context = await chromium.launchPersistentContext(profile, {
     executablePath: CHROME,
@@ -88,7 +304,14 @@ export async function launch({ name, locale = "en-US", port = 9339, extension = 
     colorScheme: "dark",
     viewport: { width, height },
     args,
+    ...(video ? { recordVideo: video } : {}),
   });
+  let port = null;
+  for (let i = 0; i < 50 && !port; i++) {
+    port = devtoolsPort(profile);
+    if (!port) await sleep(100);
+  }
+  if (!port) throw new Error(`no DevToolsActivePort in ${profile}`);
   const errors = [];
   const watchPage = (page) => {
     const tag = () => page.url().split("?")[0].slice(0, 80);
@@ -164,7 +387,9 @@ export const WATCH_LAYOUT_FLAGS = [
   "disable_theater_mode",
 ];
 
-export async function forceWatchLayout(page) {
+export const WATCH_GRID_FLAGS = ["kevlar_watch_grid"];
+
+export async function forceWatchLayout(page, flags = WATCH_LAYOUT_FLAGS) {
   await page.addInitScript((names) => {
     const on = Object.fromEntries(names.map((n) => [n, true]));
     const patch = (f) => {
@@ -197,7 +422,7 @@ export async function forceWatchLayout(page) {
     };
     hookProp(window, "yt", (y) => hookProp(y, "config_", hookCfg));
     hookProp(window, "ytcfg", (c) => hookProp(c, "data_", hookCfg));
-  }, WATCH_LAYOUT_FLAGS);
+  }, flags);
 }
 
 export async function searchVideoUrls(page, query = QUERY, count = 16) {

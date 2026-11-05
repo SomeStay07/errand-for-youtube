@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { launch, reporter, sleep, OUT, setLang, resetLang } from "./harness.mjs";
+import { launch, reporter, sleep, OUT, setLang, resetLang, finish } from "./harness.mjs";
 
 const { check, save } = reporter();
 const LOCALES = (process.env.LOCALES || "en-US,ru-RU,es-ES,pt-BR,de-DE").split(",");
@@ -7,7 +7,7 @@ const LOCALES = (process.env.LOCALES || "en-US,ru-RU,es-ES,pt-BR,de-DE").split("
 try {
   for (const locale of LOCALES) {
     setLang(locale);
-    const ctx = await launch({ name: `qa-wloc-${locale}`, locale, port: 9345, width: 420, height: 900 });
+    const ctx = await launch({ name: `qa-wloc-${locale}`, locale, width: 420, height: 900 });
     await sleep(2000);
     const page = ctx.context.pages().find((p) => p.url().endsWith("/welcome.html"));
     if (!page) {
@@ -81,7 +81,7 @@ try {
     await popup.screenshot({ path: join(OUT, `B-popup-${locale}-countdown.png`), clip: { x: 0, y: 0, width: 420, height: 260 } });
     check(`C ${locale} popup pause button text fits`, !cd.over && pm.btnW <= pm.btnClient + 1, `"${pm.btn}" / "${cd.text}"`);
     await popup.close();
-    if (ctx.errors.length) console.log(locale, "errors:", JSON.stringify(ctx.errors));
+    await finish(ctx, check, { name: `${locale}: no extension errors` });
     await ctx.context.close();
   }
 } finally {

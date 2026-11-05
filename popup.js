@@ -1,5 +1,5 @@
 const L = globalThis.ErrandLib;
-const t = (key, ...subs) => chrome.i18n.getMessage(key, subs.map(String));
+const t = L.translator(chrome.i18n);
 const LANG = chrome.i18n.getUILanguage();
 
 const HIDE_KEYS = [
@@ -26,17 +26,23 @@ const HEALTH_KEYS = {
   results: "healthResults",
 };
 
-let settings = L.mergeSettings();
-let pausedUntil = null;
-let pauseStartsAt = null;
-let pauseTimer = 0;
-let strictOffAt = null;
-let strictTimer = 0;
-let pickedAuto = false;
-let lastStrict = false;
-let editedSchedule = false;
-let pauseCounting = false;
-let strictCounting = false;
+const state = {
+  settings: L.mergeSettings(),
+  pausedUntil: null,
+  pauseStartsAt: null,
+  strictOffAt: null,
+  pickedAuto: false,
+  lastStrict: false,
+  editedSchedule: false,
+  pauseCounting: false,
+  strictCounting: false,
+  savesInFlight: 0,
+  health: undefined,
+  updateNote: undefined,
+  noteShown: false,
+  log: [],
+};
+let renderTimer = 0;
 
 const $ = (id) => document.getElementById(id);
 
@@ -48,12 +54,6 @@ function el(tag, attrs = {}, ...children) {
   }
   node.append(...children);
   return node;
-}
-
-function localize() {
-  document.documentElement.lang = LANG;
-  document.documentElement.dir = t("@@bidi_dir");
-  for (const node of document.querySelectorAll("[data-i18n]")) node.textContent = t(node.dataset.i18n);
 }
 
 function weekdayOrder() {
@@ -70,44 +70,94 @@ function weekdayName(day, style = "short") {
   return new Intl.DateTimeFormat(LANG, { weekday: style }).format(new Date(2026, 10, 1 + day));
 }
 
-function save(patch) {
-  editedSchedule = ["mode", "strictStart", "strictEnd", "strictDays"].some((key) => key in patch);
-  settings = L.patchSettings(settings, patch);
-  renderStatus();
-  chrome.runtime.sendMessage({ type: "patch", patch }).catch(async () => {
-    const { settings: stored } = await chrome.storage.local.get("settings");
-    await chrome.storage.local.set({ settings: L.patchSettings(stored, patch) });
-  });
-}
-
 function announce(text) {
   $("announce").textContent = text;
 }
 
-function isPausedNow() {
-  return !L.isStrict(settings, new Date()) && L.isPaused(pausedUntil, Date.now());
+function save(patch) {
+  state.editedSchedule = ["mode", "strictStart", "strictEnd", "strictDays"].some((key) => key in patch);
+  state.settings = L.patchSettings(state.settings, patch);
+  render();
+  state.savesInFlight++;
+  chrome.runtime
+    .sendMessage({ type: "patch", patch })
+    .catch(async () => {
+      const { settings: stored } = await chrome.storage.local.get("settings");
+      await chrome.storage.local.set({ settings: L.patchSettings(stored, patch) });
+    })
+    .finally(() => {
+      state.savesInFlight--;
+      resyncSchedule();
+    });
 }
 
-function renderStatus() {
+async function resyncSchedule() {
+  if (state.savesInFlight) return;
+  const { settings: stored } = await chrome.storage.local.get("settings");
+  if (state.savesInFlight || !stored) return;
+  const next = L.mergeSettings(stored);
+  for (const key of ["mode", "strictStart", "strictEnd", "strictDays", "strictSkipUntil"]) state.settings[key] = next[key];
+  for (const key of ["mode", "strictStart", "strictEnd"]) $(key).value = state.settings[key];
+  const boxes = $("days").querySelectorAll("input");
+  weekdayOrder().forEach((day, i) => {
+    if (boxes[i]) boxes[i].checked = state.settings.strictDays.includes(day);
+  });
+  render();
+}
+
+function view() {
+  const now = new Date();
+  const strict = L.isStrict(state.settings, now);
+  return { now, strict, paused: !strict && L.isPaused(state.pausedUntil, now.getTime()) };
+}
+
+function render() {
+  const v = view();
+  clearTimeout(renderTimer);
+  renderStatus(v);
+  const pauseCounting = renderPause(v);
+  const strictCounting = renderStrictLock(v);
+  if (pauseCounting || strictCounting) renderTimer = setTimeout(render, 250);
+  else if (state.settings.mode === "auto") renderTimer = setTimeout(render, 60_000 - (Date.now() % 60_000) + 50);
+}
+
+function renderStatus({ strict, paused }) {
+  const { settings } = state;
   let text = t("statusNormal");
   if (settings.mode === "strict") text = t("statusStrictAlways");
-  else if (L.isStrict(settings, new Date())) text = t("statusStrictUntil", settings.strictEnd);
-  else if (isPausedNow()) {
-    const time = new Intl.DateTimeFormat(LANG, { hour: "numeric", minute: "2-digit" }).format(new Date(pausedUntil));
-    text = t("statusPaused", time);
-  }
+  else if (strict) text = t("statusStrictUntil", L.clockOf(settings.strictEnd, LANG));
+  else if (paused) text = t("statusPaused", L.clock(state.pausedUntil, LANG));
   if ($("status").textContent !== text) $("status").textContent = text;
   $("schedule").hidden = settings.mode !== "auto";
-  renderPause();
-  renderStrictLock();
+  if (state.health !== undefined) $("health").hidden = paused || (!state.health && !state.noteShown);
 }
 
-function renderStrictLock() {
-  const strictNow = L.isStrict(settings, new Date());
-  if (settings.mode !== "auto" || (strictNow && !lastStrict && !editedSchedule)) pickedAuto = false;
-  lastStrict = strictNow;
-  editedSchedule = false;
-  const locked = strictNow && !pickedAuto;
+function renderPause({ now, strict, paused }) {
+  const row = $("pause");
+  const button = $("pauseButton");
+  const wasCounting = state.pauseCounting;
+  state.pauseCounting = false;
+  if (strict) {
+    row.hidden = true;
+    return false;
+  }
+  row.hidden = false;
+  if (L.isPauseStarting(state.pauseStartsAt, now.getTime())) {
+    button.textContent = t("pauseCountdown", Math.max(1, Math.ceil((state.pauseStartsAt - Date.now()) / 1000)));
+    if (!wasCounting) announce(button.textContent);
+    state.pauseCounting = true;
+    return true;
+  }
+  button.textContent = paused ? t("resumeButton") : t("pauseButton");
+  return false;
+}
+
+function renderStrictLock({ now, strict }) {
+  const { settings } = state;
+  if (settings.mode !== "auto" || (strict && !state.lastStrict && !state.editedSchedule)) state.pickedAuto = false;
+  state.lastStrict = strict;
+  state.editedSchedule = false;
+  const locked = strict && !state.pickedAuto;
   for (const node of [$("mode"), $("strictStart"), $("strictEnd"), $("import"), ...$("days").querySelectorAll("input")]) {
     node.disabled = locked;
   }
@@ -121,84 +171,54 @@ function renderStrictLock() {
     importLabel.removeAttribute("aria-description");
   }
   const button = $("strictOff");
+  const hadFocus = document.activeElement === button;
   button.hidden = !locked;
-  clearTimeout(strictTimer);
-  if (locked && L.strictExit(settings, strictOffAt, new Date()) === "waiting") {
-    button.textContent = t("strictOffCountdown", Math.max(1, Math.ceil((strictOffAt - Date.now()) / 1000)));
-    if (!strictCounting) announce(button.textContent);
-    strictCounting = true;
-    strictTimer = setTimeout(renderStatus, 250);
-    return;
+  if (hadFocus && !locked && !$("pause").hidden) $("pauseButton").focus();
+  if (locked && L.strictExit(settings, state.strictOffAt, now) === "waiting") {
+    button.textContent = t("strictOffCountdown", Math.max(1, Math.ceil((state.strictOffAt - Date.now()) / 1000)));
+    if (!state.strictCounting) announce(button.textContent);
+    state.strictCounting = true;
+    return true;
   }
-  strictCounting = false;
-  button.textContent = settings.mode === "auto" ? t("strictOffUntil", settings.strictEnd) : t("strictOffButton");
-  if (settings.mode === "auto") strictTimer = setTimeout(renderStatus, 60_000 - (Date.now() % 60_000) + 50);
+  state.strictCounting = false;
+  button.textContent = settings.mode === "auto" ? t("strictOffUntil", L.clockOf(settings.strictEnd, LANG)) : t("strictOffButton");
+  return false;
 }
 
 function onStrictOffClick() {
-  if (L.strictExit(settings, strictOffAt, new Date()) === "waiting") {
+  const now = new Date();
+  if (L.strictExit(state.settings, state.strictOffAt, now) === "waiting") {
     chrome.storage.local.remove("strictOffAt");
-    strictOffAt = null;
-  } else if (L.isStrict(settings, new Date())) {
-    strictOffAt = Date.now() + L.PAUSE_WAIT_S * 1000;
-    chrome.storage.local.set({ strictOffAt });
+    state.strictOffAt = null;
+  } else if (L.isStrict(state.settings, now)) {
+    state.strictOffAt = Date.now() + L.PAUSE_WAIT_S * 1000;
+    chrome.storage.local.set({ strictOffAt: state.strictOffAt });
   }
-  renderStatus();
-}
-
-function renderPause() {
-  const row = $("pause");
-  const button = $("pauseButton");
-  if (healthEntry !== undefined) $("health").hidden = isPausedNow() || (!healthEntry && !noteShown);
-  clearTimeout(pauseTimer);
-  const wasCounting = pauseCounting;
-  pauseCounting = false;
-  if (L.isStrict(settings, new Date())) {
-    row.hidden = true;
-    return;
-  }
-  row.hidden = false;
-  if (L.isPauseStarting(pauseStartsAt, Date.now())) {
-    const left = Math.max(1, Math.ceil((pauseStartsAt - Date.now()) / 1000));
-    button.textContent = t("pauseCountdown", left);
-    if (!wasCounting) announce(button.textContent);
-    pauseCounting = true;
-    pauseTimer = setTimeout(renderPause, 250);
-    return;
-  }
-  button.textContent = isPausedNow() ? t("resumeButton") : t("pauseButton");
+  render();
 }
 
 function onPauseClick() {
-  if (isPausedNow()) {
+  const { now, paused } = view();
+  if (paused) {
     chrome.storage.local.remove("pausedUntil");
-    pausedUntil = null;
-  } else if (L.isPauseStarting(pauseStartsAt, Date.now())) {
+    state.pausedUntil = null;
+  } else if (L.isPauseStarting(state.pauseStartsAt, now.getTime())) {
     chrome.storage.local.remove("pauseStartsAt");
-    pauseStartsAt = null;
-  } else if (L.canPause(settings, new Date(), pausedUntil)) {
-    pauseStartsAt = Date.now() + L.PAUSE_WAIT_S * 1000;
-    chrome.storage.local.set({ pauseStartsAt });
+    state.pauseStartsAt = null;
+  } else if (L.canPause(state.settings, now, state.pausedUntil)) {
+    state.pauseStartsAt = Date.now() + L.PAUSE_WAIT_S * 1000;
+    chrome.storage.local.set({ pauseStartsAt: state.pauseStartsAt });
   }
-  renderStatus();
-}
-
-function syncSchedule(next) {
-  for (const key of ["mode", "strictStart", "strictEnd", "strictDays", "strictSkipUntil"]) settings[key] = next[key];
-  for (const key of ["mode", "strictStart", "strictEnd"]) $(key).value = settings[key];
-  const boxes = $("days").querySelectorAll("input");
-  weekdayOrder().forEach((day, i) => {
-    if (boxes[i]) boxes[i].checked = settings.strictDays.includes(day);
-  });
+  render();
 }
 
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "local") return;
-  if (changes.pausedUntil) pausedUntil = changes.pausedUntil.newValue ?? null;
-  if (changes.pauseStartsAt) pauseStartsAt = changes.pauseStartsAt.newValue ?? null;
-  if (changes.strictOffAt) strictOffAt = changes.strictOffAt.newValue ?? null;
-  if (changes.settings?.newValue) syncSchedule(L.mergeSettings(changes.settings.newValue));
-  if (changes.pausedUntil || changes.pauseStartsAt || changes.strictOffAt || changes.settings) renderStatus();
+  if (changes.pausedUntil) state.pausedUntil = changes.pausedUntil.newValue ?? null;
+  if (changes.pauseStartsAt) state.pauseStartsAt = changes.pauseStartsAt.newValue ?? null;
+  if (changes.strictOffAt) state.strictOffAt = changes.strictOffAt.newValue ?? null;
+  if (changes.settings?.newValue) resyncSchedule();
+  if (changes.pausedUntil || changes.pauseStartsAt || changes.strictOffAt) render();
 });
 
 function renderStats(stats) {
@@ -219,32 +239,32 @@ function renderRate(stats, rateNote, flags) {
   close.addEventListener("click", () => {
     finish();
     hint.textContent = t("errandsHint");
+    hint.tabIndex = -1;
+    hint.focus();
   });
   hint.replaceChildren(t("noteRate"), " ", link, " ", close);
 }
 
-let healthEntry;
-let updateNote;
-let noteShown = false;
-
 function renderUpdateNote(node) {
-  chrome.storage.local.set({ updateNote: { ...updateNote, shown: (Number(updateNote.shown) || 0) + 1 } });
-  const link = el("a", { href: L.changesUrl(updateNote.version), target: "_blank", rel: "noopener" }, t("noteUpdatedLink"));
+  const note = state.updateNote;
+  chrome.storage.local.set({ updateNote: { ...note, shown: (Number(note.shown) || 0) + 1 } });
+  const link = el("a", { href: L.changesUrl(note.version), target: "_blank", rel: "noopener" }, t("noteUpdatedLink"));
   link.addEventListener("click", () => chrome.storage.local.remove("updateNote"));
   node.className = "";
-  node.replaceChildren(t("noteUpdated", updateNote.version), " ", link);
+  node.replaceChildren(t("noteUpdated", note.version), " ", link);
 }
 
 async function renderHealth() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const { health = {} } = await chrome.storage.session.get("health");
-  const entry = tab ? health[tab.id] : null;
-  healthEntry = entry || null;
+  const entry = (tab && health[tab.id]) || null;
+  const { paused } = view();
+  state.health = entry;
   $("report").href = reportLink(entry);
   const node = $("health");
-  noteShown = L.shouldShowUpdateNote(updateNote, { warn: Boolean(entry?.missing.length), paused: isPausedNow() });
-  node.hidden = isPausedNow() || (!entry && !noteShown);
-  if (noteShown) {
+  state.noteShown = L.shouldShowUpdateNote(state.updateNote, { warn: Boolean(entry?.missing.length), paused });
+  node.hidden = paused || (!entry && !state.noteShown);
+  if (state.noteShown) {
     renderUpdateNote(node);
     return;
   }
@@ -261,25 +281,18 @@ async function renderHealth() {
   node.replaceChildren(t("healthBroken", new Intl.ListFormat(LANG).format(names)), " ", link, " · ", known);
 }
 
-function browserLabel() {
-  const brands = navigator.userAgentData?.brands?.filter((b) => !/Not.?A.?Brand|Chromium/i.test(b.brand)) ?? [];
-  const brand = brands[0] ? `${brands[0].brand} ${brands[0].version}` : (navigator.userAgent.match(/(Firefox|Edg|OPR|YaBrowser|Chrome)\/[\d]+/)?.[0] ?? "");
-  return `${brand} / ${LANG}`;
-}
-
-let diagnosticsLog = [];
-
 function reportLink(entry) {
   const missing = entry?.missing ?? [];
   return L.reportUrl({
     version: chrome.runtime.getManifest().version,
-    browser: browserLabel(),
+    browser: L.browserLabel(navigator, LANG),
     page: entry?.page ?? "",
-    missing: [missing.join(", ") || "-", L.formatDiagnostics(diagnosticsLog, settings)],
+    missing: [missing.join(", ") || "-", L.formatDiagnostics(state.log, state.settings)],
   });
 }
 
 function renderForm() {
+  const { settings } = state;
   for (const [container, keys] of [["hide", HIDE_KEYS], ["more", MORE_KEYS]]) {
     const host = $(container);
     host.replaceChildren();
@@ -299,9 +312,9 @@ function renderForm() {
     $(key).value = settings[key];
     $(key).addEventListener("change", () => {
       const patch = { [key]: $(key).value };
-      if (key === "mode") pickedAuto = patch.mode === "auto";
+      if (key === "mode") state.pickedAuto = patch.mode === "auto";
       save(patch);
-      $(key).value = settings[key];
+      $(key).value = state.settings[key];
     });
   }
 
@@ -310,7 +323,7 @@ function renderForm() {
   for (const day of weekdayOrder()) {
     const box = el("input", { type: "checkbox", checked: settings.strictDays.includes(day) });
     box.addEventListener("change", () => {
-      const set = new Set(settings.strictDays);
+      const set = new Set(state.settings.strictDays);
       if (box.checked) set.add(day);
       else set.delete(day);
       save({ strictDays: [...set] });
@@ -342,12 +355,12 @@ function setupLinks() {
 
 function setupBackup() {
   $("export").addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify({ errand: 1, settings }, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify({ errand: 1, settings: state.settings }, null, 2)], { type: "application/json" });
     const link = el("a", { href: URL.createObjectURL(blob), download: "errand-settings.json" });
     link.click();
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   });
-  const firefoxPopup = typeof globalThis.browser !== "undefined" && !location.search.includes("tab");
+  const firefoxPopup = L.isFirefox(globalThis) && !location.search.includes("tab");
   if (firefoxPopup) {
     $("import").closest("label").addEventListener("click", (event) => {
       event.preventDefault();
@@ -360,8 +373,9 @@ function setupBackup() {
     if (!file) return;
     try {
       const data = JSON.parse(await file.text());
-      settings = L.mergeSettings(data.settings || data);
-      await chrome.storage.local.set({ settings });
+      if (data?.errand !== 1 || !data.settings || typeof data.settings !== "object" || Array.isArray(data.settings)) throw new Error();
+      const next = L.mergeSettings(data.settings);
+      await chrome.runtime.sendMessage({ type: "replace", settings: next }).catch(() => chrome.storage.local.set({ settings: next }));
       location.reload();
     } catch {
       $("status").textContent = t("importFailed");
@@ -370,32 +384,29 @@ function setupBackup() {
 }
 
 async function init() {
-  localize();
-  const data = await chrome.storage.local.get(["settings", "stats", "log", "pausedUntil", "pauseStartsAt", "strictOffAt", "updateNote", "rateNote"]);
-  diagnosticsLog = data.log || [];
-  updateNote = data.updateNote;
-  settings = L.mergeSettings(data.settings);
-  pausedUntil = data.pausedUntil ?? null;
-  pauseStartsAt = data.pauseStartsAt ?? null;
-  strictOffAt = data.strictOffAt ?? null;
+  L.localizeDocument(document, t, LANG);
+  const keys = ["settings", "stats", "log", "pausedUntil", "pauseStartsAt", "strictOffAt", "updateNote", "rateNote"];
+  const data = await chrome.storage.local.get(keys);
+  state.log = data.log || [];
+  state.updateNote = data.updateNote;
+  state.settings = L.mergeSettings(data.settings);
+  state.pausedUntil = L.isPaused(data.pausedUntil, Date.now()) ? data.pausedUntil : null;
+  state.pauseStartsAt = data.pauseStartsAt ?? null;
+  state.strictOffAt = data.strictOffAt ?? null;
   $("lookAgain").addEventListener("click", (event) => {
     event.preventDefault();
     chrome.tabs.create({ url: chrome.runtime.getURL("welcome.html") });
   });
-  if (data.pausedUntil !== undefined && !L.isPaused(data.pausedUntil, Date.now())) {
-    chrome.storage.local.remove("pausedUntil");
-    pausedUntil = null;
-  }
   chrome.runtime.sendMessage({ type: "sync" }).catch(() => {});
   $("pauseButton").addEventListener("click", onPauseClick);
   $("strictOff").addEventListener("click", onStrictOffClick);
   renderForm();
   setupBackup();
   setupLinks();
-  renderStatus();
+  render();
   renderStats(data.stats || {});
   await renderHealth();
-  renderRate(data.stats || {}, data.rateNote, { warn: Boolean(healthEntry?.missing.length), noteShown });
+  renderRate(data.stats || {}, data.rateNote, { warn: Boolean(state.health?.missing.length), noteShown: state.noteShown });
 }
 
 init();

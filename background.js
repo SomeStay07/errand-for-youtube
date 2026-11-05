@@ -5,6 +5,7 @@ let queue = Promise.resolve();
 
 function enqueue(job) {
   queue = queue.then(job).catch(() => {});
+  return queue;
 }
 
 async function recordErrand(kind, id) {
@@ -15,15 +16,23 @@ async function recordErrand(kind, id) {
   await chrome.storage.local.set(next);
 }
 
-const t = (key, ...subs) => chrome.i18n.getMessage(key, subs.map(String));
-
-function clock(ms) {
-  return new Intl.DateTimeFormat(chrome.i18n.getUILanguage(), { hour: "numeric", minute: "2-digit" }).format(new Date(ms));
-}
+const t = L.translator(chrome.i18n);
 
 async function patchSettings(patch) {
   const { settings } = await chrome.storage.local.get("settings");
   await chrome.storage.local.set({ settings: L.patchSettings(settings, patch) });
+}
+
+async function applyPreset(id) {
+  const { settings } = await chrome.storage.local.get("settings");
+  await chrome.storage.local.set({ settings: L.applyPreset(L.mergeSettings(settings), id) });
+}
+
+async function dropHealth(tabId) {
+  const { health = {} } = await chrome.storage.session.get("health");
+  if (!(tabId in health)) return;
+  delete health[tabId];
+  await chrome.storage.session.set({ health });
 }
 
 async function syncHealthyTitles(title) {
@@ -37,7 +46,7 @@ async function syncPauseBadge() {
   const { pausedUntil, settings } = await chrome.storage.local.get(["pausedUntil", "settings"]);
   const strict = L.isStrict(L.mergeSettings(settings), new Date());
   if (L.isPaused(pausedUntil, Date.now()) && !strict) {
-    const title = t("titlePaused", clock(pausedUntil));
+    const title = t("titlePaused", L.clock(pausedUntil, chrome.i18n.getUILanguage()));
     await chrome.action.setBadgeText({ text: "II" });
     await chrome.action.setBadgeBackgroundColor({ color: "#5f6368" });
     await chrome.action.setTitle({ title });
@@ -72,7 +81,7 @@ async function recordHealth(tabId, page, missing) {
   } catch {}
 }
 
-chrome.runtime.onMessage.addListener((message, sender) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   const tabId = sender.tab?.id;
   const incognito = Boolean(sender.tab?.incognito);
   enqueue(syncPauseBadge);
@@ -83,15 +92,25 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     if (!incognito && message.errand !== null && message.errand !== undefined) {
       enqueue(() => recordErrand("closed", message.errand));
     }
-    chrome.tabs.remove(tabId);
+    chrome.tabs.remove(tabId).catch(() => {});
   }
   const fromExtension = typeof sender.url === "string" && sender.url.startsWith(chrome.runtime.getURL(""));
+  let job = null;
   if (message.type === "patch" && fromExtension && message.patch && typeof message.patch === "object") {
-    enqueue(() => patchSettings(message.patch));
+    job = () => patchSettings(message.patch);
+  }
+  if (message.type === "replace" && fromExtension && message.settings && typeof message.settings === "object") {
+    job = () => chrome.storage.local.set({ settings: L.mergeSettings(message.settings) });
+  }
+  if (message.type === "preset" && fromExtension && typeof message.id === "string") {
+    job = () => applyPreset(message.id);
   }
   if (message.type === "health" && tabId !== undefined && Array.isArray(message.missing)) {
     enqueue(() => recordHealth(tabId, message.page, message.missing));
   }
+  if (!job) return;
+  enqueue(job).then(() => sendResponse(true));
+  return true;
 });
 
 chrome.runtime.onInstalled.addListener((details) => {
@@ -103,10 +122,14 @@ chrome.runtime.onInstalled.addListener((details) => {
     const note = L.updateNote(details.previousVersion, chrome.runtime.getManifest().version);
     if (note) chrome.storage.local.set({ updateNote: note });
   }
+  enqueue(syncPauseBadge);
+  enqueue(startPendingPause);
+  enqueue(finishStrictExit);
 });
 
 chrome.runtime.onStartup.addListener(() => {
   enqueue(syncPauseBadge);
+  enqueue(startPendingPause);
   enqueue(finishStrictExit);
 });
 
@@ -160,10 +183,14 @@ chrome.storage.onChanged.addListener((changes, area) => {
 });
 
 chrome.tabs.onRemoved.addListener((tabId) => {
-  enqueue(async () => {
-    const { health = {} } = await chrome.storage.session.get("health");
-    if (!(tabId in health)) return;
-    delete health[tabId];
-    await chrome.storage.session.set({ health });
-  });
+  enqueue(() => dropHealth(tabId));
 });
+
+chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
+  if (info.status !== "loading") return;
+  if (/^https:\/\/www\.youtube\.com\//.test(info.url ?? tab.url ?? "")) return;
+  enqueue(() => dropHealth(tabId));
+});
+
+chrome.tabs.onActivated.addListener(() => enqueue(syncPauseBadge));
+chrome.windows?.onFocusChanged.addListener(() => enqueue(syncPauseBadge));

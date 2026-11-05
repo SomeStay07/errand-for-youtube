@@ -1,15 +1,18 @@
-import { readFileSync } from "node:fs";
-import { launch, reporter, sleep } from "./harness.mjs";
+import { launch, reporter, sleep, until, closeWelcome, finish, messages } from "./harness.mjs";
 
-const M = JSON.parse(readFileSync(new URL("../../_locales/en/messages.json", import.meta.url), "utf8"));
+const { M } = messages();
 const { check, save } = reporter();
-const ctx = await launch({ name: "v03-notes", port: 9374, width: 340, height: 600 });
-await sleep(1500);
-for (const p of ctx.context.pages()) if (p.url().includes("welcome.html")) await p.close();
-const p = await ctx.context.newPage();
-await p.goto(`chrome-extension://${ctx.extId}/popup.html`);
-await sleep(500);
-const setup = (o) => p.evaluate(async ({ done, rateNote, updateNote, missing, paused }) => {
+const ctx = await launch({ name: "v03-notes", width: 340, height: 600 });
+await closeWelcome(ctx);
+const front = ctx.context.pages()[0] || (await ctx.context.newPage());
+await front.bringToFront();
+const [p] = await Promise.all([ctx.context.waitForEvent("page"), ctx.worker.evaluate((url) => chrome.tabs.create({ url, active: false }), `chrome-extension://${ctx.extId}/popup.html`)]);
+await p.waitForURL(/popup\.html/, { timeout: 5000 }).catch(() => {});
+await p.waitForLoadState("load");
+const frontTab = await p.evaluate(() => chrome.tabs.query({ active: true, currentWindow: true }).then(([t]) => t.id));
+const popupTab = await p.evaluate(() => chrome.tabs.getCurrent().then((t) => t.id));
+if (frontTab === popupTab) throw new Error("popup tab became the active tab; the health fixture needs a different active tab");
+const setup = (o) => p.evaluate(async ({ done, rateNote, updateNote, missing, paused, tabId }) => {
   const L = globalThis.ErrandLib;
   await chrome.storage.local.clear();
   await chrome.storage.session.remove("health");
@@ -20,13 +23,13 @@ const setup = (o) => p.evaluate(async ({ done, rateNote, updateNote, missing, pa
   if (paused) data.pausedUntil = Date.now() + 60000;
   await chrome.storage.local.set(data);
   if (missing) {
-    const tab = await chrome.tabs.getCurrent();
-    await chrome.storage.session.set({ health: { [tab.id]: { page: "watch", missing, ts: Date.now() } } });
+    await chrome.storage.session.set({ health: { [tabId]: { page: "watch", missing, ts: Date.now() } } });
   }
-}, o);
+}, { ...o, tabId: frontTab });
 const open = async () => {
   await p.reload();
-  await sleep(500);
+  await p.waitForFunction(() => document.getElementById("weekHint")?.textContent.length > 0 && document.getElementById("status")?.textContent.length > 0, null, { timeout: 5000 }).catch(() => {});
+  await sleep(150);
 };
 const state = () => p.evaluate(async () => {
   const s = await chrome.storage.local.get(["rateNote", "updateNote"]);
@@ -67,8 +70,7 @@ check("S5: fourth open after 3 shows -> gone", s.hint === M.errandsHint.message 
 await setup({ done: 5, missing: [] });
 await open();
 await p.click("#weekHint button");
-await sleep(300);
-s = await state();
+({ value: s } = await until(state, (x) => x.rateNote?.done === true, 3000, 100));
 check("S5: × restores errandsHint in place, done=true", s.hint === M.errandsHint.message && s.rateNote.done === true, s);
 await open();
 s = await state();
@@ -77,11 +79,10 @@ check("S5: next open after × has no rate line", s.hint === M.errandsHint.messag
 await setup({ done: 5, missing: [] });
 await open();
 const [tab] = await Promise.all([ctx.context.waitForEvent("page"), p.click("#weekHint a")]);
-await sleep(300);
 await tab.waitForURL(/chromewebstore/, { timeout: 8000 }).catch(() => {});
 const rateUrl = tab.url();
 await tab.close();
-s = await state();
+({ value: s } = await until(state, (x) => x.rateNote?.done === true, 3000, 100));
 check("S5: Rate click opens reviews and ends the line", s.rateNote.done === true && /reviews/.test(rateUrl), { rateUrl, rateNote: s.rateNote });
 
 await setup({ done: 5, missing: ["related"] });
@@ -117,12 +118,12 @@ await open();
 s = await state();
 check("S6: no health entry -> note still shows", !s.healthHidden && s.health === NOTE && s.updateNote.shown === 2, s);
 const [tab2] = await Promise.all([ctx.context.waitForEvent("page"), p.click("#health a")]);
-await sleep(300);
+await tab2.waitForURL(/\/changes\//, { timeout: 8000 }).catch(() => {});
 const changes = tab2.url();
 await tab2.close();
-s = await state();
+({ value: s } = await until(state, (x) => !x.updateNote, 3000, 100));
 check("S6: link click opens /changes/#v0.3 and removes the note", !s.updateNote && changes.endsWith("/changes/#v0.3"), { changes, s });
 
-check("no extension errors", ctx.errors.length === 0, ctx.errors);
+await finish(ctx, check);
 save("N-notes.json");
 await ctx.context.close();

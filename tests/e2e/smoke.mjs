@@ -1,186 +1,163 @@
-import { chromium } from "playwright-core";
-import { mkdirSync, rmSync } from "node:fs";
+import { mkdirSync } from "node:fs";
 import { join } from "node:path";
+import { launch, reporter, consent, until, finish, sleep, QUERY } from "./harness.mjs";
 
-const EXT = process.env.EXT || new URL("../../dist/chrome", import.meta.url).pathname;
-const OUT = process.env.OUT || new URL("../../.e2e-out", import.meta.url).pathname;
-const LOCALE = process.env.LOCALE || "en-US";
-const QUERY = process.env.QUERY || "swiftui navigation stack tutorial";
+const SHOTS = process.env.OUT || new URL("../../.e2e-out", import.meta.url).pathname;
 const VIDEO = process.env.VIDEO === "1";
-const CHROME = `${process.env.HOME}/Library/Caches/ms-playwright/chromium-1234/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`;
+mkdirSync(SHOTS, { recursive: true });
 
-mkdirSync(OUT, { recursive: true });
-const profile = join(OUT, "profile");
-rmSync(profile, { recursive: true, force: true });
+const { check, save } = reporter();
+const ctx = await launch({ name: "smoke", locale: process.env.LOCALE || "en-US", video: VIDEO ? { dir: join(SHOTS, "video"), size: { width: 1280, height: 800 } } : null });
+const { context, extId } = ctx;
+const HEALTH = Object.fromEntries(await ctx.worker.evaluate(() => globalThis.ErrandLib.HEALTH.watch));
 
-const context = await chromium.launchPersistentContext(profile, {
-  executablePath: CHROME,
-  headless: false,
-  locale: LOCALE,
-  ignoreDefaultArgs: ["--enable-automation"],
-  colorScheme: "dark",
-  viewport: { width: 1280, height: 800 },
-  args: [`--disable-extensions-except=${EXT}`, `--load-extension=${EXT}`, `--lang=${LOCALE}`, ...(process.env.HEADED === "1" ? ["--window-position=-2000,0"] : ["--headless=new"]), "--disable-blink-features=AutomationControlled", "--use-mock-keychain", "--password-store=basic"],
-  recordVideo: VIDEO ? { dir: join(OUT, "video"), size: { width: 1280, height: 800 } } : undefined,
-});
-
-const results = {};
-const skipped = [];
-const check = (name, value) => {
-  results[name] = value;
-  console.log(`${value ? "PASS" : "FAIL"} ${name}`);
-};
-
-let [worker] = context.serviceWorkers();
-if (!worker) worker = await context.waitForEvent("serviceworker");
-const extId = worker.url().split("/")[2];
-
-let welcome = null;
-for (let i = 0; i < 50 && !welcome; i++) {
-  welcome = context.pages().find((p) => p.url().includes("welcome.html")) ?? null;
-  if (!welcome) await new Promise((r) => setTimeout(r, 200));
-}
+const { value: welcome } = await until(async () => context.pages().find((p) => p.url().includes("welcome.html")) ?? null, Boolean, 10000, 200);
 check("install: welcome page opened", Boolean(welcome));
 if (welcome) {
-  await welcome.waitForTimeout(500);
+  await welcome.waitForSelector("#lines li", { timeout: 5000 }).catch(() => {});
   check("welcome: ask preset selected", await welcome.locator('input[value="ask"]').isChecked());
   check("welcome: three lines", (await welcome.locator("#lines li").count()) === 3);
-  await welcome.screenshot({ path: join(OUT, "0-welcome.png"), fullPage: true });
+  await welcome.screenshot({ path: join(SHOTS, "0-welcome.png"), fullPage: true });
   await welcome.close();
 }
 const page = context.pages().find((p) => !p.url().startsWith("chrome-extension://")) || (await context.newPage());
-const pause = (ms) => page.waitForTimeout(ms);
 const BLUR_CSS = `ytd-thumbnail img, yt-thumbnail-view-model img, yt-image img, #avatar img, yt-img-shadow img, .yt-spec-avatar-shape img, yt-avatar-shape img, ytd-channel-name, #channel-name, .ytContentMetadataViewModelMetadataRow a { filter: blur(9px) !important; }`;
-async function blurPage() { await page.addStyleTag({ content: BLUR_CSS }).catch(() => {}); await page.waitForTimeout(400); }
-
-
-async function consent() {
-  const reject = page
-    .locator('ytd-consent-bump-v2-lightbox button:has-text("Reject"), ytd-consent-bump-v2-lightbox button:has-text("Отклонить"), ytd-consent-bump-v2-lightbox button:has-text("Rechazar"), ytd-consent-bump-v2-lightbox button:has-text("Rejeitar"), ytd-consent-bump-v2-lightbox button:has-text("Recusar"), ytd-consent-bump-v2-lightbox button:has-text("Ablehnen"), form button:has-text("Reject all")')
-    .first();
-  await reject.waitFor({ state: "visible", timeout: 8000 }).catch(() => {});
-  if (await reject.isVisible().catch(() => false)) {
-    await reject.click();
-    await page.waitForTimeout(3000);
-    console.log("consent: rejected non-essential cookies");
-  }
-}
+const blurPage = async () => {
+  await page.addStyleTag({ content: BLUR_CSS }).catch(() => {});
+  await sleep(400);
+};
+const visible = (selector) => page.evaluate((s) => [...document.querySelectorAll(s)].some((n) => n.getClientRects().length > 0 && getComputedStyle(n).visibility !== "hidden"), selector);
+const attached = (selector) => page.evaluate((s) => Boolean(document.querySelector(s)), selector);
 
 await page.goto("https://www.youtube.com/", { waitUntil: "domcontentloaded" });
-await consent();
-await pause(4000);
+await consent(page);
+await page.waitForSelector("#er-intent", { state: "visible", timeout: 15000 }).catch(() => {});
+const { value: homeBrowse } = await until(() => attached('ytd-browse[page-subtype="home"]'), Boolean, 10000);
 check("home: question visible", await page.locator("#er-intent").isVisible());
-check("home: feed hidden", !(await page.locator('ytd-browse[page-subtype="home"]').isVisible().catch(() => false)));
-await page.screenshot({ path: join(OUT, "1-home.png") });
+check("home: feed rendered and hidden", homeBrowse && !(await visible('ytd-browse[page-subtype="home"]')), { rendered: homeBrowse });
+await page.screenshot({ path: join(SHOTS, "1-home.png") });
 
 await page.locator("#er-intent input").click();
 await page.keyboard.type(QUERY, { delay: VIDEO ? 60 : 0 });
-await pause(VIDEO ? 800 : 100);
-await page.screenshot({ path: join(OUT, "1b-home-typed.png") });
+await sleep(VIDEO ? 800 : 100);
+await page.screenshot({ path: join(SHOTS, "1b-home-typed.png") });
 await page.keyboard.press("Enter");
 await page.waitForURL(/results/, { timeout: 20000 });
-await pause(5000);
-const visibleShorts = await page.evaluate(
-  () => [...document.querySelectorAll('a[href^="/shorts/"]')].filter((a) => a.offsetParent !== null).length,
+const { value: search } = await until(
+  () => page.evaluate(() => ({
+    videos: [...document.querySelectorAll("ytd-search ytd-video-renderer, ytd-search yt-lockup-view-model")].filter((n) => n.getClientRects().length > 0).length,
+    shorts: [...document.querySelectorAll('a[href^="/shorts/"]')].filter((a) => a.getClientRects().length > 0 && getComputedStyle(a).visibility !== "hidden").length,
+    shortsId: [...document.querySelectorAll('a[href^="/shorts/"]')].map((a) => /^\/shorts\/([\w-]{6,})/.exec(a.getAttribute("href"))?.[1]).find(Boolean) ?? null,
+  })),
+  (s) => s.videos > 5,
+  15000,
+  500,
 );
-check("search: no visible Shorts links", visibleShorts === 0);
-const shortsHref = await page.evaluate(() => document.querySelector('a[href^="/shorts/"]')?.getAttribute("href") || null);
+await sleep(2000);
+const shortsVisible = await page.evaluate(() => [...document.querySelectorAll('a[href^="/shorts/"]')].filter((a) => a.getClientRects().length > 0 && getComputedStyle(a).visibility !== "hidden").length);
+check("search: results rendered (> 5 videos), no visible Shorts links", search.videos > 5 && shortsVisible === 0, { ...search, shortsVisible });
+const shortsId = search.shortsId ?? (await page.evaluate(() => [...document.querySelectorAll('a[href^="/shorts/"]')].map((a) => /^\/shorts\/([\w-]{6,})/.exec(a.getAttribute("href"))?.[1]).find(Boolean) ?? null));
 check("search: intent pill", await page.locator("#er-pill").isVisible());
 await blurPage();
-await page.screenshot({ path: join(OUT, "2-search.png") });
+await page.screenshot({ path: join(SHOTS, "2-search.png") });
 
 const first = page.locator('ytd-video-renderer a#thumbnail[href^="/watch"], yt-lockup-view-model a[href^="/watch"]').first();
 await first.click();
 await page.waitForURL(/watch/, { timeout: 20000 });
-await pause(7000);
-check("watch: related hidden", !(await page.locator("ytd-watch-flexy #related").first().isVisible().catch(() => false)));
+const watchParts = () => page.evaluate((h) => ({ player: Boolean(document.querySelector(h.player)), related: Boolean(document.querySelector(h.related)), comments: Boolean(document.querySelector(h.comments)), reveal: Boolean(document.getElementById("er-reveal")) }), HEALTH);
+const { value: rendered } = await until(watchParts, (r) => r.player && r.related && r.comments && r.reveal, 20000, 500);
+check("watch: page rendered (#movie_player, #related, ytd-comments attached)", rendered.player && rendered.related && rendered.comments, rendered);
+check("watch: related hidden", rendered.related && !(await visible(HEALTH.related)));
 check("watch: reveal button", await page.locator("#er-reveal").isVisible());
-check("watch: comments hidden", !(await page.locator("ytd-comments#comments").isVisible().catch(() => false)));
-const autoplay = await page.evaluate(() => document.querySelector(".ytp-autonav-toggle-button")?.getAttribute("aria-checked"));
+check("watch: comments hidden", rendered.comments && !(await visible(HEALTH.comments)));
+check("watch: data-er-no-autoplay set (autoplay stop is on)", await page.evaluate(() => document.documentElement.hasAttribute("data-er-no-autoplay")));
+await page.screenshot({ path: join(SHOTS, "3-watch.png") });
 
-await page.screenshot({ path: join(OUT, "3-watch.png") });
-
+await page.evaluate(() => {
+  const button = document.getElementById("er-reveal");
+  window.__reveal = [];
+  new MutationObserver(() => {
+    const b = document.getElementById("er-reveal");
+    const n = Number((b?.textContent || "").match(/\d+/)?.[0]);
+    if (b && Number.isFinite(n) && window.__reveal.at(-1)?.n !== n) window.__reveal.push({ t: Date.now(), n, live: b.getAttribute("aria-live") });
+  }).observe(button.parentElement, { childList: true, characterData: true, subtree: true, attributes: true });
+});
 await page.locator("#er-reveal").click();
-await pause(1200);
+await sleep(1200);
 const revealState = () => page.evaluate(() => {
   const button = document.getElementById("er-reveal");
-  return { disabled: button?.getAttribute("aria-disabled") ?? null, live: button?.getAttribute("aria-live") ?? null, text: button?.textContent ?? null, revealed: document.documentElement.hasAttribute("data-er-reveal") };
+  return { disabled: button?.getAttribute("aria-disabled") ?? null, text: button?.textContent ?? null, revealed: document.documentElement.hasAttribute("data-er-reveal"), ticks: window.__reveal };
 });
 const during = await revealState();
 await page.locator("#er-reveal").click({ force: true });
-await pause(1800);
+await sleep(2500);
 const afterSecondClick = await revealState();
-check("O1 reveal: a click during the countdown does nothing", during.disabled === "true" && !during.revealed && !afterSecondClick.revealed && afterSecondClick.disabled === "true", JSON.stringify({ during, afterSecondClick }));
-check("O2 reveal: countdown is announced only on the first tick", during.live === null, JSON.stringify(during));
-await page.screenshot({ path: join(OUT, "3b-reveal-countdown.png") });
+const ticks = afterSecondClick.ticks;
+const decreasing = ticks.every((x, i) => i === 0 || x.n < ticks[i - 1].n);
+check("O1 reveal: a click during the countdown neither reveals nor restarts it", during.disabled === "true" && !during.revealed && !afterSecondClick.revealed && afterSecondClick.disabled === "true" && ticks.length >= 3 && decreasing, { during: { ...during, ticks: undefined }, ticks });
+check("O2 reveal: countdown is announced only on the first tick", ticks.length >= 2 && ticks[0].live === "polite" && ticks.slice(1).every((x) => x.live === null), ticks);
+await page.screenshot({ path: join(SHOTS, "3b-reveal-countdown.png") });
 
 const playable = await page.evaluate(() => Number.isFinite(document.querySelector("video.html5-main-video")?.duration));
-if (!playable) console.log("SKIP end-of-video checks: YouTube did not serve the video to the automated browser");
-if (playable) check("watch: autoplay off", autoplay !== "true");
-else console.log("SKIP autoplay check: needs playback");
-if (playable) await page.evaluate(() => {
-  const video = document.querySelector("video.html5-main-video");
-  if (video) {
+const autoplay = await page.evaluate((sel) => {
+  const button = document.querySelector(sel);
+  return { button: Boolean(button), checked: button?.querySelector(".ytp-autonav-toggle-button")?.getAttribute("aria-checked") ?? null };
+}, HEALTH.autoplay);
+check("watch: autoplay toggle present and off", playable ? autoplay.button && autoplay.checked === "false" : null, playable ? autoplay : "YouTube did not serve the video to the automated browser; check in Timur's Chrome");
+if (playable) {
+  await page.evaluate(() => {
+    const video = document.querySelector("video.html5-main-video");
     video.muted = true;
     video.currentTime = Math.max(0, video.duration - 2);
     video.play();
-  }
-});
-if (playable) {
-  await page.waitForSelector("#er-end", { timeout: 20000 }).catch(() => {});
-  await pause(1500);
-  const reachedEnd = await page.evaluate(() => {
-    const video = document.querySelector("video.html5-main-video");
-    return Boolean(video) && (video.ended || video.currentTime >= video.duration - 3);
   });
-  await page.screenshot({ path: join(OUT, "4-end.png") });
-  if (reachedEnd) {
-    check("end: prompt visible", await page.locator("#er-end").isVisible());
-    check("end: no endscreen grid", !(await page.locator(".ytp-endscreen-content, .ytp-fullscreen-grid-stills-container").first().isVisible().catch(() => false)));
-  } else {
-    skipped.push("end-of-video");
-    console.log("SKIP end-of-video checks: the seek to the end did not land (video still buffering or an ad)");
-  }
+  await page.waitForSelector("#er-end", { timeout: 20000 }).catch(() => {});
+  await sleep(1500);
+  const end = await page.evaluate((sel) => {
+    const video = document.querySelector("video.html5-main-video");
+    const screens = [...document.querySelectorAll(sel)];
+    return { reached: Boolean(video) && (video.ended || video.currentTime >= video.duration - 3), endscreen: screens.length, endscreenVisible: screens.some((n) => n.getClientRects().length > 0 && getComputedStyle(n).visibility !== "hidden" && getComputedStyle(n).display !== "none") };
+  }, HEALTH.endscreen);
+  await page.screenshot({ path: join(SHOTS, "4-end.png") });
+  check("end: prompt visible", end.reached ? await page.locator("#er-end").isVisible() : null, end);
+  check("end: endscreen present and hidden", end.reached ? end.endscreen > 0 && !end.endscreenVisible : null, end);
+} else {
+  check("end: prompt and hidden endscreen", null, "needs playback; check in Timur's Chrome");
 }
 
-if (shortsHref) {
+if (shortsId) {
   const shortsPage = await context.newPage();
-  const id = shortsHref.split("/")[2].split(/[?#]/)[0];
-  await shortsPage.goto(`https://www.youtube.com/shorts/${id}`, { waitUntil: "domcontentloaded" });
+  await shortsPage.goto(`https://www.youtube.com/shorts/${shortsId}`, { waitUntil: "domcontentloaded" });
   await shortsPage.waitForURL(/\/watch\?v=/, { timeout: 15000 }).catch(() => {});
-  check("shorts: link opens as a normal video", shortsPage.url().includes(`/watch?v=${id}`));
+  check("shorts: link opens as a normal video", shortsPage.url().includes(`/watch?v=${shortsId}`), shortsPage.url());
   await shortsPage.close();
 } else {
-  skipped.push("shorts-redirect");
-  console.log("SKIP shorts redirect: no Shorts link found on the search page");
+  check("shorts: link opens as a normal video", null, "no /shorts/<id> link found on the search page");
 }
 
 const popup = await context.newPage();
 await popup.setViewportSize({ width: 340, height: 900 });
 await popup.goto(`chrome-extension://${extId}/popup.html`);
-await popup.waitForTimeout(800);
+await popup.waitForSelector("#pauseButton", { state: "visible", timeout: 5000 }).catch(() => {});
 check("popup: no stats on a fresh profile", await popup.locator("#week").isHidden());
 check("popup: pause button shown", await popup.locator("#pauseButton").isVisible());
-await popup.screenshot({ path: join(OUT, "5-popup.png"), fullPage: true });
-
-const health = await popup.evaluate(() => chrome.storage.session.get("health"));
-console.log("health:", JSON.stringify(health));
+await popup.screenshot({ path: join(SHOTS, "5-popup.png"), fullPage: true });
 
 await page.goto("https://www.youtube.com/", { waitUntil: "domcontentloaded" });
-await pause(3000);
+await page.waitForSelector("#er-intent", { state: "visible", timeout: 15000 }).catch(() => {});
 await popup.evaluate(() => chrome.storage.local.set({ pausedUntil: Date.now() + 60_000 }));
-await pause(1500);
-check("pause: home feed shown", await page.evaluate(() => document.documentElement.hasAttribute("data-er-show-home")));
-check("pause: question hidden", !(await page.locator("#er-intent").isVisible()));
-check("pause: shorts shown", await page.evaluate(() => document.documentElement.hasAttribute("data-er-show-shorts")));
+const pausedState = () => page.evaluate(() => ({ home: document.documentElement.hasAttribute("data-er-show-home"), shorts: document.documentElement.hasAttribute("data-er-show-shorts"), question: Boolean(document.getElementById("er-intent")?.getClientRects().length) }));
+const { value: paused } = await until(pausedState, (s) => s.home && s.shorts && !s.question, 5000, 100);
+check("pause: home feed shown", paused.home, paused);
+check("pause: question hidden", !paused.question, paused);
+check("pause: shorts shown", paused.shorts, paused);
 await popup.reload();
-await popup.waitForTimeout(500);
-check("pause: popup offers resume", /back|обратно|activar|novo|einschalten/i.test(await popup.locator("#pauseButton").textContent()));
+const { value: pauseText } = await until(() => popup.locator("#pauseButton").textContent(), (t) => /back|обратно|activar|novo|einschalten/i.test(t), 5000, 100);
+check("pause: popup offers resume", /back|обратно|activar|novo|einschalten/i.test(pauseText), pauseText);
 await popup.evaluate(() => chrome.storage.local.remove("pausedUntil"));
-await pause(1500);
-check("resume: question back", await page.locator("#er-intent").isVisible());
+const { value: resumed } = await until(pausedState, (s) => s.question && !s.home, 5000, 100);
+check("resume: question back", resumed.question && !resumed.home, resumed);
 
+await finish(ctx, check);
+save("smoke.json");
 await context.close();
-const failed = Object.entries(results).filter(([, v]) => !v).map(([k]) => k);
-console.log(failed.length ? `FAILED: ${failed.join(", ")}` : `ALL PASS${skipped.length ? ` (skipped: ${skipped.join(", ")})` : ""}`);
-if (failed.length) process.exitCode = 1;

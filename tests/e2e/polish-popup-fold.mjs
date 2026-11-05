@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { launch, reporter, sleep, OUT, setLang, resetLang } from "./harness.mjs";
+import { launch, reporter, sleep, OUT, setLang, resetLang, closeWelcome } from "./harness.mjs";
 
 const { check, save } = reporter();
 const LOCALES = (process.env.LOCALES || "en-US,de-DE,ru-RU").split(",");
@@ -75,9 +75,8 @@ try {
   for (const locale of LOCALES) {
     setLang(locale);
     const M = messages(locale);
-    const ctx = await launch({ name: `polish-${locale}`, locale, port: 9391, width: 340, height: FOLD });
-    await sleep(1500);
-    for (const p of ctx.context.pages()) if (p.url().includes("welcome.html")) await p.close();
+    const ctx = await launch({ name: `polish-${locale}`, locale, width: 340, height: FOLD });
+    await closeWelcome(ctx);
     const origin = `chrome-extension://${ctx.extId}`;
     const p = await ctx.context.newPage();
     await p.addInitScript(() => {

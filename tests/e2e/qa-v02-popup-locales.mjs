@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { launch, reporter, sleep, OUT, setLang, resetLang } from "./harness.mjs";
+import { launch, reporter, sleep, OUT, setLang, resetLang, closeWelcome } from "./harness.mjs";
 
 const { check, save } = reporter();
 const LOCALES = (process.env.LOCALES || "en-US,ru-RU,es-ES,pt-BR,de-DE").split(",");
@@ -80,9 +80,8 @@ const measure = (p) => p.evaluate(() => {
 try {
   for (const locale of LOCALES) {
     setLang(locale);
-    const ctx = await launch({ name: `qa-loc-${locale}`, locale, port: 9383, width: 340, height: 900 });
-    await sleep(1500);
-    for (const p of ctx.context.pages()) if (p.url().includes("welcome.html")) await p.close();
+    const ctx = await launch({ name: `qa-loc-${locale}`, locale, width: 340, height: 900 });
+    await closeWelcome(ctx);
     const p = await ctx.context.newPage();
     await p.setViewportSize({ width: 340, height: 1000 });
     await p.goto(`chrome-extension://${ctx.extId}/popup.html`);

@@ -1,8 +1,8 @@
 import { join } from "node:path";
-import { launch, reporter, consent, searchVideoUrls, storage, sleep, OUT, QUERY } from "./harness.mjs";
+import { launch, reporter, consent, searchVideoUrls, storage, sleep, OUT, QUERY, finish } from "./harness.mjs";
 
 const { check, save } = reporter();
-const ctx = await launch({ name: "welcome", port: 9341 });
+const ctx = await launch({ name: "welcome" });
 const { context } = ctx;
 await sleep(2000);
 
@@ -120,7 +120,6 @@ await probe.close();
 check("A1 extension reload (update) opens no welcome tab", !helper.isClosed() ? false : welcomeAfter === 0, `helper tab closed by reload=${helper.isClosed()}; SW targets before=${swBefore}; welcome tabs before=${beforeReload} after=${welcomeAfter}; targets after: ${afterReload.join(", ")}`);
 check("A1 settings survive reload", after.settings?.homeTarget === "subs" && Boolean(after.reloadMarker), `homeTarget=${after.settings?.homeTarget}`);
 
-const swErrs = [];
-console.log("errors:", JSON.stringify([...ctx.errors, ...swErrs], null, 1));
+await finish(ctx, check);
 save("A-results.json");
 await context.close();

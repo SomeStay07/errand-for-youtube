@@ -1,6 +1,6 @@
 (() => {
   const L = globalThis.ErrandLib;
-  const t = (key, ...subs) => chrome.i18n.getMessage(key, subs.map(String));
+  const t = L.translator(chrome.i18n);
   const root = document.documentElement;
   root.dataset.erPage = L.pageType(location.pathname);
   let settings = L.mergeSettings();
@@ -8,22 +8,43 @@
   let pausedUntil = null;
   let resumeTimer = 0;
   let waitingVisible = false;
-  let lastPaused = false;
   let lastHref = null;
   let navToken = 0;
   let healthTimer = 0;
   let currentVideo = null;
-  const PLAYER_CHECKS = new Set(["autoplay", "endscreen"]);
+  let pollTimer = 0;
+  let heartbeatTimer = 0;
+  let shownState = null;
+  const mountGen = { related: 0, comments: 0 };
   const AUTOPLAY_BUTTON = 'button[data-tooltip-target-id="ytp-autonav-toggle-button"]';
-  const SHORTS_LINK_ALLOWED = "#description, ytd-text-inline-expander, ytd-comments, #er-intent";
-  const COMMENTS_PANEL = 'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"]';
+  const SHORTS_LINK_ALLOWED = "#description, ytd-text-inline-expander, ytd-comments, ytd-multi-page-menu-renderer, tp-yt-iron-dropdown";
+  const COMMENTS_PANEL = L.SELECTORS.commentsPanel;
+  const COMMENTS = L.SELECTORS.comments;
   const SHORTS_GUIDE = 'ytd-guide-entry-renderer a[href^="/shorts"], ytd-mini-guide-entry-renderer a[href^="/shorts"]';
   const FOOTER_KEYS = { default: "intentFooter", edge: "intentFooter", opera: "intentFooterOpera", yandex: "intentFooterYandex", any: "intentFooterAny" };
 
+  function alive() {
+    return Boolean(globalThis.chrome?.runtime?.id);
+  }
+
   function send(message) {
+    if (!alive()) return false;
     try {
       chrome.runtime.sendMessage(message).catch(() => {});
-    } catch {}
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  function shutdown() {
+    clearInterval(pollTimer);
+    clearInterval(heartbeatTimer);
+    clearTimeout(healthTimer);
+    clearTimeout(resumeTimer);
+    navToken += 1;
+    document.removeEventListener("yt-navigate-finish", onNavigate);
+    document.removeEventListener("ended", onEnded, true);
   }
 
   function el(tag, attrs = {}, ...children) {
@@ -40,7 +61,7 @@
     const token = navToken;
     const attempt = (left) => {
       if (token !== navToken) return;
-      const found = document.querySelector(selector);
+      const found = typeof selector === "function" ? selector() : document.querySelector(selector);
       if (found) callback(found);
       else if (left > 0) setTimeout(() => attempt(left - 1), 250);
     };
@@ -54,28 +75,31 @@
   }
 
   function apply() {
-    const { hide, strict } = effective();
+    const { hide, strict, paused } = effective();
     for (const key of L.DEFAULT_HIDDEN) root.toggleAttribute(`data-er-show-${key}`, !hide[key]);
     for (const key of L.OPT_IN) root.toggleAttribute(`data-er-hide-${key}`, Boolean(hide[key]));
     root.toggleAttribute("data-er-strict", strict);
-    if (strict) {
-      root.removeAttribute("data-er-reveal");
-      root.removeAttribute("data-er-reveal-comments");
-      document.getElementById("er-reveal")?.remove();
-      document.getElementById("er-comments")?.remove();
-    }
-    root.toggleAttribute("data-er-no-autoplay", Boolean(settings.stopAutoplay) && !effective().paused);
-    if (effective().paused) root.removeAttribute("data-er-autoplay-off");
+    root.toggleAttribute("data-er-no-autoplay", Boolean(settings.stopAutoplay) && !paused);
+    if (paused) root.removeAttribute("data-er-autoplay-off");
     root.toggleAttribute("data-er-playlist", L.isRealPlaylist(location.search));
     root.dataset.erPage = L.pageType(location.pathname);
-    renderPill();
-    const paused = effective().paused;
-    if (lastPaused && !paused) {
-      mountReveal();
-      mountCommentsButton();
-      if (root.dataset.erPage === "watch") stopAutoplay();
-    }
-    lastPaused = paused;
+    renderPill(paused);
+    return { hide, strict, paused };
+  }
+
+  function reconcileButtons(state, force = false) {
+    const before = shownState;
+    const page = root.dataset.erPage;
+    const now = { related: L.wantsButton("related", page, state), comments: L.wantsButton("comments", page, state), paused: state.paused };
+    shownState = now;
+    if (!before && !force) return;
+    if (force || now.related !== before.related) mountReveal(now.related);
+    if (force || now.comments !== before.comments) mountCommentsButton(now.comments);
+    if (!force && before.paused && !now.paused && root.dataset.erPage === "watch") stopAutoplay();
+  }
+
+  function update() {
+    reconcileButtons(apply());
   }
 
   function redirect() {
@@ -159,7 +183,7 @@
     return t("intentFooter");
   }
 
-  function renderPill() {
+  function renderPill(paused = effective().paused) {
     if (!document.body) return;
     const text = L.activeIntent(intent, Date.now());
     if (intent && !text) {
@@ -169,7 +193,7 @@
       } catch {}
     }
     let pill = document.getElementById("er-pill");
-    if (!text || root.dataset.erPage === "home" || effective().paused) {
+    if (!text || root.dataset.erPage === "home" || paused) {
       pill?.remove();
       return;
     }
@@ -180,7 +204,7 @@
         el("a"),
         el(
           "button",
-          { type: "button", "aria-label": t("pillClear"), title: t("pillClear"), onclick: () => chrome.storage.local.remove("intent") },
+          { type: "button", "aria-label": t("pillClear"), title: t("pillClear"), onclick: () => clearIntent(pill) },
           "×",
         ),
       );
@@ -190,18 +214,31 @@
     const back = t("pillBack", text);
     link.textContent = t("pillLabel", text);
     link.setAttribute("href", L.searchUrl(text));
-    for (const name of ["title", "aria-label"]) {
-      if (back) link.setAttribute(name, back);
-      else link.removeAttribute(name);
+    if (back) link.setAttribute("title", back);
+    else link.removeAttribute("title");
+  }
+
+  function clearIntent(pill) {
+    try {
+      chrome.storage.local.remove("intent");
+    } catch {
+      intent = null;
+      pill.remove();
     }
   }
 
-  function mountReveal() {
+  function mountReveal(want) {
+    const gen = ++mountGen.related;
     document.getElementById("er-reveal")?.remove();
     root.removeAttribute("data-er-reveal");
-    const { hide, strict, paused } = effective();
-    if (root.dataset.erPage !== "watch" || !hide.related || strict || paused || settings.revealSeconds < 0) return;
-    waitFor("ytd-watch-flexy #related", placeReveal);
+    if (!want) return;
+    waitFor(relatedAnchor, (related) => {
+      if (gen === mountGen.related && L.wantsButton("related", root.dataset.erPage, effective())) placeReveal(related);
+    });
+  }
+
+  function relatedAnchor() {
+    return document.querySelector("ytd-watch-grid #bottom-grid") || document.querySelector(`${L.SELECTORS.watchScope} #related`);
   }
 
   function placeReveal(related) {
@@ -216,23 +253,24 @@
   function keepRevealInPlace() {
     const button = document.getElementById("er-reveal");
     if (!button || button.getAttribute("aria-disabled") === "true") return;
-    const related = document.querySelector("ytd-watch-flexy #related");
+    const related = relatedAnchor();
     if (related) placeReveal(related);
   }
 
   function keepCommentsInPlace() {
     const button = document.getElementById("er-comments");
-    const comments = document.querySelector("ytd-comments#comments");
+    const comments = document.querySelector(COMMENTS);
     if (button && comments && button.nextElementSibling !== comments) comments.before(button);
   }
 
-  function mountCommentsButton() {
+  function mountCommentsButton(want) {
+    const gen = ++mountGen.comments;
     document.getElementById("er-comments")?.remove();
     root.removeAttribute("data-er-reveal-comments");
-    const { hide, strict, paused } = effective();
-    for (const node of document.querySelectorAll(`ytd-comments#comments, ${COMMENTS_PANEL}`)) node.removeAttribute("tabindex");
-    if (root.dataset.erPage !== "watch" || !hide.comments || strict || paused) return;
-    waitFor("ytd-comments#comments", (comments) => {
+    for (const node of document.querySelectorAll(`${COMMENTS}, ${COMMENTS_PANEL}`)) node.removeAttribute("tabindex");
+    if (!want) return;
+    waitFor(COMMENTS, (comments) => {
+      if (gen !== mountGen.comments || !L.wantsButton("comments", root.dataset.erPage, effective())) return;
       document.getElementById("er-comments")?.remove();
       const button = el(
         "button",
@@ -260,8 +298,14 @@
     const tick = () => {
       if (!button.isConnected) return;
       if (left <= 0) {
+        const hadFocus = button === document.activeElement;
         root.setAttribute("data-er-reveal", "");
         button.remove();
+        const related = relatedAnchor();
+        if (hadFocus && related) {
+          related.setAttribute("tabindex", "-1");
+          related.focus({ preventScroll: true });
+        }
         return;
       }
       if (left < total) button.removeAttribute("aria-live");
@@ -283,8 +327,16 @@
     });
   }
 
+  function autoplayChecked() {
+    return document.querySelector(`${AUTOPLAY_BUTTON} .ytp-autonav-toggle-button`)?.getAttribute("aria-checked");
+  }
+
+  function syncAutoplayOff() {
+    if (autoplayChecked() === "true") root.removeAttribute("data-er-autoplay-off");
+  }
+
   function cancelUpNext() {
-    if (!settings.stopAutoplay || root.hasAttribute("data-er-autoplay-off") || effective().paused) return;
+    if (!settings.stopAutoplay || autoplayChecked() === "false" || effective().paused) return;
     document.querySelector(".ytp-autonav-endscreen-upnext-cancel-button")?.click();
   }
 
@@ -300,7 +352,7 @@
     const actions = [
       el(
         "button",
-        { type: "button", class: "er-primary", onclick: () => send({ type: "close-tab", errand: activeErrandId() }) },
+        { type: "button", class: "er-primary", onclick: () => send({ type: "close-tab", errand: activeErrandId() }) || dismiss() },
         t("endClose"),
       ),
     ];
@@ -331,7 +383,9 @@
     if (!video.classList.contains("html5-main-video") || root.dataset.erPage !== "watch") return;
     const player = document.getElementById("movie_player");
     if (!player || player.classList.contains("ad-showing")) return;
+    if (!alive()) return shutdown();
     if (effective().paused) return;
+    syncAutoplayOff();
     const errand = activeErrandId();
     if (errand !== null) send({ type: "errand", kind: "done", id: errand });
     if (!settings.endPrompt || L.isRealPlaylist(location.search)) return;
@@ -374,26 +428,27 @@
         }
         return;
       }
-      if (effective().paused) {
+      const { hide, paused } = effective();
+      if (paused) {
         reportHealth(page, null);
         return;
       }
       const live = Boolean(document.querySelector("ytd-live-chat-frame"));
       const playable = Number.isFinite(document.querySelector("video.html5-main-video")?.duration);
-      const active = { ...effective().hide, autoplay: Boolean(settings.stopAutoplay) };
-      const missing = L.healthChecks(page, active)
-        .filter(([name]) => !(live && name === "comments") && !(!playable && PLAYER_CHECKS.has(name)))
+      const active = { ...hide, autoplay: Boolean(settings.stopAutoplay) };
+      const missing = L.healthChecks(page, active, { live, playable })
         .filter(([, selector]) => !document.querySelector(selector))
         .map(([name]) => name);
-      if (effective().hide.shorts && visibleShorts() > 0) missing.push("shorts");
+      if (hide.shorts && visibleShorts() > 0) missing.push("shorts");
       for (const [name, selector] of L.LEAKS[page] || []) {
-        if (effective().hide[name] && !missing.includes(name) && isVisible(selector)) missing.push(name);
+        if (hide[name] && !missing.includes(name) && isVisible(selector)) missing.push(name);
       }
       runs += 1;
       const verdict = L.confirmHealth(pending, missing);
       pending = verdict.pending;
       if (verdict.report) reportHealth(page, verdict.report);
       else if (runs < L.HEALTH_MAX_CHECKS) healthTimer = setTimeout(check, L.HEALTH_DELAY_MS);
+      else reportHealth(page, pending);
     }, L.HEALTH_DELAY_MS);
   }
 
@@ -417,20 +472,20 @@
   }
 
   function onNavigate() {
+    if (!alive()) return shutdown();
     if (location.href === lastHref) return;
     lastHref = location.href;
-    const video = L.pageType(location.pathname) === "watch" ? new URLSearchParams(location.search).get("v") : null;
+    const video = L.pageType(location.pathname) === "watch" ? L.watchVideoId(location.pathname, location.search) : null;
     if (video && video === currentVideo) {
-      apply();
+      update();
       return;
     }
     currentVideo = video;
     navToken += 1;
     if (redirect()) return;
-    apply();
+    const state = apply();
     document.getElementById("er-end")?.remove();
-    mountReveal();
-    mountCommentsButton();
+    reconcileButtons(state, true);
     root.removeAttribute("data-er-autoplay-off");
     stopAutoplay();
     setTimeout(tagShorts, 1500);
@@ -448,6 +503,12 @@
     observer.observe(root, { childList: true });
   }
 
+  function onPlay(event) {
+    if (event.target instanceof HTMLVideoElement && event.target.classList.contains("html5-main-video")) {
+      document.getElementById("er-end")?.remove();
+    }
+  }
+
   function scheduleResume() {
     clearTimeout(resumeTimer);
     if (!L.isPaused(pausedUntil, Date.now())) return;
@@ -455,22 +516,25 @@
   }
 
   function resume() {
-    const before = revealState();
-    apply();
-    remountIfChanged(before);
+    update();
     send({ type: "pause-ended" });
   }
 
-  chrome.storage.local.get(["settings", "intent", "pausedUntil"]).then((data) => {
-    settings = L.mergeSettings(data.settings);
-    intent = data.intent ?? null;
-    pausedUntil = data.pausedUntil ?? null;
-    scheduleResume();
+  function load() {
+    return chrome.storage.local.get(["settings", "intent", "pausedUntil"]).then((data) => {
+      settings = L.mergeSettings(data.settings);
+      intent = data.intent ?? null;
+      pausedUntil = data.pausedUntil ?? null;
+      scheduleResume();
+    });
+  }
+
+  load().then(() => {
     apply();
     if (redirect()) return;
     document.addEventListener("yt-navigate-finish", onNavigate);
     document.addEventListener("ended", onEnded, true);
-    document.addEventListener("play", () => document.getElementById("er-end")?.remove(), true);
+    document.addEventListener("play", onPlay, true);
     whenBody(() => {
       mountIntentPanel();
       onNavigate();
@@ -480,10 +544,8 @@
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "local") return;
     if (changes.settings) {
-      const before = revealState();
       settings = L.mergeSettings(changes.settings.newValue);
-      apply();
-      remountIfChanged(before);
+      update();
       scheduleHealth();
     }
     if (changes.intent) {
@@ -491,10 +553,8 @@
       renderPill();
     }
     if (changes.pausedUntil) {
-      const before = revealState();
       pausedUntil = changes.pausedUntil.newValue ?? null;
-      apply();
-      remountIfChanged(before);
+      update();
       scheduleResume();
       scheduleHealth();
     }
@@ -503,33 +563,30 @@
   document.addEventListener("click", onClick, true);
   window.addEventListener("keydown", onKeydown, true);
 
-  setInterval(() => {
+  pollTimer = setInterval(() => {
+    if (!alive()) return shutdown();
     if (document.hidden || lastHref === null) return;
     if (location.href !== lastHref) onNavigate();
     else {
       keepRevealInPlace();
       keepCommentsInPlace();
+      syncAutoplayOff();
     }
     tagShorts();
   }, 1000);
 
-  function revealState() {
-    const { hide, strict, paused } = effective();
-    return `${hide.related}|${hide.comments}|${strict}|${paused}`;
-  }
+  window.addEventListener("pageshow", (event) => {
+    if (!event.persisted || !alive() || lastHref === null) return;
+    load().then(() => {
+      update();
+      scheduleHealth();
+    });
+  });
 
-  function remountIfChanged(before) {
-    if (revealState() === before) return;
-    mountReveal();
-    mountCommentsButton();
-  }
-
-  setInterval(() => {
+  heartbeatTimer = setInterval(() => {
+    if (!alive()) return shutdown();
     const wasStrict = root.hasAttribute("data-er-strict");
-    apply();
-    if (root.hasAttribute("data-er-strict") === wasStrict) return;
-    send({ type: "sync" });
-    mountReveal();
-    mountCommentsButton();
+    update();
+    if (root.hasAttribute("data-er-strict") !== wasStrict) send({ type: "sync" });
   }, 60_000);
 })();

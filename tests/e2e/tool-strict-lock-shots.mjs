@@ -2,13 +2,13 @@ import { launch, sleep, OUT, setLang, resetLang } from "./harness.mjs";
 import { join } from "node:path";
 
 const ALL_DAY = { mode: "auto", strictStart: "00:00", strictEnd: "23:59", strictDays: [0, 1, 2, 3, 4, 5, 6] };
-const locales = [["en", "en-US", 9371], ["ru", "ru-RU", 9372], ["de", "de-DE", 9373]];
+const locales = [["en", "en-US"], ["ru", "ru-RU"], ["de", "de-DE"]];
 const facts = [];
 
 try {
-for (const [tag, locale, port] of locales) {
+for (const [tag, locale] of locales) {
   setLang(locale);
-  const ctx = await launch({ name: `ux-strict-${tag}`, locale, port });
+  const ctx = await launch({ name: `ux-strict-${tag}`, locale });
   const { context, extId } = ctx;
   for (const p of context.pages()) if (p.url().includes("welcome.html")) await p.close();
   const page = await context.newPage();

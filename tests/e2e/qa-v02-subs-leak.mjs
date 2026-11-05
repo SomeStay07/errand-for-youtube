@@ -1,16 +1,14 @@
 import { join } from "node:path";
-import { launch, reporter, consent, sleep, OUT } from "./harness.mjs";
+import { launch, reporter, consent, sleep, until, closeWelcome, finish, OUT } from "./harness.mjs";
 
 const { check, save } = reporter();
-const ctx = await launch({ name: "qa-subs-leak", port: 9393 });
+const ctx = await launch({ name: "qa-subs-leak" });
 const { context } = ctx;
-await sleep(1500);
-for (const p of context.pages()) if (p.url().includes("welcome.html")) await p.close();
+await closeWelcome(ctx);
 const page = context.pages()[0] || (await context.newPage());
 await page.goto("https://www.youtube.com/", { waitUntil: "domcontentloaded" });
 await consent(page);
 const W = () => ctx.worker;
-const tabId = await page.evaluate(() => new Promise((r) => chrome.runtime ? r(null) : r(null)));
 const ids = async () => W().evaluate(() => chrome.tabs.query({}).then((t) => t.map((x) => x.id)));
 const [yt] = await ids();
 const setHome = (v) => W().evaluate((home) => chrome.storage.local.get("settings").then(({ settings }) => chrome.storage.local.set({ settings: { ...globalThis.ErrandLib.mergeSettings(settings), homeTarget: home } })), v);
@@ -55,9 +53,8 @@ async function run(label, { wrapper, hidden, home }) {
   const injectedMs = Date.now() - t0;
   await sleep(1000);
   const vis = await page.evaluate(() => ({ sectionHeight: Math.round((document.querySelector("#qa-leak ytd-rich-shelf-renderer")?.getBoundingClientRect().height ?? -1)), erPage: document.documentElement.dataset.erPage, showHome: document.documentElement.hasAttribute("data-er-show-home") }));
-  await sleep(13000);
+  const { value: health } = await until(() => W().evaluate(() => chrome.storage.session.get("health").then((d) => d.health || {})), (h) => Boolean(h[yt]), 25000, 500);
   const badge = await W().evaluate((id) => chrome.action.getBadgeText({ tabId: id }), yt);
-  const { health = {} } = await W().evaluate(() => chrome.storage.session.get("health"));
   const { log = [] } = await W().evaluate(() => chrome.storage.local.get("log"));
   await page.screenshot({ path: join(OUT, `S-subs-${label}.png`) });
   return { injectedMs, built, ...vis, badge, health: health[yt] || null, log: log.map((e) => `${e.page}:${e.missing.join("+")}`) };
@@ -66,13 +63,12 @@ async function run(label, { wrapper, hidden, home }) {
 const leak = await run("leak", { wrapper: "other", hidden: false, home: "ask" });
 check("subs leak: visible shelf outside the hide rule (no #content wrapper), Home=ask → '!' naming home", leak.badge === "!" && leak.health?.missing?.includes("home") && leak.log.includes("subs:home"), leak);
 const exact = await run("exact", { wrapper: "content", hidden: false, home: "ask" });
-check("subs exact structure (> #content >) is hidden by hide.css → no '!'", exact.sectionHeight <= 0 && exact.badge !== "!", exact);
+check("subs exact structure (> #content >) is hidden by hide.css → no '!'", Boolean(exact.health) && exact.sectionHeight <= 0 && exact.badge !== "!", exact);
 const hiddenCtl = await run("hidden", { wrapper: "other", hidden: true, home: "ask" });
-check("subs control: same structure display:none → no '!'", hiddenCtl.badge !== "!" && !hiddenCtl.log.length, hiddenCtl);
+check("subs control: same structure display:none → no '!'", Boolean(hiddenCtl.health) && hiddenCtl.badge !== "!" && !hiddenCtl.log.length, hiddenCtl);
 const feed = await run("feed", { wrapper: "other", hidden: false, home: "feed" });
-check("subs control: Home='YouTube's feed' + visible shelf → no '!'", feed.badge !== "!" && !feed.log.length, feed);
+check("subs control: Home='YouTube's feed' + visible shelf → no '!'", Boolean(feed.health) && feed.badge !== "!" && !feed.log.length, feed);
 await setHome("ask");
-const errs = [...ctx.errors, ...(await W().evaluate(() => globalThis.__errs || []))];
-check("no extension errors", errs.length === 0, errs);
+await finish(ctx, check);
 save("S-subs-leak.json");
 await context.close();

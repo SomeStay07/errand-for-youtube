@@ -1,20 +1,19 @@
 import { join } from "node:path";
-import { launch, reporter, consent, sleep, heap, OUT, QUERY } from "./harness.mjs";
+import { launch, reporter, consent, sleep, heap, closeWelcome, OUT, QUERY } from "./harness.mjs";
 
 const CONTROL = process.env.CONTROL === "1";
 const ROUNDS = Number(process.env.ROUNDS || 15);
 const { check, save } = reporter();
-const ctx = await launch({ name: CONTROL ? "regress-control" : "regress", port: 9347, extension: !CONTROL });
+const ctx = await launch({ name: CONTROL ? "regress-control" : "regress", extension: !CONTROL });
 const { context } = ctx;
-await sleep(1500);
-for (const p of context.pages()) if (p.url().includes("welcome.html")) await p.close();
+if (!CONTROL) await closeWelcome(ctx);
 const page = context.pages()[0] || (await context.newPage());
 const allConsoleErrors = [];
 page.on("console", (m) => m.type() === "error" && allConsoleErrors.push(m.text().slice(0, 160)));
 
 await page.goto(`https://www.youtube.com/results?search_query=${encodeURIComponent(QUERY)}`, { waitUntil: "domcontentloaded" });
 await consent(page);
-await page.waitForSelector('ytd-video-renderer a#thumbnail[href^="/watch"]', { timeout: 20000 });
+await page.waitForSelector('ytd-video-renderer a#thumbnail[href^="/watch"], yt-lockup-view-model a[href^="/watch"]', { timeout: 20000 });
 await sleep(3000);
 
 const watchState = () => page.evaluate(() => {
@@ -86,7 +85,7 @@ if (!CONTROL) {
 console.log("heap:", JSON.stringify({ start: h0, afterOff: h1, afterOn: h2 }));
 check(`F ${CONTROL ? "control " : ""}${off.navs} SPA navigations, pause off`, off.bad.length === 0, `${off.seconds}s; problems: ${JSON.stringify(off.bad)}`);
 check(`F ${CONTROL ? "control " : ""}${on.navs} SPA navigations, pause on`, on.bad.length === 0, `${on.seconds}s; problems: ${JSON.stringify(on.bad)}`);
-check(`F ${CONTROL ? "control " : ""}heap/DOM/listeners`, true, `start ${JSON.stringify(h0)} → after first loop ${JSON.stringify(h1)} → after second loop ${JSON.stringify(h2)}`);
+check(`F ${CONTROL ? "control " : ""}DOM nodes and listeners grow < 10 % from the first loop to the second`, h2.nodes <= h1.nodes * 1.1 && h2.listeners <= h1.listeners * 1.1, `start ${JSON.stringify(h0)} → after first loop ${JSON.stringify(h1)} → after second loop ${JSON.stringify(h2)}`);
 let sw = [];
 if (!CONTROL) sw = await ctx.worker.evaluate(() => globalThis.__errs || []);
 check(`F ${CONTROL ? "control " : ""}extension console errors (page/SW)`, CONTROL || (ctx.errors.length === 0 && sw.length === 0), JSON.stringify([...ctx.errors, ...sw]));

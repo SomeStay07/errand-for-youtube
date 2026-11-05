@@ -1,12 +1,11 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { launch, reporter, consent, searchVideoUrls, storage, sleep, OUT } from "./harness.mjs";
+import { launch, reporter, consent, searchVideoUrls, storage, sleep, closeWelcome, finish, OUT } from "./harness.mjs";
 
 const { check, save } = reporter();
-const ctx = await launch({ name: "qa-popup", port: 9381 });
+const ctx = await launch({ name: "qa-popup" });
 const { context, extId } = ctx;
-await sleep(1500);
-for (const p of context.pages()) if (p.url().includes("welcome.html")) await p.close();
+await closeWelcome(ctx);
 
 const Y = context.pages()[0] || (await context.newPage());
 const urls = await searchVideoUrls(Y, undefined, 4);
@@ -133,6 +132,8 @@ check("metrics opt-in hides counts on the watch page", metricsState.length > 0 &
 await P.locator("#more input").nth(2).uncheck();
 
 const hhmmAt = (ms) => new Date(ms).toTimeString().slice(0, 5);
+const OFF_START = hhmmAt(Date.now() + 3 * 3600e3);
+const OFF_END = hhmmAt(Date.now() + 4 * 3600e3);
 await P.evaluate(async ({ start, end }) => {
   const { settings } = await chrome.storage.local.get("settings");
   await chrome.storage.local.set({ settings: { ...globalThis.ErrandLib.mergeSettings(settings), mode: "relaxed", strictStart: start, strictEnd: end, strictDays: [0, 1, 2, 3, 4, 5, 6] } });
@@ -145,24 +146,24 @@ const editable = await P.evaluate(() => ["mode", "strictStart", "strictEnd"].eve
 check("picking On a schedule inside the window leaves hours and days editable", insideWindow !== null && editable, { insideWindow, editable });
 await P.selectOption("#mode", "relaxed");
 for (let i = 0; i < 40 && (await settings()).mode !== "relaxed"; i++) await sleep(50);
-await P.evaluate(async () => {
+await P.evaluate(async ({ start, end }) => {
   const { settings } = await chrome.storage.local.get("settings");
-  await chrome.storage.local.set({ settings: { ...settings, strictStart: "09:00", strictEnd: "18:00", strictDays: [1, 2, 3, 4, 5] } });
-});
+  await chrome.storage.local.set({ settings: { ...settings, strictStart: start, strictEnd: end, strictDays: [1, 2, 3, 4, 5] } });
+}, { start: hhmmAt(Date.now() + 5 * 3600e3), end: hhmmAt(Date.now() + 6 * 3600e3) });
 await P.reload();
 await sleep(800);
 await P.selectOption("#mode", "auto");
 await sleep(200);
 const schedVisible = await P.evaluate(() => !document.getElementById("schedule").hidden);
-await P.fill("#strictStart", "03:00");
+await P.fill("#strictStart", OFF_START);
 await P.locator("#strictStart").dispatchEvent("change");
-await P.fill("#strictEnd", "04:00");
+await P.fill("#strictEnd", OFF_END);
 await P.locator("#strictEnd").dispatchEvent("change");
 const firstDay = await P.evaluate(() => document.querySelector("#days label").title);
 await P.locator("#days input").first().click();
 await sleep(300);
 const sm = await settings();
-check("strict schedule: select shows times/days, all stored", schedVisible && sm.mode === "auto" && sm.strictStart === "03:00" && sm.strictEnd === "04:00" && sm.strictDays.length === 6 && sm.strictDays.includes(0), { mode: sm.mode, start: sm.strictStart, end: sm.strictEnd, days: sm.strictDays, firstDayToggled: firstDay });
+check("strict schedule: select shows times/days, all stored", schedVisible && sm.mode === "auto" && sm.strictStart === OFF_START && sm.strictEnd === OFF_END && sm.strictDays.length === 6 && sm.strictDays.includes(0), { mode: sm.mode, start: sm.strictStart, end: sm.strictEnd, days: sm.strictDays, firstDayToggled: firstDay });
 await P.selectOption("#mode", "strict");
 const st = await waitAttr("data-er-strict", true);
 const stButtons = await Y.evaluate(() => document.querySelectorAll("#er-reveal, #er-comments").length);
@@ -230,8 +231,6 @@ if (welcome) {
   await welcome.screenshot({ path: join(OUT, "P-welcome-lookagain.png"), fullPage: true });
 }
 
-const swErrs = await ctx.worker.evaluate(() => globalThis.__errs || []);
-const errors = [...ctx.errors, ...swErrs];
-check("no extension errors (page, popup, SW)", errors.length === 0, errors);
+await finish(ctx, check, { name: "no extension errors (page, popup, SW)" });
 save("P-popup-results.json");
 await context.close();

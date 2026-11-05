@@ -1,4 +1,4 @@
-import { launch, consent, sleep } from "/Users/timurceberda/Developer/errand-for-youtube/tests/e2e/harness.mjs";
+import { launch, consent, sleep } from "./harness.mjs";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -7,7 +7,6 @@ const PRESET = process.env.PRESET || "";
 const ROUNDS = Number(process.env.ROUNDS || 1);
 const OUTDIR = join(process.env.OUT, `${ARM}${PRESET ? `-${PRESET}` : ""}${process.env.WIDTH ? `-w${process.env.WIDTH}` : ""}`);
 mkdirSync(OUTDIR, { recursive: true });
-const PORT = Number(process.env.PORT || 9491);
 const WATCH = process.env.WATCH_URL || "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 
 const PROBE = () => {
@@ -89,7 +88,7 @@ const PROBE = () => {
 const WIDTH = Number(process.env.WIDTH || 1280);
 const HEIGHT = Number(process.env.HEIGHT || 800);
 const ONLY = (process.env.ONLY || "home-cold,home-warm,results,watch,spa").split(",");
-const ctx = await launch({ name: `flash-${ARM}${PRESET}`, port: PORT, extension: ARM === "ext", width: WIDTH, height: HEIGHT });
+const ctx = await launch({ name: `flash-${ARM}${PRESET}`, extension: ARM === "ext", width: WIDTH, height: HEIGHT });
 const { context } = ctx;
 await sleep(1500);
 if (ARM === "ext" && PRESET) {

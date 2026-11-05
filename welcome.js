@@ -1,7 +1,6 @@
 const L = globalThis.ErrandLib;
-const t = (key, ...subs) => chrome.i18n.getMessage(key, subs.map(String));
+const t = L.translator(chrome.i18n);
 
-let settings = L.mergeSettings();
 const PIN_KEYS = { default: "welcomePin", edge: "welcomePin", opera: "welcomePinOpera", yandex: "welcomePinYandex", any: "welcomePinAny" };
 
 function pinStep() {
@@ -9,12 +8,6 @@ function pinStep() {
     const key = PIN_KEYS[L.browserHint(navigator, getComputedStyle(document.documentElement))];
     if (key && t(key)) document.getElementById("pin").dataset.i18n = key;
   } catch {}
-}
-
-function localize() {
-  document.documentElement.lang = chrome.i18n.getUILanguage();
-  document.documentElement.dir = t("@@bidi_dir");
-  for (const node of document.querySelectorAll("[data-i18n]")) node.textContent = t(node.dataset.i18n);
 }
 
 function renderLines(id) {
@@ -30,16 +23,16 @@ function renderLines(id) {
 
 async function init() {
   pinStep();
-  localize();
+  L.localizeDocument(document, t, chrome.i18n.getUILanguage());
   const data = await chrome.storage.local.get("settings");
-  settings = L.mergeSettings(data.settings);
-  const current = L.presetOf(settings);
+  const current = L.presetOf(data.settings);
   for (const radio of document.querySelectorAll('input[name="preset"]')) {
     radio.checked = radio.value === current;
     radio.addEventListener("change", async () => {
-      const fresh = await chrome.storage.local.get("settings");
-      settings = L.applyPreset(L.mergeSettings(fresh.settings), radio.value);
-      await chrome.storage.local.set({ settings });
+      await chrome.runtime.sendMessage({ type: "preset", id: radio.value }).catch(async () => {
+        const fresh = await chrome.storage.local.get("settings");
+        await chrome.storage.local.set({ settings: L.applyPreset(L.mergeSettings(fresh.settings), radio.value) });
+      });
       renderLines(radio.value);
     });
   }

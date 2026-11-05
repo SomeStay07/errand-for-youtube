@@ -6,3 +6,4 @@ dist-*/
 notes/
 .e2e-out/
 .mcp.json
+__pycache__/

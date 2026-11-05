@@ -1,21 +1,17 @@
 import { join } from "node:path";
-import { launch, reporter, consent, sleep, prefCookie, OUT } from "./harness.mjs";
+import { launch, reporter, consent, sleep, until, prefCookie, closeWelcome, healthOf, recheck, settingsApi, finish, OUT } from "./harness.mjs";
 
 const { check, save } = reporter();
 const LANGS = (process.env.HLS || "ja,de,en").split(",");
 const SHORTS = { ja: "ショート", de: "Shorts", en: "Shorts" };
-const ctx = await launch({ name: "v03-locale-shorts", port: 9372 });
+const ctx = await launch({ name: "v03-locale-shorts" });
 const { context } = ctx;
-await sleep(1500);
-for (const p of context.pages()) if (p.url().includes("welcome.html")) await p.close();
+await closeWelcome(ctx);
 const page = context.pages()[0] || (await context.newPage());
 const W = ctx.worker;
-const setShorts = (mode) => W.evaluate((m) => chrome.storage.local.get("settings").then(({ settings }) => chrome.storage.local.set({ settings: { ...globalThis.ErrandLib.mergeSettings(settings), shortsMode: m } })), mode);
-const badge = async () => {
-  const { health = {} } = await W.evaluate(() => chrome.storage.session.get("health"));
-  const [id, entry] = Object.entries(health).sort((a, b) => b[1].ts - a[1].ts)[0] || [];
-  return { entry, badge: id ? await W.evaluate((i) => chrome.action.getBadgeText({ tabId: i }), Number(id)) : null };
-};
+const setShorts = (mode) => settingsApi(ctx).set({ shortsMode: mode });
+const tabsOk = (x) => x.shortsTab.length > 0 && x.shortsTab.every((t) => t.h === 0) && x.otherTabs >= 2;
+const tabsCheck = (name, x) => check(name, x.shortsTab.length > 0 && x.otherTabs >= 2 ? tabsOk(x) : x.shortsTab.length > 0 ? false : null, x.shortsTab.length > 0 ? x : `precondition: no "${x.label}" tab rendered (${JSON.stringify(x)})`);
 const scan = (label) =>
   page.evaluate((label) => {
     const h = (n) => Math.round(n.getBoundingClientRect().height);
@@ -24,6 +20,7 @@ const scan = (label) =>
     const guide = document.querySelector('ytd-guide-entry-renderer a[href^="/shorts"], ytd-mini-guide-entry-renderer a[href^="/shorts"]');
     return {
       hl: document.documentElement.lang,
+      label,
       guideLabel: guide?.getAttribute("title") || guide?.textContent?.trim() || null,
       shortsTab: tabs.filter((t) => t.title === label),
       otherTabs: tabs.filter((t) => t.title !== label && t.h > 0).length,
@@ -39,40 +36,35 @@ for (const hl of LANGS) {
   await page.goto("https://www.youtube.com/@MKBHD", { waitUntil: "domcontentloaded" });
   await consent(page);
   await page.waitForSelector("yt-tab-shape", { timeout: 20000 }).catch(() => {});
-  await sleep(3000);
-  const ch = await scan(label);
+  const { value: ch } = await until(() => scan(label), tabsOk, 3000, 200);
   await page.screenshot({ path: join(OUT, `L-${hl}-channel.png`) });
-  check(`F5 ${hl} channel: Shorts tab "${label}" height 0 within 3 s, other tabs visible`, ch.shortsTab.length > 0 && ch.shortsTab.every((t) => t.h === 0) && ch.otherTabs >= 2, ch);
+  tabsCheck(`F5 ${hl} channel: Shorts tab "${label}" height 0 within 3 s, other tabs visible`, ch);
   await page.goto("https://www.youtube.com/@MKBHD/videos", { waitUntil: "domcontentloaded" });
   await page.waitForSelector("yt-tab-shape", { timeout: 20000 }).catch(() => {});
-  await sleep(3000);
-  const chv = await scan(label);
-  check(`F5 ${hl} channel Videos tab: Shorts tab hidden, other tabs visible`, chv.shortsTab.length > 0 && chv.shortsTab.every((t) => t.h === 0) && chv.otherTabs >= 2, chv);
+  const { value: chv } = await until(() => scan(label), tabsOk, 3000, 200);
+  tabsCheck(`F5 ${hl} channel Videos tab: Shorts tab hidden, other tabs visible`, chv);
   await page.goto("https://www.youtube.com/results?search_query=minecraft", { waitUntil: "domcontentloaded" });
   await page.waitForSelector("yt-chip-cloud-chip-renderer", { timeout: 20000 }).catch(() => {});
-  await sleep(3000);
-  const se = await scan(label);
+  const chipsOk = (x) => x.shortsChip.length > 0 && x.shortsChip.every((c) => c.h === 0) && x.otherChips >= 2;
+  const { value: se } = await until(() => scan(label), chipsOk, 3000, 200);
   await page.screenshot({ path: join(OUT, `L-${hl}-search.png`) });
-  check(`F5 ${hl} search: Shorts chip "${label}" height 0, other chips visible`, se.shortsChip.length > 0 && se.shortsChip.every((c) => c.h === 0) && se.otherChips >= 2, se);
-  await sleep(Math.max(0, 14000 - 3000));
-  const hs = await badge();
-  check(`F5 ${hl}: no '!' on these pages`, hs.badge !== "!" && hs.entry?.missing.length === 0, hs);
+  check(`F5 ${hl} search: Shorts chip "${label}" height 0, other chips visible`, se.shortsChip.length > 0 ? chipsOk(se) : null, se.shortsChip.length > 0 ? se : `precondition: no "${label}" chip rendered (${JSON.stringify(se)})`);
+  const at = await recheck(ctx);
+  const { value: hs } = await until(() => healthOf(ctx), (h) => h.entry?.ts > at, 20000, 500);
+  check(`F5 ${hl}: no '!' on these pages`, hs.entry?.ts > at && hs.badge !== "!" && hs.entry.missing.length === 0, hs);
   if (hl === "ja") {
     await setShorts("show");
     await page.reload({ waitUntil: "domcontentloaded" });
     await page.waitForSelector("yt-chip-cloud-chip-renderer", { timeout: 20000 }).catch(() => {});
-    await sleep(3000);
-    const showSearch = await scan(label);
+    const { value: showSearch } = await until(() => scan(label), (x) => x.shortsChip.some((c) => c.h > 0), 5000, 200);
     await page.goto("https://www.youtube.com/@MKBHD", { waitUntil: "domcontentloaded" });
     await page.waitForSelector("yt-tab-shape", { timeout: 20000 }).catch(() => {});
-    await sleep(3000);
-    const showChannel = await scan(label);
+    const { value: showChannel } = await until(() => scan(label), (x) => x.shortsTab.some((t) => t.h > 0), 5000, 200);
     check("F5 ja shortsMode=show: Shorts tab and chip visible", showChannel.shortsTab.some((t) => t.h > 0) && showSearch.shortsChip.some((c) => c.h > 0), { tab: showChannel.shortsTab, chip: showSearch.shortsChip });
     await setShorts("watch");
   }
 }
 
-const errs = [...ctx.errors, ...(await W.evaluate(() => globalThis.__errs || []))];
-check("no extension errors", errs.length === 0, errs);
+await finish(ctx, check);
 save("L-locale-shorts.json");
 await context.close();

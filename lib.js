@@ -29,11 +29,24 @@
     revealSeconds: 10,
   };
 
+  const WATCH_SCOPE = ":is(ytd-watch-flexy, ytd-watch-grid)";
+  const SUBS_PAGE = 'ytd-browse[page-subtype="subscriptions"]';
+  const SUBS_SHELF_ITEM = "ytd-rich-shelf-renderer:not([is-shorts])";
+
+  const SELECTORS = {
+    watchScope: WATCH_SCOPE,
+    related: `${WATCH_SCOPE} :is(#related, #bottom-grid, ytd-watch-next-secondary-results-renderer)`,
+    comments: "ytd-comments#comments",
+    commentsPanel: 'ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-comments-section"]',
+    subsShelf: `${SUBS_PAGE} ytd-rich-section-renderer:has(> #content > ${SUBS_SHELF_ITEM})`,
+    searchShelf: "ytd-search ytd-item-section-renderer > #contents > :is(ytd-shelf-renderer, ytd-horizontal-card-list-renderer)",
+  };
+
   const HEALTH = {
     watch: [
       ["player", "#movie_player"],
-      ["related", "ytd-watch-flexy #related"],
-      ["comments", "ytd-comments#comments"],
+      ["related", `${WATCH_SCOPE} #related`],
+      ["comments", SELECTORS.comments],
       ["autoplay", 'button[data-tooltip-target-id="ytp-autonav-toggle-button"]'],
       ["endscreen", ".html5-endscreen, .ytp-modern-videowall-still, .ytp-fullscreen-grid"],
     ],
@@ -43,21 +56,27 @@
     search: [["results", "ytd-search"]],
   };
 
-  function healthChecks(page, active) {
-    return (HEALTH[page] || []).filter(([name]) => active[name] !== false);
+  const PLAYER_CHECKS = ["autoplay", "endscreen"];
+
+  function healthChecks(page, active, { live = false, playable = true } = {}) {
+    return (HEALTH[page] || []).filter(
+      ([name]) => active[name] !== false && !(live && name === "comments") && !(!playable && PLAYER_CHECKS.includes(name)),
+    );
   }
 
-  const SUBS_SHELF =
-    'ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(> #content > ytd-rich-shelf-renderer:not([is-shorts]))';
+  function wantsButton(part, page, { hide, strict, paused } = {}) {
+    return page === "watch" && Boolean(hide?.[part]) && !strict && !paused;
+  }
 
-  const SEARCH_SHELF =
-    "ytd-search ytd-item-section-renderer > #contents > :is(ytd-shelf-renderer, ytd-horizontal-card-list-renderer)";
+  const SUBS_SHELF = SELECTORS.subsShelf;
+
+  const SEARCH_SHELF = SELECTORS.searchShelf;
 
   const WATCH_LEAK =
-    'html:not([data-er-reveal]) :is(ytd-watch-flexy, ytd-watch-grid) :is(yt-lockup-view-model, ytd-compact-video-renderer, ytd-compact-radio-renderer, ytd-compact-playlist-renderer):not(:is(#movie_player, ytd-playlist-panel-renderer, #description, ytd-structured-description-content-renderer, ytd-engagement-panel-section-list-renderer, ytd-comments, #player-ads, ytd-ad-slot-renderer) *)';
+    `html:not([data-er-reveal]) ${WATCH_SCOPE} :is(yt-lockup-view-model, ytd-compact-video-renderer, ytd-compact-radio-renderer, ytd-compact-playlist-renderer):not(:is(#movie_player, ytd-playlist-panel-renderer, #description, ytd-structured-description-content-renderer, ytd-engagement-panel-section-list-renderer, ytd-comments, #player-ads, ytd-ad-slot-renderer) *)`;
 
   const LEAKS = {
-    subs: [["home", SUBS_SHELF.replace("> #content > ", "")]],
+    subs: [["home", `${SUBS_PAGE} ytd-rich-section-renderer:has(${SUBS_SHELF_ITEM})`]],
     search: [["related", "ytd-search ytd-shelf-renderer, ytd-search ytd-horizontal-card-list-renderer:not(ytd-expandable-metadata-renderer *)"]],
     watch: [["related", WATCH_LEAK]],
   };
@@ -88,13 +107,13 @@
     const out = { ...DEFAULTS, hide: { ...DEFAULTS.hide } };
     for (const [key, allowed] of Object.entries(CHOICES)) if (allowed.includes(s[key])) out[key] = s[key];
     for (const key of ["stopAutoplay", "endPrompt"]) if (typeof s[key] === "boolean") out[key] = s[key];
-    for (const key of ["strictStart", "strictEnd"]) if (/^\d{2}:\d{2}$/.test(s[key] ?? "")) out[key] = s[key];
+    for (const key of ["strictStart", "strictEnd"]) if (parseTime(s[key]) !== null) out[key] = s[key];
     if (Number.isFinite(s.strictSkipUntil)) out.strictSkipUntil = s.strictSkipUntil;
     if (Number.isFinite(s.revealSeconds)) out.revealSeconds = Math.max(0, Math.min(120, Math.round(s.revealSeconds)));
     if (Array.isArray(s.strictDays)) {
       out.strictDays = [...new Set(s.strictDays.filter((d) => Number.isInteger(d) && d >= 0 && d <= 6))];
     }
-    for (const [key, value] of Object.entries(s.hide || {})) if (key in out.hide && typeof value === "boolean") out.hide[key] = value;
+    for (const [key, value] of Object.entries(s.hide || {})) if (Object.hasOwn(out.hide, key) && typeof value === "boolean") out.hide[key] = value;
     return out;
   }
 
@@ -102,18 +121,23 @@
     const next = mergeSettings(stored);
     for (const [key, value] of Object.entries(patch || {})) {
       if (key === "hide") {
-        for (const [name, on] of Object.entries(value || {})) if (name in next.hide && typeof on === "boolean") next.hide[name] = on;
+        for (const [name, on] of Object.entries(value || {})) if (Object.hasOwn(next.hide, name) && typeof on === "boolean") next.hide[name] = on;
         continue;
       }
       const tried = mergeSettings({ ...next, [key]: value });
-      if (JSON.stringify(tried[key]) === JSON.stringify(value)) next[key] = value;
+      const clamped = key === "revealSeconds" && Number.isFinite(value);
+      if (clamped || JSON.stringify(tried[key]) === JSON.stringify(value)) next[key] = tried[key];
     }
     return mergeSettings(next);
   }
 
+  function parseTime(hhmm) {
+    const match = /^([01]\d|2[0-3]):([0-5]\d)$/.exec(typeof hhmm === "string" ? hhmm : "");
+    return match ? Number(match[1]) * 60 + Number(match[2]) : null;
+  }
+
   function toMinutes(hhmm) {
-    const [h, m] = String(hhmm).split(":").map(Number);
-    return (h || 0) * 60 + (m || 0);
+    return parseTime(hhmm) ?? 0;
   }
 
   function isStrict(settings, date) {
@@ -144,7 +168,7 @@
 
   function pageType(pathname) {
     if (pathname === "/") return "home";
-    if (pathname === "/watch") return "watch";
+    if (pathname === "/watch" || /^\/live\/[\w-]+\/?$/.test(pathname)) return "watch";
     if (pathname.startsWith("/shorts/")) return "shorts";
     if (pathname === "/results") return "search";
     if (pathname === "/feed/subscriptions") return "subs";
@@ -152,6 +176,11 @@
     if (/^\/feed\/(history|library|you|playlists)/.test(pathname)) return "library";
     if (/^\/(@|channel\/|c\/|user\/)/.test(pathname)) return "channel";
     return "other";
+  }
+
+  function watchVideoId(pathname, search = "") {
+    if (pathname === "/watch") return new URLSearchParams(search).get("v") || null;
+    return /^\/live\/([\w-]+)\/?$/.exec(pathname)?.[1] || null;
   }
 
   function isRealPlaylist(search) {
@@ -276,21 +305,11 @@
 
   function reportUrl({ version, browser, page = "", missing = [] }, form = FEEDBACK_FORM) {
     const values = { VERSION: version, BROWSER: browser, PAGE: page, FILTERS: missing.join(", ") };
-    if (form) {
-      const url = new URL(form);
-      for (const [key, value] of [...url.searchParams]) {
-        if (value in values) url.searchParams.set(key, values[value]);
-      }
-      return url.toString();
+    const url = new URL(form || FEEDBACK_FORM);
+    for (const [key, value] of [...url.searchParams]) {
+      if (Object.hasOwn(values, value)) url.searchParams.set(key, values[value]);
     }
-    const params = new URLSearchParams({
-      template: "bug.yml",
-      version,
-      browser,
-      page,
-      filters: missing.join(", "),
-    });
-    return `${REPO_URL}/issues/new?${params}`;
+    return url.toString();
   }
 
   const LOG_LIMIT = 30;
@@ -301,8 +320,10 @@
   }
 
   function formatDiagnostics(log, settings) {
-    const head = `mode=${settings.mode} home=${settings.homeTarget} shorts=${settings.shortsMode}`;
+    const head = `mode=${settings?.mode} home=${settings?.homeTarget} shorts=${settings?.shortsMode}`;
+    const valid = (e) => typeof e?.t === "number" && !Number.isNaN(new Date(e.t).getTime()) && Array.isArray(e.missing);
     const recent = (Array.isArray(log) ? log : [])
+      .filter(valid)
       .slice(-12)
       .reverse()
       .map((e) => `${new Date(e.t).toISOString().slice(5, 16)} ${e.page}:${e.missing.join("+")}`);
@@ -384,6 +405,44 @@
     return "any";
   }
 
+  function browserLabel(nav, lang) {
+    let brand = "";
+    try {
+      const list = Array.isArray(nav?.userAgentData?.brands) ? nav.userAgentData.brands : [];
+      const named = list.filter((b) => typeof b?.brand === "string" && !/Not.?A.?Brand|Chromium/i.test(b.brand));
+      const ua = typeof nav?.userAgent === "string" ? nav.userAgent : "";
+      brand = named[0] ? `${named[0].brand} ${named[0].version}` : (ua.match(/(Firefox|Edg|OPR|YaBrowser|Chrome)\/[\d]+/)?.[0] ?? "");
+    } catch {}
+    return `${brand} / ${lang}`;
+  }
+
+  function isFirefox(scope) {
+    try {
+      return typeof scope?.browser?.runtime?.getBrowserInfo === "function";
+    } catch {
+      return false;
+    }
+  }
+
+  function translator(i18n) {
+    return (key, ...subs) => i18n.getMessage(key, subs.map(String));
+  }
+
+  function localizeDocument(doc, t, lang) {
+    doc.documentElement.lang = lang;
+    doc.documentElement.dir = t("@@bidi_dir");
+    for (const node of doc.querySelectorAll("[data-i18n]")) node.textContent = t(node.dataset.i18n);
+  }
+
+  function clock(dateOrMs, lang) {
+    return new Intl.DateTimeFormat(lang, { hour: "numeric", minute: "2-digit" }).format(new Date(dateOrMs));
+  }
+
+  function clockOf(hhmm, lang) {
+    const [h, m] = String(hhmm).split(":").map(Number);
+    return clock(new Date(2026, 0, 1, h, m), lang);
+  }
+
   const RATE_MIN_DONE = 5;
   const NOTE_MAX_SHOWS = 3;
 
@@ -441,8 +500,11 @@
     DEFAULTS,
     DEFAULT_HIDDEN,
     OPT_IN,
+    SELECTORS,
     HEALTH,
     healthChecks,
+    PLAYER_CHECKS,
+    wantsButton,
     SUBS_SHELF,
     SEARCH_SHELF,
     WATCH_LEAK,
@@ -453,6 +515,12 @@
     isShortsTitle,
     BROWSER_HINTS,
     browserHint,
+    browserLabel,
+    isFirefox,
+    translator,
+    localizeDocument,
+    clock,
+    clockOf,
     RATE_MIN_DONE,
     NOTE_MAX_SHOWS,
     shouldShowRate,
@@ -466,7 +534,9 @@
     isStrict,
     isSkipped,
     nextStrictEnd,
+    parseTime,
     pageType,
+    watchVideoId,
     isRealPlaylist,
     shortsToWatch,
     homeRedirect,

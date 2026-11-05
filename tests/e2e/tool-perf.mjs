@@ -1,16 +1,14 @@
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { launch, consent, sleep, OUT, QUERY } from "./harness.mjs";
+import { launch, consent, sleep, OUT, QUERY, closeWelcome } from "./harness.mjs";
 
 const ARM = process.env.ARM || "ext";
 const IDLE_S = Number(process.env.IDLE_S || 300);
 const CHURN = Number(process.env.CHURN || 60);
 const PAGES = (process.env.PAGES || "home,search,subs,watch").split(",");
-const PORT = ARM === "ext" ? 9371 : 9372;
-const ctx = await launch({ name: `perf-${ARM}`, port: PORT, extension: ARM === "ext" });
+const ctx = await launch({ name: `perf-${ARM}`, extension: ARM === "ext" });
 const { context } = ctx;
-await sleep(1500);
-for (const p of context.pages()) if (p.url().includes("welcome.html")) await p.close();
+await closeWelcome(ctx);
 const page = context.pages()[0] || (await context.newPage());
 const cdp = await context.newCDPSession(page);
 await cdp.send("Performance.enable", { timeDomain: "timeTicks" });

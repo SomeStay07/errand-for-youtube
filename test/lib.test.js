@@ -74,11 +74,15 @@ test("shorts links map to the regular player", () => {
   assert.equal(L.shortsToWatch("/shorts/dQw4w9WgXcQ", "?feature=share"), "/watch?v=dQw4w9WgXcQ&feature=share");
 });
 
-test("report link carries only version, browser, page type and broken filters", () => {
-  const url = new URL(L.reportUrl({ version: "0.1.0", browser: "Chrome 142 / ru", page: "watch", missing: ["shorts", "related"] }, ""));
-  assert.equal(url.origin + url.pathname, `${L.REPO_URL}/issues/new`);
-  assert.deepEqual([...url.searchParams.keys()].sort(), ["browser", "filters", "page", "template", "version"]);
-  assert.equal(url.searchParams.get("filters"), "shorts, related");
+test("report link always opens the feedback form and fills only its four fields", () => {
+  for (const form of [undefined, ""]) {
+    const url = new URL(L.reportUrl({ version: "0.1.0", browser: "Chrome 142 / ru", page: "watch", missing: ["shorts", "related"] }, form));
+    assert.equal(url.origin + url.pathname, "https://docs.google.com/forms/d/e/1FAIpQLScK_SZgLBU4-khfkJgem6Gfdk0JkcnCYq2bATd491NIQ6uAGQ/viewform");
+    assert.deepEqual([...url.searchParams.values()], ["pp_url", "0.1.0", "Chrome 142 / ru", "watch", "shorts, related"]);
+  }
+  const odd = new URL(L.reportUrl({ version: "1", browser: "b" }, "https://example.com/f?a=constructor&b=VERSION"));
+  assert.equal(odd.searchParams.get("a"), "constructor");
+  assert.equal(odd.searchParams.get("b"), "1");
 });
 
 test("report link fills a prefilled feedback form when one is configured", () => {
@@ -303,16 +307,22 @@ test("most relevant shelf on subscriptions follows the home filter", () => {
   const fs = require("node:fs");
   const path = require("node:path");
   const css = fs.readFileSync(path.join(__dirname, "..", "hide.css"), "utf8");
-  const homeGroup = css.slice(0, css.indexOf("}"));
-  assert.ok(homeGroup.startsWith("html:not([data-er-show-home])"));
-  assert.ok(homeGroup.includes(L.SUBS_SHELF));
+  assert.ok(css.includes(`html:not([data-er-show-home]) ${L.SUBS_SHELF} {`));
   assert.match(L.SUBS_SHELF, /^ytd-browse\[page-subtype="subscriptions"\] /);
   assert.match(L.SUBS_SHELF, /ytd-rich-shelf-renderer:not\(\[is-shorts\]\)/);
   assert.doesNotMatch(L.SUBS_SHELF, /ytd-shelf-renderer|relevant/i);
-  assert.deepEqual(L.LEAKS.subs.map(([name]) => name), ["home"]);
-  const [, leak] = L.LEAKS.subs[0];
-  assert.equal(leak, L.SUBS_SHELF.replace("> #content > ", ""));
   assert.deepEqual(L.HEALTH.subs, []);
+});
+
+test("the subscriptions leak check is a looser twin of the hiding selector", () => {
+  assert.equal(
+    L.SUBS_SHELF,
+    'ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(> #content > ytd-rich-shelf-renderer:not([is-shorts]))',
+  );
+  assert.deepEqual(L.LEAKS.subs, [
+    ["home", 'ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(ytd-rich-shelf-renderer:not([is-shorts]))'],
+  ]);
+  assert.notEqual(L.LEAKS.subs[0][1], L.SUBS_SHELF);
 });
 
 test("endscreen presence matches the current player and only hidden parts are hidden", () => {
@@ -465,11 +475,12 @@ test("Shorts inside the new lockup, Playables and Watch & Play follow the Shorts
     "ytd-rich-section-renderer:has(ytd-mini-game-card-view-model)",
     'ytd-guide-entry-renderer:has(a[href^="/playables"])',
     'ytd-mini-guide-entry-renderer:has(a[href^="/playables"])',
-    "ytd-watch-flexy #related ytd-horizontal-card-list-renderer",
   ]) {
     assert.ok(shorts.includes(part), part);
   }
   assert.ok(!shorts.includes("start_radio"));
+  assert.ok(!shorts.includes("#"), "the shared Shorts group stays free of IDs");
+  assert.ok(css.includes("html:not([data-er-show-shorts]) ytd-watch-flexy #related ytd-horizontal-card-list-renderer {"));
   const radio = cssGroup(css, 'html:not([data-er-page="channel"]');
   assert.ok(radio.includes('yt-lockup-view-model:has(a[href*="start_radio=1"])'));
 });
@@ -485,7 +496,8 @@ test("empty-search suggestions stay hidden whether the box is an input or a text
   const css = hideCss();
   const homeGroup = css.slice(0, css.indexOf("}"));
   assert.ok(homeGroup.includes(':is(input, textarea)[name="search_query"]:placeholder-shown'));
-  assert.match(homeGroup, /,\n  #home-container-skeleton\n\) \{/);
+  assert.ok(!homeGroup.includes("#"), "the shared home group stays free of IDs");
+  assert.match(css, /html:not\(\[data-er-show-home\]\)\s+#home-container-skeleton\s*\{/);
   assert.ok(!css.includes('has(input[name="search_query"]'));
 });
 
@@ -517,7 +529,6 @@ test("a related card outside the related column on watch pages counts as a leak"
     L.HEALTH.watch.map(([name]) => name),
     ["player", "related", "comments", "autoplay", "endscreen"],
   );
-  assert.deepEqual(L.LEAKS.subs.map(([name]) => name), ["home"]);
 });
 
 test("confirmHealth reports a filter only after it fails two checks in a row", () => {
@@ -625,4 +636,318 @@ test("the pill text is a link that keeps its colour and shows a focus ring", () 
   assert.match(css, /#er-pill :is\(span, a\) \{[^}]*text-overflow: ellipsis/);
   assert.match(css, /#er-pill a \{[^}]*color: inherit;[^}]*text-decoration: none;/);
   assert.match(css, /#er-pill a:focus-visible \{[^}]*outline: 2px solid var\(--er-accent\)/);
+});
+
+test("selectors shared with hide.css are hidden there verbatim, and the watch checks cover both layouts", () => {
+  const css = hideCss();
+  for (const [name, selector] of Object.entries(L.SELECTORS)) assert.ok(css.includes(selector), name);
+  assert.equal(L.SELECTORS.watchScope, ":is(ytd-watch-flexy, ytd-watch-grid)");
+  const related = cssGroup(css, "html:not([data-er-show-related]):not([data-er-reveal])");
+  assert.ok(related.includes(L.SELECTORS.related));
+  for (const part of ["#related", "#bottom-grid", "ytd-watch-next-secondary-results-renderer"]) assert.ok(L.SELECTORS.related.includes(part), part);
+  const [, presence] = L.HEALTH.watch.find(([name]) => name === "related");
+  assert.equal(presence, `${L.SELECTORS.watchScope} #related`);
+  assert.ok(L.WATCH_LEAK.includes(L.SELECTORS.watchScope));
+  assert.equal(L.SUBS_SHELF, L.SELECTORS.subsShelf);
+  assert.equal(L.SEARCH_SHELF, L.SELECTORS.searchShelf);
+});
+
+test("pageType maps every YouTube path the content script cares about", () => {
+  const table = {
+    "/": "home",
+    "/watch": "watch",
+    "/live/jfKfPfyJRdk": "watch",
+    "/live/jfKfPfyJRdk/": "watch",
+    "/live": "other",
+    "/live/": "other",
+    "/shorts/dQw4w9WgXcQ": "shorts",
+    "/shorts": "other",
+    "/results": "search",
+    "/feed/subscriptions": "subs",
+    "/playlist": "playlist",
+    "/feed/history": "library",
+    "/feed/library": "library",
+    "/feed/you": "library",
+    "/feed/playlists": "library",
+    "/@mkbhd": "channel",
+    "/@mkbhd/live": "channel",
+    "/@mkbhd/shorts": "channel",
+    "/channel/UCBJycsmduvYEL83R_U4JriQ": "channel",
+    "/c/mkbhd": "channel",
+    "/user/marquesbrownlee": "channel",
+    "/feed/trending": "other",
+    "/gaming": "other",
+    "/embed/x": "other",
+  };
+  for (const [path, type] of Object.entries(table)) assert.equal(L.pageType(path), type, path);
+});
+
+test("watchVideoId reads the id from ?v= or from a /live/ path", () => {
+  assert.equal(L.watchVideoId("/watch", "?v=abc123&t=5"), "abc123");
+  assert.equal(L.watchVideoId("/watch", ""), null);
+  assert.equal(L.watchVideoId("/live/jfKfPfyJRdk", "?si=x"), "jfKfPfyJRdk");
+  assert.equal(L.watchVideoId("/live/", ""), null);
+  assert.equal(L.watchVideoId("/shorts/abc123", "?v=x"), null);
+});
+
+test("parseTime accepts only HH:MM inside a real day", () => {
+  assert.equal(L.parseTime("00:00"), 0);
+  assert.equal(L.parseTime("09:30"), 570);
+  assert.equal(L.parseTime("23:59"), 23 * 60 + 59);
+  for (const bad of ["24:00", "99:99", "23:60", "7:30", "07:3", "0730", " 07:30", "07:30 ", "", null, undefined, 730, "aa:bb"]) {
+    assert.equal(L.parseTime(bad), null, String(bad));
+  }
+});
+
+test("settings import keeps valid values, drops bad ones and clamps numbers", () => {
+  const time = (value) => L.mergeSettings({ strictStart: value, strictEnd: value });
+  for (const bad of ["24:00", "99:99", "23:60", "7:30", "", null, 930]) {
+    assert.equal(time(bad).strictStart, L.DEFAULTS.strictStart, String(bad));
+    assert.equal(time(bad).strictEnd, L.DEFAULTS.strictEnd, String(bad));
+  }
+  assert.equal(time("00:00").strictStart, "00:00");
+  assert.equal(time("23:59").strictEnd, "23:59");
+  const reveal = (value) => L.mergeSettings({ revealSeconds: value }).revealSeconds;
+  assert.deepEqual([-5, 0, 3.6, 120, 500, NaN, "30", Infinity].map(reveal), [0, 0, 4, 120, 120, 10, 10, 10]);
+  const days = (value) => L.mergeSettings({ strictDays: value }).strictDays;
+  assert.deepEqual(days([1, 1, 7, -1]), [1]);
+  assert.deepEqual(days([0, 6]), [0, 6]);
+  assert.deepEqual(days([]), []);
+  assert.deepEqual(days("1,2"), L.DEFAULTS.strictDays);
+  assert.equal(L.mergeSettings({ stopAutoplay: "false" }).stopAutoplay, true);
+  assert.equal(L.mergeSettings({ stopAutoplay: false }).stopAutoplay, false);
+  assert.equal(L.mergeSettings({ endPrompt: 0 }).endPrompt, true);
+  assert.equal(L.mergeSettings({ strictSkipUntil: "123" }).strictSkipUntil, undefined);
+  for (const junk of [null, undefined, "x", 5, [], true]) assert.deepEqual(L.mergeSettings(junk), L.mergeSettings({}), String(junk));
+});
+
+test("settings from 0.1 and 0.2 load without losing choices or keeping stray keys", () => {
+  const v01 = {
+    mode: "auto",
+    strictStart: "08:30",
+    strictEnd: "17:00",
+    hide: { related: false, endscreen: true, comments: true },
+    homeTarget: "subs",
+    shortsMode: "block",
+    stopAutoplay: false,
+    endPrompt: true,
+    revealSeconds: 5,
+    showShorts: true,
+  };
+  const s1 = L.mergeSettings(v01);
+  assert.deepEqual(s1, {
+    ...L.DEFAULTS,
+    mode: "auto",
+    strictStart: "08:30",
+    strictEnd: "17:00",
+    hide: { ...L.DEFAULTS.hide, related: false },
+    homeTarget: "subs",
+    shortsMode: "block",
+    stopAutoplay: false,
+    revealSeconds: 5,
+  });
+  const v02 = { ...v01, strictDays: [0, 6], strictSkipUntil: at(1, 17).getTime(), hide: { ...v01.hide, chat: true, metrics: true } };
+  const s2 = L.mergeSettings(v02);
+  assert.deepEqual(s2.strictDays, [0, 6]);
+  assert.equal(s2.strictSkipUntil, at(1, 17).getTime());
+  assert.deepEqual(s2.hide, { ...L.DEFAULTS.hide, related: false, chat: true, metrics: true });
+  assert.deepEqual(L.mergeSettings(JSON.parse(JSON.stringify(s2))), s2);
+});
+
+test("hide keys inherited from Object are never accepted from an import or a patch", () => {
+  const imported = L.mergeSettings(JSON.parse('{"hide":{"constructor":true,"toString":false,"__proto__":{"related":false},"comments":false}}'));
+  assert.deepEqual(Object.keys(imported.hide).sort(), Object.keys(L.DEFAULTS.hide).sort());
+  assert.equal(imported.hide.related, true);
+  assert.equal(imported.hide.comments, false);
+  const patched = L.patchSettings({}, { hide: { constructor: true, hasOwnProperty: false } });
+  assert.deepEqual(Object.keys(patched.hide).sort(), Object.keys(L.DEFAULTS.hide).sort());
+});
+
+test("a schedule whose start equals its end is never strict", () => {
+  const s = L.mergeSettings({ mode: "auto", strictStart: "10:00", strictEnd: "10:00", strictDays: [0, 1, 2, 3, 4, 5, 6] });
+  for (const hh of [0, 9, 10, 11, 23]) assert.equal(L.isStrict(s, at(1, hh)), false, String(hh));
+});
+
+test("turning strict off ends the skip at the next strictEnd on both DST change days in Madrid", () => {
+  inZone("Europe/Madrid", () => {
+    const night = L.mergeSettings({ mode: "auto", strictStart: "22:00", strictEnd: "06:00", strictDays: [6] });
+    const autumn = L.endStrict(night, new Date(2026, 9, 24, 23));
+    assert.equal(autumn.strictSkipUntil, new Date(2026, 9, 25, 6).getTime());
+    assert.equal(L.nextStrictEnd(night, new Date(2026, 9, 24, 23)), new Date(2026, 9, 25, 6).getTime());
+    assert.equal(L.nextStrictEnd(night, new Date(2026, 9, 25, 6)), new Date(2026, 9, 26, 6).getTime());
+    assert.equal(L.isStrict(autumn, new Date(2026, 9, 25, 5, 30)), false);
+    const spring = L.endStrict(night, new Date(2026, 2, 28, 23));
+    assert.equal(spring.strictSkipUntil, new Date(2026, 2, 29, 6).getTime());
+    assert.equal(L.isStrict(spring, new Date(2026, 2, 29, 5, 30)), false);
+    const longDay = L.mergeSettings({ mode: "auto", strictStart: "09:00", strictEnd: "08:59", strictDays: [0, 1, 2, 3, 4, 5, 6] });
+    const skip = L.endStrict(longDay, new Date(2026, 9, 24, 9));
+    assert.ok(skip.strictSkipUntil - new Date(2026, 9, 24, 9).getTime() > 24 * 60 * 60 * 1000);
+    assert.equal(L.isSkipped(skip, new Date(2026, 9, 24, 9)), true);
+    assert.equal(L.isStrict(skip, new Date(2026, 9, 25, 8)), false);
+    assert.equal(L.isStrict(skip, new Date(2026, 9, 25, 9)), true);
+  });
+});
+
+test("stats windows end exactly at 7 and 30 days", () => {
+  const today = new Date(2026, 10, 20, 12);
+  const back = (n) => L.dayKey(new Date(2026, 10, 20 - n));
+  assert.deepEqual(L.errandTotals({ [back(6)]: { done: 1, closed: 1 }, [back(7)]: { done: 5, closed: 5 } }, today), { done: 1, closed: 1 });
+  const kept = L.addCount({ [back(29)]: { done: 1 }, [back(30)]: { done: 1 } }, "done", today);
+  assert.deepEqual(Object.keys(kept).sort(), [back(29), back(0)].sort());
+});
+
+test("the diagnostics log keeps the newest entries in order and the report shows the newest first", () => {
+  let log = [];
+  for (let i = 0; i < 40; i += 1) log = L.appendLog(log, { page: `p${i}`, missing: ["related"] }, 1_700_000_000_000 + i * 60_000);
+  assert.deepEqual(log.map((e) => e.page), Array.from({ length: L.LOG_LIMIT }, (_, i) => `p${i + 10}`));
+  const text = L.formatDiagnostics(log, L.mergeSettings());
+  const [, first, second] = text.split("; ");
+  assert.ok(first.endsWith("p39:related"), first);
+  assert.ok(second.endsWith("p38:related"), second);
+  const long = Array.from({ length: 30 }, (_, i) => ({ t: 1_700_000_000_000 + i, page: "x".repeat(100), missing: ["related"] }));
+  assert.equal(L.formatDiagnostics(long, L.mergeSettings()).length, 600);
+});
+
+test("formatDiagnostics skips malformed log entries instead of throwing", () => {
+  const log = [null, 1, "x", {}, { t: "x", missing: [] }, { t: NaN, missing: [] }, { t: 1e20, missing: [] }, { t: 0 }, { t: 0, missing: "a" }, { t: 0, page: "watch", missing: ["ok"] }];
+  assert.doesNotThrow(() => L.formatDiagnostics(log, L.mergeSettings()));
+  const text = L.formatDiagnostics(log, L.mergeSettings());
+  assert.deepEqual(text.split("; ").slice(1), ["01-01T00:00 watch:ok"]);
+  assert.doesNotThrow(() => L.formatDiagnostics("x", undefined));
+  assert.doesNotThrow(() => L.formatDiagnostics(undefined, null));
+});
+
+test("strict mode forces the default filters but leaves opt-in ones as the user set them", () => {
+  const off = L.hiddenParts(L.mergeSettings({ hide: { chat: false, metrics: false, notifications: false, thumbs: false } }), true);
+  for (const key of L.OPT_IN) assert.equal(off[key], false, key);
+  const on = L.hiddenParts(L.mergeSettings({ hide: { chat: true } }), true);
+  assert.equal(on.chat, true);
+});
+
+test("Shorts redirect keeps the id, drops a stray v and ignores short ids", () => {
+  assert.equal(L.shortsToWatch("/shorts/abc_DEF-12", "?v=x&t=5"), "/watch?v=abc_DEF-12&t=5");
+  assert.equal(L.shortsToWatch("/shorts/abc_DEF-12/"), "/watch?v=abc_DEF-12");
+  assert.equal(L.shortsToWatch("/shorts/a"), null);
+  assert.equal(L.shortsToWatch("/shorts/abcde"), null);
+  assert.equal(L.shortsToWatch("/shorts/abcdef"), "/watch?v=abcdef");
+});
+
+test("pause, pause start, strict exit and strict skip hold their exact edges", () => {
+  const now = 10_000_000;
+  assert.equal(L.isPaused(now + L.PAUSE_MS, now), true);
+  assert.equal(L.isPauseStarting(now + L.PAUSE_WAIT_S * 1000 + 1000, now), true);
+  assert.equal(L.isPauseStarting(now + L.PAUSE_WAIT_S * 1000 + 1001, now), false);
+  const strict = L.mergeSettings({ mode: "strict" });
+  const date = new Date(now);
+  assert.equal(L.strictExit(strict, now - 60_000, date), "due");
+  assert.equal(L.strictExit(strict, now - 60_001, date), "none");
+  const auto = { mode: "auto", strictStart: "09:00", strictEnd: "18:00", strictDays: [1] };
+  const d = at(1, 10);
+  assert.equal(L.isSkipped(L.mergeSettings({ ...auto, strictSkipUntil: d.getTime() + 25 * 60 * 60 * 1000 }), d), true);
+  assert.equal(L.isSkipped(L.mergeSettings({ ...auto, strictSkipUntil: d.getTime() + 25 * 60 * 60 * 1000 + 1 }), d), false);
+  assert.equal(L.isSkipped(L.mergeSettings({ ...auto, strictSkipUntil: d.getTime() }), d), false);
+});
+
+test("version and browser edge cases", () => {
+  assert.equal(L.isNoteworthyUpdate("1.0.0", "0.5.0"), false);
+  assert.equal(L.noteVersion("0.3.0-beta"), null);
+  assert.equal(L.browserHint({ userAgentData: { brands: [{ brand: "Microsoft Edge WebView2" }] } }), "any");
+  assert.equal(L.browserHint({ userAgent: "Opera/9.80 (Macintosh; Intel Mac OS X 10.15) Presto/2.12" }), "opera");
+});
+
+test("patchSettings clamps a reveal delay into range and rejects everything else it cannot take as is", () => {
+  const stored = { revealSeconds: 30, strictDays: [1, 2] };
+  assert.equal(L.patchSettings(stored, { revealSeconds: 500 }).revealSeconds, 120);
+  assert.equal(L.patchSettings(stored, { revealSeconds: -3 }).revealSeconds, 0);
+  assert.equal(L.patchSettings(stored, { revealSeconds: 4.6 }).revealSeconds, 5);
+  assert.equal(L.patchSettings(stored, { revealSeconds: "60" }).revealSeconds, 30);
+  assert.equal(L.patchSettings(stored, { revealSeconds: NaN }).revealSeconds, 30);
+  assert.deepEqual(L.patchSettings(stored, { strictDays: [1, 1, 2] }).strictDays, [1, 2]);
+  assert.deepEqual(L.patchSettings(stored, { strictDays: [9] }).strictDays, [1, 2]);
+  assert.equal(L.patchSettings(stored, { strictEnd: "24:00" }).strictEnd, L.DEFAULTS.strictEnd);
+});
+
+test("English-only Shorts rules are a fallback: each has a language-free twin in the Shorts group", () => {
+  const shorts = cssGroup(hideCss(), "html:not([data-er-show-shorts])");
+  const twins = {
+    'ytd-guide-entry-renderer:has(a[title="Shorts"])': 'ytd-guide-entry-renderer:has(a[href^="/shorts"])',
+    'ytd-mini-guide-entry-renderer[aria-label="Shorts"]': 'ytd-mini-guide-entry-renderer:has(a[href^="/shorts"])',
+    'yt-tab-shape[tab-title="Shorts"]': "[data-er-shorts]",
+  };
+  for (const [english, twin] of Object.entries(twins)) {
+    assert.ok(shorts.includes(english), english);
+    assert.ok(shorts.includes(twin), twin);
+  }
+  assert.equal(L.isShortsTitle("Shorts", "Короткие видео"), true);
+  assert.equal(L.isShortsTitle("Короткие видео", "Короткие видео"), true);
+});
+
+test("searchUrl encodes the errand text", () => {
+  assert.equal(L.searchUrl("swift & ui?"), "/results?search_query=swift%20%26%20ui%3F");
+});
+
+test("translator passes substitutions to getMessage as strings", () => {
+  const calls = [];
+  const t = L.translator({ getMessage: (key, subs) => (calls.push([key, subs]), `${key}:${subs.join(",")}`) });
+  assert.equal(t("statusPaused", 5, "x"), "statusPaused:5,x");
+  assert.deepEqual(calls, [["statusPaused", ["5", "x"]]]);
+});
+
+test("localizeDocument sets lang, direction and every data-i18n text", () => {
+  const nodes = [{ dataset: { i18n: "a" }, textContent: "" }, { dataset: { i18n: "b" }, textContent: "" }];
+  const doc = { documentElement: {}, querySelectorAll: (sel) => (sel === "[data-i18n]" ? nodes : []) };
+  L.localizeDocument(doc, (key) => (key === "@@bidi_dir" ? "rtl" : key.toUpperCase()), "de");
+  assert.deepEqual(doc.documentElement, { lang: "de", dir: "rtl" });
+  assert.deepEqual(nodes.map((n) => n.textContent), ["A", "B"]);
+});
+
+test("clock and clockOf follow the UI language's hour style", () => {
+  assert.equal(L.clockOf("23:59", "en-US"), "11:59 PM".replace(" ", L.clockOf("23:59", "en-US").includes(" ") ? " " : " "));
+  assert.match(L.clockOf("23:59", "en-US"), /^11:59\sPM$/);
+  assert.equal(L.clockOf("23:59", "ru"), "23:59");
+  assert.equal(L.clockOf("07:05", "de"), "7:05");
+  const ms = new Date(2026, 0, 1, 9, 30).getTime();
+  assert.equal(L.clock(ms, "ru"), "9:30");
+  assert.equal(L.clock(new Date(ms), "ru"), "9:30");
+});
+
+test("browserLabel names the real brand, falls back to the user agent and never throws", () => {
+  const brands = (...list) => ({ userAgentData: { brands: list.map(([brand, version]) => ({ brand, version })) } });
+  assert.equal(L.browserLabel(brands(["Not.A/Brand", "99"], ["Chromium", "151"], ["Google Chrome", "151"]), "ru"), "Google Chrome 151 / ru");
+  assert.equal(L.browserLabel({ userAgent: "Mozilla/5.0 (X11; Linux) Gecko/20100101 Firefox/140.0" }, "de"), "Firefox/140 / de");
+  assert.equal(L.browserLabel({ ...brands(["Chromium", "151"]), userAgent: "Mozilla/5.0 Edg/151.0" }, "en"), "Edg/151 / en");
+  assert.equal(L.browserLabel({}, "en"), " / en");
+  const throwing = new Proxy({}, { get() { throw new Error("boom"); } });
+  for (const junk of [null, undefined, "x", throwing, { userAgentData: { brands: [null, 1] } }]) {
+    assert.doesNotThrow(() => L.browserLabel(junk, "en"));
+  }
+});
+
+test("isFirefox looks for getBrowserInfo, not for a browser global", () => {
+  assert.equal(L.isFirefox({ browser: { runtime: { getBrowserInfo() {} } } }), true);
+  assert.equal(L.isFirefox({ browser: { runtime: {} } }), false);
+  assert.equal(L.isFirefox({}), false);
+  assert.equal(L.isFirefox(undefined), false);
+  assert.equal(L.isFirefox(new Proxy({}, { get() { throw new Error("boom"); } })), false);
+});
+
+test("health skips comments on live streams and player checks until the video can play", () => {
+  const names = (opts) => L.healthChecks("watch", { related: true, endscreen: true, comments: true, autoplay: true }, opts).map(([name]) => name);
+  assert.deepEqual(names(), ["player", "related", "comments", "autoplay", "endscreen"]);
+  assert.deepEqual(names({ live: true }), ["player", "related", "autoplay", "endscreen"]);
+  assert.deepEqual(names({ playable: false }), ["player", "related", "comments"]);
+  assert.deepEqual(names({ live: true, playable: false }), ["player", "related"]);
+  assert.deepEqual(L.healthChecks("watch", { related: false, comments: false, endscreen: false, autoplay: false }, { live: true, playable: false }).map(([n]) => n), ["player"]);
+  assert.deepEqual(L.healthChecks("search", {}, { live: true, playable: false }).map(([n]) => n), ["results"]);
+});
+
+test("reveal and comments buttons are wanted only on a watch page with the part hidden, outside strict and pause", () => {
+  const state = { hide: { related: true, comments: false }, strict: false, paused: false };
+  assert.equal(L.wantsButton("related", "watch", state), true);
+  assert.equal(L.wantsButton("comments", "watch", state), false);
+  assert.equal(L.wantsButton("related", "home", state), false);
+  assert.equal(L.wantsButton("related", "watch", { ...state, strict: true }), false);
+  assert.equal(L.wantsButton("related", "watch", { ...state, paused: true }), false);
+  assert.equal(L.wantsButton("related", "watch"), false);
+  assert.equal(L.wantsButton("related", "watch", { hide: null }), false);
 });

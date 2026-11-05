@@ -50,3 +50,32 @@ test("store limits: name <= 75, short name <= 45, description <= 132 characters"
     assert.ok(messages[loc].extDescription.message.length <= 132, `${loc} description`);
   }
 });
+
+function keyMap(file, name) {
+  const body = new RegExp(`const ${name} = \\{([\\s\\S]*?)\\};`).exec(read(file));
+  assert.ok(body, `${file} defines ${name}`);
+  return Object.fromEntries([...body[1].matchAll(/(\w+): "(\w+)"/g)].map(([, from, to]) => [from, to]));
+}
+
+const L = require("../lib.js");
+const hasText = (loc, key) => typeof messages[loc][key]?.message === "string" && messages[loc][key].message.trim() !== "";
+
+test("every browser hint has a home footnote and a welcome pin step in every locale", () => {
+  for (const [file, name] of [["content.js", "FOOTER_KEYS"], ["welcome.js", "PIN_KEYS"]]) {
+    const map = keyMap(file, name);
+    for (const hint of L.BROWSER_HINTS) {
+      assert.ok(map[hint], `${name} has ${hint}`);
+      for (const loc of locales) assert.ok(hasText(loc, map[hint]), `${loc} ${map[hint]}`);
+    }
+  }
+});
+
+test("every health and leak name has a popup label in every locale", () => {
+  const map = keyMap("popup.js", "HEALTH_KEYS");
+  const names = new Set(["shorts"]);
+  for (const checks of [...Object.values(L.HEALTH), ...Object.values(L.LEAKS)]) for (const [name] of checks) names.add(name);
+  for (const name of names) {
+    assert.ok(map[name], `HEALTH_KEYS has ${name}`);
+    for (const loc of locales) assert.ok(hasText(loc, map[name]), `${loc} ${map[name]}`);
+  }
+});

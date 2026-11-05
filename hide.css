@@ -1,11 +1,17 @@
 html:not([data-er-show-home]) :is(
   ytd-browse[page-subtype="home"],
-  ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(> #content > ytd-rich-shelf-renderer:not([is-shorts])),
   ytd-guide-entry-renderer:has(a[href="/feed/trending"]),
   ytd-guide-entry-renderer:has(a[href^="/feed/explore"]),
-  yt-searchbox:has(:is(input, textarea)[name="search_query"]:placeholder-shown) .ytSearchboxComponentSuggestionsContainer,
-  #home-container-skeleton
+  yt-searchbox:has(:is(input, textarea)[name="search_query"]:placeholder-shown) .ytSearchboxComponentSuggestionsContainer
 ) {
+  display: none !important;
+}
+
+html:not([data-er-show-home]) #home-container-skeleton {
+  display: none !important;
+}
+
+html:not([data-er-show-home]) ytd-browse[page-subtype="subscriptions"] ytd-rich-section-renderer:has(> #content > ytd-rich-shelf-renderer:not([is-shorts])) {
   display: none !important;
 }
 
@@ -29,13 +35,16 @@ html:not([data-er-show-shorts]) :is(
   ytd-rich-section-renderer:has(ytd-mini-game-card-view-model),
   ytd-guide-entry-renderer:has(a[href^="/playables"]),
   ytd-mini-guide-entry-renderer:has(a[href^="/playables"]),
-  ytd-watch-flexy #related ytd-horizontal-card-list-renderer,
   [data-er-shorts]
 ) {
   display: none !important;
 }
 
-html:not([data-er-show-related]):not([data-er-reveal]) ytd-watch-flexy :is(#related, ytd-watch-next-secondary-results-renderer) {
+html:not([data-er-show-shorts]) ytd-watch-flexy #related ytd-horizontal-card-list-renderer {
+  display: none !important;
+}
+
+html:not([data-er-show-related]):not([data-er-reveal]) :is(ytd-watch-flexy, ytd-watch-grid) :is(#related, #bottom-grid, ytd-watch-next-secondary-results-renderer) {
   display: none !important;
 }
 
@@ -151,9 +160,6 @@ html[data-er-page="home"]:not([data-er-show-home]) #er-intent {
 
 #er-intent form {
   pointer-events: auto;
-}
-
-#er-intent form {
   width: min(560px, calc(100vw - 32px));
   display: flex;
   flex-direction: column;
@@ -249,8 +255,14 @@ html[data-er-page="home"]:not([data-er-show-home]) #er-intent {
 #er-end button {
   font: inherit;
   cursor: pointer;
-  border: none;
+  border: 1px solid transparent;
   border-radius: 999px;
+}
+
+@media (forced-colors: active) {
+  #er-pill {
+    border: 1px solid CanvasText;
+  }
 }
 
 #er-pill button {
