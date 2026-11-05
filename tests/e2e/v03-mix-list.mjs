@@ -83,8 +83,6 @@ check("music Mix (hard load): YouTube shows the Mix panel", mixHardLate.panelIte
 check("music Mix (hard load): html[data-er-playlist] present", mixHardLate.erPlaylist, { first: mixHard, late: mixHardLate });
 if (autoplayObservable) check("music Mix (hard load): Errand did not force autonav off (no data-er-autoplay-off)", !mixHardLate.erAutoplayOff, mixHardLate);
 else check("music Mix (hard load): Errand did not force autonav off (no data-er-autoplay-off)", null, "autonav toggle not actionable headless (see precondition)");
-const errandTurnedOff = await page.evaluate(() => sessionStorage.getItem("errand-autoplay-off"));
-if (control.autonav === "false") check("music Mix after a single video: autonav Errand turned off is back on in the Mix", errandTurnedOff === null && mixHardLate.autonav !== "true" ? null : mixHardLate.autonav === "true", { control: control.autonav, mix: mixHardLate.autonav, errandTurnedOff });
 
 await page.goto(`https://www.youtube.com/watch?v=${non}&list=RD${non}&start_radio=1`, { waitUntil: "domcontentloaded" });
 const nonMix = await single("nonMix");
@@ -138,6 +136,7 @@ await sleep(2000);
 const outLate = await state();
 await shot("spa-out");
 check("SPA hop Mix → plain /watch: html[data-er-playlist] cleared", outLate.url === `/watch?v=${non}` && !outLate.erPlaylist && outLate.watchPlaylist === false, { at: out, late: outLate });
+if (autoplayObservable) check("SPA hop Mix → plain /watch: autonav off on the single video", outLate.autonav === "false", { late: outLate });
 
 check("playback: Mix plays 3 tracks in a row with no end prompt (manual, Timur's Chrome)", null, "YouTube bot check blocks playback headless");
 check("playback: single video ends → no next video, end prompt shows (manual)", null, "YouTube bot check blocks playback headless");

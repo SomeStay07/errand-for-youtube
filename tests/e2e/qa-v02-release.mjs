@@ -17,6 +17,15 @@ const tabId = async () => ctx.worker.evaluate(async () => {
   return latest ? Number(latest[0]) : (await chrome.tabs.query({ active: true }))[0]?.id;
 });
 async function badge() {
+  for (let i = 0; i < 16; i++) {
+    const b = await readBadge();
+    if (b.entry) return b;
+    await sleep(500);
+  }
+  return readBadge();
+}
+
+async function readBadge() {
   const id = await tabId();
   return ctx.worker.evaluate(async (tab) => {
     const { health = {} } = await chrome.storage.session.get("health");
@@ -125,7 +134,7 @@ if (ONLY.includes("churn")) {
   nav.push({ c: "end", step: "subs", url: page.url(), ...(await dom()), badge: sb.badge, missing: sb.entry?.missing });
   if (sb.badge === "!") falseBang.push({ c: "end", step: "subs", missing: sb.entry?.missing });
   const withEntry = nav.filter((n) => Array.isArray(n.missing)).length;
-  check(`churn: badge read from the YouTube tab's own entry (${withEntry}/${nav.length} steps had a health entry)`, withEntry === nav.length);
+  check(`churn: badge read from the YouTube tab's own entry (${withEntry}/${nav.length} steps had a health entry)`, withEntry === nav.length, nav.filter((n) => !Array.isArray(n.missing)).map((n) => ({ c: n.c, step: n.step, url: n.url, badge: n.badge })));
   await page.screenshot({ path: join(OUT, "R-churn-subs.png") });
   for (const n of nav) {
     const expect = { "back-watch": "watch", "back-search": "search" }[n.step] || n.step;

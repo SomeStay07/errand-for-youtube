@@ -131,9 +131,9 @@ test("a list counts when YouTube shows its panel, Mixes included", () => {
   assert.equal(L.inList("?v=a&list=PL1", true), true);
 });
 
-test("a list link without a panel plays as a single video", () => {
+test("a Mix link without a panel plays as a single video", () => {
   assert.equal(L.inList("?v=a&list=RDa&start_radio=1", false), false);
-  assert.equal(L.inList("?v=a&list=PL1", false), false);
+  assert.equal(L.inList("?v=a&list=PL1", false), true);
   assert.equal(L.inList("?v=a", true), false);
   assert.equal(L.inList("?v=a&list=", true), false);
 });

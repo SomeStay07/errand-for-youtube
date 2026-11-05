@@ -119,7 +119,7 @@ const bP = await stateB();
 check("C2 home during pause: feed shown, no question", aP.showHome && !aP.question, aP);
 check("C2 watch during pause: related shown, no reveal/comments buttons, no no-autoplay attr", bP.showRelated && bP.showComments && bP.reveal === 0 && bP.commentsBtn === 0 && !bP.noAutoplay, bP);
 const pp = await pstate();
-check("C3 popup status 'Paused until HH:MM', health hidden", /^Paused until \d{1,2}:\d\d( [AP]M)?\. YouTube is as is\.$/.test(pp.status) && pp.healthHidden && pp.text === "Turn back on" && !pp.disabled, pp);
+check("C3 popup status 'Paused until HH:MM', health hidden", /^Paused until \d{1,2}:\d\d( [AP]M)?\. Nothing is hidden\.$/.test(pp.status) && pp.healthHidden && pp.text === "Turn back on" && !pp.disabled, pp);
 const ids = await tabIds();
 const badgeGlobal = await badge();
 const badgeA = ids.home !== undefined ? await badge(ids.home) : null;

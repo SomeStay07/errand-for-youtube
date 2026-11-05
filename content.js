@@ -351,18 +351,6 @@
     return L.inList(location.search, watch ? watch.hasAttribute("playlist") : null);
   }
 
-  const AUTOPLAY_FLAG = "errand-autoplay-off";
-
-  function autoplayTurnedOff(value) {
-    try {
-      if (value === true) sessionStorage.setItem(AUTOPLAY_FLAG, "1");
-      else if (value === false) sessionStorage.removeItem(AUTOPLAY_FLAG);
-      return sessionStorage.getItem(AUTOPLAY_FLAG) === "1";
-    } catch {
-      return false;
-    }
-  }
-
   let watchObserver = null;
 
   function watchListPanel() {
@@ -371,7 +359,6 @@
       const sync = () => {
         if (!alive()) return shutdown();
         root.toggleAttribute("data-er-playlist", inList());
-        if (root.dataset.erPage === "watch") stopAutoplay();
       };
       watchObserver = new MutationObserver(sync);
       watchObserver.observe(watch, { attributes: true, attributeFilter: ["playlist"] });
@@ -381,27 +368,12 @@
 
   function stopAutoplay() {
     if (!settings.stopAutoplay || root.dataset.erPage !== "watch" || effective().paused) return;
-    const token = navToken;
-    const hasList = new URLSearchParams(location.search).has("list");
-    waitFor(hasList ? AUTOPLAY_BUTTON : `${AUTOPLAY_BUTTON}:not([style*="none"])`, (button) => {
+    waitFor(`${AUTOPLAY_BUTTON}:not([style*="none"])`, (button) => {
+      const toggle = button.querySelector(".ytp-autonav-toggle-button");
+      if (toggle?.getAttribute("aria-checked") === "true") button.click();
       setTimeout(() => {
-        if (token !== navToken) return;
-        const toggle = button.querySelector(".ytp-autonav-toggle-button");
-        const checked = toggle?.getAttribute("aria-checked");
-        if (inList()) {
-          if (autoplayTurnedOff() && checked === "false") button.click();
-          autoplayTurnedOff(false);
-          root.removeAttribute("data-er-autoplay-off");
-          return;
-        }
-        if (checked === "true") {
-          button.click();
-          autoplayTurnedOff(true);
-        }
-        setTimeout(() => {
-          root.toggleAttribute("data-er-autoplay-off", toggle?.getAttribute("aria-checked") === "false");
-        }, 300);
-      }, hasList ? 1500 : 0);
+        root.toggleAttribute("data-er-autoplay-off", toggle?.getAttribute("aria-checked") === "false");
+      }, 300);
     });
   }
 
@@ -414,7 +386,7 @@
   }
 
   function cancelUpNext() {
-    if (!settings.stopAutoplay || autoplayChecked() === "false" || effective().paused || inList()) return;
+    if (!settings.stopAutoplay || autoplayChecked() === "false" || effective().paused) return;
     document.querySelector(".ytp-autonav-endscreen-upnext-cancel-button")?.click();
   }
 

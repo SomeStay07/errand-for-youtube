@@ -23,31 +23,40 @@
       <p class="lead">Changes you'll notice, version by version. When a YouTube update breaks a filter, the fix is logged in <a href="../breakage/">Known issues</a>.</p>
     </section>
     <section id="v0.3">
-      <h2>0.3</h2>
+      <h2>0.3.0</h2>
+      <p>The first update after 0.2.0.</p>
       <ul>
+        <li>The home question shows up with the page's first frame: YouTube's grey loading boxes no longer flash before it.</li>
+        <li>The "Here for" label at the bottom of the page has a magnifier and is now a link back to the search results for your errand. Close tab in the end-of-video prompt also clears the errand, so your next visit starts with the question again.</li>
+        <li>Mixes and playlists play on. When YouTube shows the list next to the video, Errand doesn't stop the next one or ask after each video.</li>
         <li>With Hide recommendations on (the default), search results no longer show recommendation shelves like "People also watched". Untick it to get them back.
           <ul>
             <li>The "Latest from" shelf of a channel is hidden too; the channel card and its videos in the results stay.</li>
           </ul>
         </li>
-        <li>With YouTube in a language that doesn't say "Shorts" (like Japanese), the Shorts tab and search chip are hidden too, after a brief flash.</li>
-        <li>The "!" now waits for a second failed check, so a slow page raises it less often. A real problem shows in about 12 s.</li>
-        <li>In YouTube's new video page layout, Show comments now moves keyboard focus to the comments.</li>
-        <li>The "Here for" label at the bottom of the page is now a link back to the search results for your errand.</li>
+        <li>Shorts are hidden in more places: as ordinary-looking cards next to and under videos, and in a YouTube language that doesn't say "Shorts" (like Japanese), where the Shorts tab and search chip may flash briefly first. Playables, YouTube's games, are hidden along with Shorts.</li>
+        <li>YouTube's new video page layout, with recommendations under the player, is covered: they're hidden there too, and Show comments moves keyboard focus to the comments. Links that start with /live/ work like normal video pages.</li>
+        <li>The "!" now waits for a second failed check, so a slow page raises it less often. A real problem shows in about 12 s. When nothing is wrong, the menu says "No problems found on this page".</li>
+        <li>Strict mode schedules that cross midnight (say 22:00-06:00) now count the night as the day it starts on. Picking "On a schedule" no longer locks the hours before you set them.</li>
+        <li>The toolbar tooltip updates when a schedule window or a pause ends.</li>
+        <li>The end-of-video prompt closes with Escape and returns focus to the player. Screen readers announce the 10-second countdown once instead of every second.</li>
         <li>The hint under the home question and on the welcome page no longer sends every browser to the puzzle icon: browsers Errand can't recognise get a general hint.</li>
         <li>After an update like this one, the menu shows "What changed" for up to 3 opens. After 5 finished errands it asks for a store rating, at most 3 times; × ends it.</li>
-        <li>Smaller fixes: YouTube's button for hiding end cards no longer floats alone over the last seconds of a video.</li>
+        <li>Clearer wording in the menu, the welcome page and the home question in all five languages.</li>
+        <li>Smaller fixes: after an update, YouTube tabs that were already open no longer keep stray buttons from the old version; the Show recommendations button can't slip in while strict mode is turning on; YouTube's button for hiding end cards no longer floats alone over the last seconds of a video; settings changes can't be lost while strict mode ends; a cleared time field keeps the saved time; Mixes stay visible on your playlists and library pages.</li>
       </ul>
     </section>
     <section id="v0.2">
-      <h2>0.2.1</h2>
+      <h2>0.2.0</h2>
       <ul>
-        <li>Strict mode schedules that cross midnight (say 22:00-06:00) now count the night as the day it starts on.</li>
-        <li>The toolbar tooltip updates when a schedule window or a pause ends.</li>
-        <li>Picking "On a schedule" no longer locks the hours before you set them.</li>
-        <li>The end-of-video prompt closes with Escape and returns focus to the player.</li>
-        <li>Screen readers announce the 10-second countdown once instead of every second.</li>
-        <li>Smaller fixes: settings changes can't be lost while strict mode ends, a cleared time field keeps the saved time, Mixes stay visible on your playlists and library pages.</li>
+        <li>A new first screen after install lets you pick how YouTube should look: "Ask what I came for", "Just hide Shorts" or "Subscriptions first". You can choose again later from the menu.</li>
+        <li>"Pause 15 min" in the menu turns Errand off for a quarter of an hour after a 10-second wait, then it comes back on by itself.</li>
+        <li>Strict mode is harder to switch off on a whim: turning it off takes a 10-second wait, and on a schedule it stays off only until the current hours end. Settings can't be imported while strict mode is on.</li>
+        <li>The menu shows how many errands you finished in the last 7 days.</li>
+        <li>Subscriptions no longer show the "Most relevant" shelf when the feed is hidden.</li>
+        <li>Fixed a false "!" on the icon on normal video pages. The "!" now clears by itself once the page looks right again.</li>
+        <li>The menu links to a public list of known issues.</li>
+        <li>The countdown before recommendations appear no longer asks "Are you sure?".</li>
       </ul>
     </section>
   </main>

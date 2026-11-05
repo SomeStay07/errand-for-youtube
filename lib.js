@@ -190,8 +190,8 @@
   }
 
   function inList(search, shown) {
-    if (shown === null || shown === undefined) return isRealPlaylist(search);
-    return shown && Boolean(new URLSearchParams(search).get("list"));
+    if (shown && new URLSearchParams(search).get("list")) return true;
+    return isRealPlaylist(search);
   }
 
   function shortsToWatch(pathname, search = "") {

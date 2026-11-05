@@ -7,6 +7,10 @@
         "Home asks what you came for. No feed."
       ],
       [
+        "welcome-shorts.png",
+        "Keep your feed. Hide only Shorts."
+      ],
+      [
         "search.png",
         "Search results without Shorts."
       ],
@@ -20,11 +24,11 @@
       ],
       [
         "popup.png",
-        "Every switch in one menu. Settings stay in your browser."
+        "Every switch in one menu, stored in your browser."
       ]
     ],
-    "tile": "In for one video,<br>out when it's done.",
-    "marquee": "\"Just one video\"<br>turns into hours.",
+    "tile": "In for one video,<br>out when it ends.",
+    "marquee": "One video turns<br>into a whole evening.",
     "marqueeSub": "Errand offers to close the tab when it ends."
   },
   "ru": {
@@ -32,7 +36,11 @@
     "screens": [
       [
         "home.png",
-        "Ленты нет. Главная спрашивает, что вы ищете."
+        "Вместо ленты один вопрос: что вы ищете."
+      ],
+      [
+        "welcome-shorts.png",
+        "Лента остаётся, пропадают только Shorts."
       ],
       [
         "search.png",
@@ -40,15 +48,15 @@
       ],
       [
         "watch.png",
-        "Рекомендаций нет. Если нужны, кнопка покажет их через 10 секунд."
+        "Рекомендации по кнопке, через 10 секунд."
       ],
       [
         "end.png",
-        "Видео закончилось. Автовоспроизведение выключено, и можно сразу закрыть вкладку."
+        "Следующее видео само не включится."
       ],
       [
         "popup.png",
-        "Все настройки в одном меню. Они хранятся в браузере."
+        "Настройки в одном меню и хранятся в браузере."
       ]
     ],
     "tile": "Сходить за одним видео<br>и обратно.",
@@ -63,6 +71,10 @@
         "Inicio te pregunta qué vienes a ver. Sin feed."
       ],
       [
+        "welcome-shorts.png",
+        "Mantén el feed y quita solo los Shorts."
+      ],
+      [
         "search.png",
         "Resultados de búsqueda sin Shorts."
       ],
@@ -72,11 +84,11 @@
       ],
       [
         "end.png",
-        "Fin del vídeo. No empieza otro, y \"Cerrar pestaña\" está a un clic."
+        "Fin del vídeo. No empieza otro: cierra la pestaña con un clic."
       ],
       [
         "popup.png",
-        "Los ajustes, en un menú y guardados en tu navegador."
+        "Los ajustes se quedan en tu navegador."
       ]
     ],
     "tile": "Entras a ver un vídeo<br>y sales cuando acaba.",
@@ -89,6 +101,10 @@
       [
         "home.png",
         "O Início pergunta o que você veio ver. Sem feed."
+      ],
+      [
+        "welcome-shorts.png",
+        "Seu feed fica. Só os Shorts somem."
       ],
       [
         "search.png",
@@ -104,7 +120,7 @@
       ],
       [
         "popup.png",
-        "Todas as opções em um menu, salvas no seu navegador."
+        "Tudo num menu só, salvo no seu navegador."
       ]
     ],
     "tile": "Entre para ver um vídeo<br>e saia quando acabar.",
@@ -117,6 +133,10 @@
       [
         "home.png",
         "Die Startseite fragt, was du suchst. Kein Feed."
+      ],
+      [
+        "welcome-shorts.png",
+        "Behalte den Feed, blende nur Shorts aus."
       ],
       [
         "search.png",
@@ -132,7 +152,7 @@
       ],
       [
         "popup.png",
-        "Alle Schalter in einem Menü, gespeichert in deinem Browser."
+        "Ein Menü, nur in deinem Browser gespeichert."
       ]
     ],
     "tile": "Für ein Video rein,<br>danach wieder raus.",
