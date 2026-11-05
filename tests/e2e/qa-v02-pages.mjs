@@ -202,7 +202,7 @@ await page.goto(`https://www.youtube.com/watch?v=${vid}&list=RD${vid}&start_radi
 await sleep(7000);
 const mix = await scan();
 await page.screenshot({ path: join(OUT, "G-mix.png") });
-check("Mix (RD list): not treated as playlist (end prompt/autoplay-off apply), related hidden", !mix.playlistAttr && !mix.related && mix.erPage === "watch", mix);
+check("Mix (RD list) with a panel: plays on as a playlist, related hidden", mix.playlistAttr && !mix.related && mix.erPage === "watch", mix);
 await page.goto(`https://www.youtube.com/results?search_query=${encodeURIComponent("python tutorial playlist")}&sp=EgIQAw%253D%253D`, { waitUntil: "domcontentloaded" });
 await sleep(5000);
 const plHref = await page.evaluate(() => [...document.querySelectorAll('a[href*="list=PL"]')].map((a) => a.getAttribute("href")).find((h) => h.includes("watch") || h.includes("playlist")));

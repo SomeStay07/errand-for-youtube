@@ -8,7 +8,7 @@ Summary (extDescription, 126/132): YouTube always has one more video for you. Er
 
 One tutorial, and the whole evening is gone. Like an errand: you go in for one video and leave once you have it. It's a distraction-free YouTube extension. Free and open source, and you don't need an account. If you only want Shorts gone, pick "Just hide Shorts" on the first screen: the feed, recommendations, comments, autoplay and the end screen stay as they were.
 
-When your video ends, autoplay doesn't start the next one, unless you're in a playlist. The end screen and end cards stay hidden, and so does the "More videos" grid in fullscreen. Errand asks "Got what you came for?" and offers Close tab.
+When your video ends, autoplay doesn't start the next one, unless you opened a playlist or a Mix. The end screen and end cards stay hidden, and so does the "More videos" grid in fullscreen. Errand asks "Got what you came for?" and offers Close tab.
 
 What changes
 
@@ -16,7 +16,7 @@ What changes
 • Shorts disappear from home, search, subscriptions, channel pages and the sidebar. Their links open in the normal player, or don't open at all if you choose that.
 • Video pages have no recommendations column. If you need it, press "Show recommendations" and wait 10 seconds. Comments open with a "Show comments" button.
 • If you typed what you came for, "Back to results" at the end takes you back to your search.
-• With the default look, Mixes, the suggestions under an empty search box and recommendation shelves inside search results are hidden too. The menu can also hide live chat, the notification bell and view, like and subscriber counts, or dim thumbnails until you hover.
+• With the default look, Mix tiles, the suggestions under an empty search box and recommendation shelves inside search results are hidden too. The menu can also hide live chat, the notification bell and view, like and subscriber counts, or dim thumbnails until you hover.
 • Strict mode runs on a schedule, say weekdays 9 to 6, and removes the "show" buttons for those hours.
 • "Pause 15 min" turns everything off after a 10-second wait and comes back on by itself. Strict mode has no pause. Turning it off also takes a 10-second wait, and on a schedule it stays off only until those hours end.
 • The menu shows how many errands you finished in the last 7 days.

@@ -104,7 +104,7 @@ PAGES = [
 <p>The switch at the bottom of the player turns autoplay off. YouTube remembers it per browser, and the end-of-video suggestions still appear.</p>
 
 <h2>With an extension</h2>
-<p><a href="../">Errand</a> removes the recommendation column on video pages, the end screen and end cards, Mixes and the "Next" button, and keeps autoplay off outside playlists. More on the end of a video: <a href="../hide-youtube-end-screen/">how to hide the YouTube end screen</a>. The home page asks "What are you here for?" instead of showing a feed. If you need recommendations, "Show recommendations" brings them back after 10 seconds. Strict mode removes that button during the hours you pick.</p>
+<p><a href="../">Errand</a> removes the recommendation column on video pages, the end screen and end cards, Mix tiles and the "Next" button, and keeps autoplay off outside playlists and Mixes. More on the end of a video: <a href="../hide-youtube-end-screen/">how to hide the YouTube end screen</a>. The home page asks "What are you here for?" instead of showing a feed. If you need recommendations, "Show recommendations" brings them back after 10 seconds. Strict mode removes that button during the hours you pick.</p>
 <p class="cta"><a class="button primary" href="{STORE['chrome']}">Add to Chrome</a></p>
 """,
         "faq": [
@@ -180,7 +180,7 @@ PAGES = [
 <p>These rules match YouTube's player as of November 2026. When YouTube renames these parts of the player, the filter stops working without telling you.</p>
 
 <h2>Option 2: an extension</h2>
-<p><a href="../">Errand</a> hides the end screen, end cards, the video wall and the fullscreen "More videos" grid, and keeps autoplay off outside playlists. When your video ends, it asks "Got what you came for?" and offers to close the tab. If YouTube changes the player and Errand can't find the end screen any more, its icon shows "!".</p>
+<p><a href="../">Errand</a> hides the end screen, end cards, the video wall and the fullscreen "More videos" grid, and keeps autoplay off outside playlists and Mixes. When your video ends, it asks "Got what you came for?" and offers to close the tab. If YouTube changes the player and Errand can't find the end screen any more, its icon shows "!".</p>
 <p>If you picked "Just hide Shorts" on install, the end screen stays as YouTube shows it. Turn on "Hide end screen and end cards" in Errand's menu to hide it.</p>
 <p>More guides: <a href="../hide-youtube-shorts/">how to hide YouTube Shorts on desktop</a>, <a href="../alternatives/">Unhook and other extensions compared</a>.</p>
 <p class="cta"><a class="button primary" href="{STORE['chrome']}">Add to Chrome</a></p>
@@ -188,7 +188,7 @@ PAGES = [
         "faq": [
             ("Does turning off autoplay hide the end screen?", "No. It only stops the next video from starting. The end screen tiles and the video wall still appear."),
             ("Why do some videos have no end screen?", "Creators add end screens themselves, and not every video has one."),
-            ("Do playlists still play with the end screen hidden?", "Yes. Errand hides the suggestions, and a playlist moves on to its next video as usual."),
+            ("Do playlists still play with the end screen hidden?", "Yes. Errand hides the suggestions, and a playlist or Mix moves on to its next video as usual."),
         ],
     },
     {
@@ -241,7 +241,7 @@ PAGES = [
 <p>Переключатель внизу плеера выключает автовоспроизведение в этом браузере. Подборка видео в конце ролика всё равно появляется.</p>
 
 <h2>Расширение</h2>
-<p><a href="../">Errand</a> убирает колонку рекомендаций, конечную заставку, миксы и кнопку "Следующее видео" и держит автовоспроизведение выключенным везде, кроме плейлистов. Подробнее про конец видео: <a href="../kak-ubrat-konechnuyu-zastavku-youtube/">как убрать конечную заставку YouTube</a>. Вместо ленты главная спрашивает "Что ищете?". Если рекомендации нужны, кнопка "Показать рекомендации" откроет их через 10 секунд. Строгий режим убирает и эту кнопку в выбранные часы.</p>
+<p><a href="../">Errand</a> убирает колонку рекомендаций, конечную заставку, карточки миксов и кнопку "Следующее видео" и держит автовоспроизведение выключенным везде, кроме плейлистов и миксов. Подробнее про конец видео: <a href="../kak-ubrat-konechnuyu-zastavku-youtube/">как убрать конечную заставку YouTube</a>. Вместо ленты главная спрашивает "Что ищете?". Если рекомендации нужны, кнопка "Показать рекомендации" откроет их через 10 секунд. Строгий режим убирает и эту кнопку в выбранные часы.</p>
 <p class="cta"><a class="button primary" href="{STORE['chrome']}">Установить в Chrome</a></p>
 """,
         "faq": [
@@ -274,7 +274,7 @@ PAGES = [
 <p>Правила подходят к плееру YouTube на ноябрь 2026 года. Когда YouTube переименует эти части плеера, фильтр перестанет работать без предупреждения.</p>
 
 <h2>Способ 2: расширение</h2>
-<p><a href="../">Errand</a> прячет конечную заставку, стену видео и сетку в полноэкранном режиме и держит автовоспроизведение выключенным везде, кроме плейлистов. Когда видео закончится, он спросит, получилось ли найти нужное, и предложит закрыть вкладку. Если YouTube поменяет плеер и Errand перестанет находить заставку, на его иконке появится "!".</p>
+<p><a href="../">Errand</a> прячет конечную заставку, стену видео и сетку в полноэкранном режиме и держит автовоспроизведение выключенным везде, кроме плейлистов и миксов. Когда видео закончится, он спросит, нашли ли вы, что искали, и предложит закрыть вкладку. Если YouTube поменяет плеер и Errand перестанет находить заставку, на его иконке появится "!".</p>
 <p>Если при установке вы выбрали "Просто убрать Shorts", заставка остаётся такой, как её показывает YouTube. Чтобы её спрятать, включите в меню Errand "Скрывать конечную заставку".</p>
 <p>Ещё инструкции: <a href="../kak-ubrat-shorts-youtube/">как убрать Shorts на YouTube</a>, <a href="../../alternatives/">сравнение с Unhook и другими (на английском)</a>.</p>
 <p class="cta"><a class="button primary" href="{STORE['chrome']}">Установить в Chrome</a></p>
@@ -282,7 +282,7 @@ PAGES = [
         "faq": [
             ("Если выключить автовоспроизведение, заставка пропадёт?", "Нет. Следующее видео не начнётся, но плитки заставки и стена видео всё равно появятся."),
             ("Почему на некоторых видео заставки нет?", "Заставку добавляет автор ролика, и есть она не на каждом видео."),
-            ("Плейлисты играют дальше, если заставка скрыта?", "Да. Errand прячет рекомендации, а плейлист переходит к следующему видео как обычно."),
+            ("Плейлисты играют дальше, если заставка скрыта?", "Да. Errand прячет рекомендации, а плейлист или микс переходит к следующему видео как обычно."),
         ],
     },
 ]

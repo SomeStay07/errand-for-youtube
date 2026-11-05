@@ -35,6 +35,7 @@ const SUITES = {
     ["qa-v02-strict-title"],
     ["qa-v02-subs-leak"],
     ["v02-regress"],
+    ["v03-mix-list", { nt: /precondition|^playback:|did not force autonav off|autonav Errand turned off/ }],
   ],
 };
 

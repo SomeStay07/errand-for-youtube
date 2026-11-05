@@ -259,7 +259,7 @@
     "message": "No Shorts. Recommendations and comments wait behind a button."
   },
   "welcomeEnd": {
-    "message": "When a video ends, the next one doesn't start and Errand asks if you got what you came for. Playlists play on as usual."
+    "message": "When a video ends, the next one doesn't start and Errand asks if you got what you came for. Playlists and Mixes play on as usual."
   },
   "welcomeShorts1": {
     "message": "Shorts are hidden on home, search, subscriptions and channels."

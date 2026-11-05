@@ -49,6 +49,7 @@
     navToken += 1;
     document.removeEventListener("yt-navigate-finish", onNavigate);
     document.removeEventListener("ended", onEnded, true);
+    watchObserver?.disconnect();
     for (const id of ["er-intent", "er-pill", "er-reveal", "er-comments", "er-end"]) document.getElementById(id)?.remove();
     document.addEventListener("yt-navigate-finish", () => {
       root.dataset.erPage = L.pageType(location.pathname);
@@ -89,7 +90,7 @@
     root.toggleAttribute("data-er-strict", strict);
     root.toggleAttribute("data-er-no-autoplay", Boolean(settings.stopAutoplay) && !paused);
     if (paused) root.removeAttribute("data-er-autoplay-off");
-    root.toggleAttribute("data-er-playlist", L.isRealPlaylist(location.search));
+    root.toggleAttribute("data-er-playlist", inList());
     root.dataset.erPage = L.pageType(location.pathname);
     renderPill(paused);
     return { hide, strict, paused };
@@ -134,7 +135,7 @@
 
   function onKeydown(event) {
     if (!event.shiftKey || event.key.toLowerCase() !== "n" || event.metaKey || event.ctrlKey || event.altKey) return;
-    if (!settings.stopAutoplay || root.dataset.erPage !== "watch" || L.isRealPlaylist(location.search)) return;
+    if (!settings.stopAutoplay || root.dataset.erPage !== "watch" || inList()) return;
     if (effective().paused) return;
     const target = event.target;
     if (target instanceof Element && target.closest("input, textarea, [contenteditable]")) return;
@@ -345,14 +346,62 @@
     tick();
   }
 
+  function inList() {
+    const watch = document.querySelector("ytd-watch-flexy, ytd-watch-grid");
+    return L.inList(location.search, watch ? watch.hasAttribute("playlist") : null);
+  }
+
+  const AUTOPLAY_FLAG = "errand-autoplay-off";
+
+  function autoplayTurnedOff(value) {
+    try {
+      if (value === true) sessionStorage.setItem(AUTOPLAY_FLAG, "1");
+      else if (value === false) sessionStorage.removeItem(AUTOPLAY_FLAG);
+      return sessionStorage.getItem(AUTOPLAY_FLAG) === "1";
+    } catch {
+      return false;
+    }
+  }
+
+  let watchObserver = null;
+
+  function watchListPanel() {
+    waitFor("ytd-watch-flexy, ytd-watch-grid", (watch) => {
+      if (watchObserver) return;
+      const sync = () => {
+        if (!alive()) return shutdown();
+        root.toggleAttribute("data-er-playlist", inList());
+        if (root.dataset.erPage === "watch") stopAutoplay();
+      };
+      watchObserver = new MutationObserver(sync);
+      watchObserver.observe(watch, { attributes: true, attributeFilter: ["playlist"] });
+      sync();
+    });
+  }
+
   function stopAutoplay() {
     if (!settings.stopAutoplay || root.dataset.erPage !== "watch" || effective().paused) return;
-    waitFor(`${AUTOPLAY_BUTTON}:not([style*="none"])`, (button) => {
-      const toggle = button.querySelector(".ytp-autonav-toggle-button");
-      if (toggle?.getAttribute("aria-checked") === "true") button.click();
+    const token = navToken;
+    const hasList = new URLSearchParams(location.search).has("list");
+    waitFor(hasList ? AUTOPLAY_BUTTON : `${AUTOPLAY_BUTTON}:not([style*="none"])`, (button) => {
       setTimeout(() => {
-        root.toggleAttribute("data-er-autoplay-off", toggle?.getAttribute("aria-checked") === "false");
-      }, 300);
+        if (token !== navToken) return;
+        const toggle = button.querySelector(".ytp-autonav-toggle-button");
+        const checked = toggle?.getAttribute("aria-checked");
+        if (inList()) {
+          if (autoplayTurnedOff() && checked === "false") button.click();
+          autoplayTurnedOff(false);
+          root.removeAttribute("data-er-autoplay-off");
+          return;
+        }
+        if (checked === "true") {
+          button.click();
+          autoplayTurnedOff(true);
+        }
+        setTimeout(() => {
+          root.toggleAttribute("data-er-autoplay-off", toggle?.getAttribute("aria-checked") === "false");
+        }, 300);
+      }, hasList ? 1500 : 0);
     });
   }
 
@@ -365,7 +414,7 @@
   }
 
   function cancelUpNext() {
-    if (!settings.stopAutoplay || autoplayChecked() === "false" || effective().paused) return;
+    if (!settings.stopAutoplay || autoplayChecked() === "false" || effective().paused || inList()) return;
     document.querySelector(".ytp-autonav-endscreen-upnext-cancel-button")?.click();
   }
 
@@ -417,7 +466,7 @@
     syncAutoplayOff();
     const errand = activeErrandId();
     if (errand !== null) send({ type: "errand", kind: "done", id: errand });
-    if (!settings.endPrompt || L.isRealPlaylist(location.search)) return;
+    if (!settings.endPrompt || inList()) return;
     setTimeout(cancelUpNext, 300);
     showEndPrompt(player);
   }
@@ -513,6 +562,7 @@
     navToken += 1;
     if (redirect()) return;
     const state = apply();
+    if (root.dataset.erPage === "watch") watchListPanel();
     document.getElementById("er-end")?.remove();
     reconcileButtons(state, true);
     root.removeAttribute("data-er-autoplay-off");
@@ -567,6 +617,7 @@
     whenBody(() => {
       mountIntentPanel();
       onNavigate();
+      watchListPanel();
     });
   });
 

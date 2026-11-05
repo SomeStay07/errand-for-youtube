@@ -189,6 +189,11 @@
     return Boolean(list) && !list.startsWith("RD") && !params.has("start_radio");
   }
 
+  function inList(search, shown) {
+    if (shown === null || shown === undefined) return isRealPlaylist(search);
+    return shown && Boolean(new URLSearchParams(search).get("list"));
+  }
+
   function shortsToWatch(pathname, search = "") {
     const match = /^\/shorts\/([\w-]{6,})/.exec(pathname);
     if (!match) return null;
@@ -538,6 +543,7 @@
     pageType,
     watchVideoId,
     isRealPlaylist,
+    inList,
     shortsToWatch,
     homeRedirect,
     hiddenParts,

@@ -8,7 +8,7 @@ Kurzbeschreibung (extDescription, 130/132): YouTube hat immer das nächste Video
 
 Ein Tutorial, und der ganze Abend ist weg. "Errand" ist Englisch und heißt "Besorgung": Du gehst für ein Video zu YouTube, so wie man kurz Brötchen holen geht, und bist wieder draußen, sobald du es hast. Eine Erweiterung für YouTube ohne Ablenkung, kostenlos und Open Source, ohne Konto. Willst du nur die Shorts loswerden, wähl auf dem ersten Bildschirm "Nur Shorts ausblenden": Feed, Empfehlungen, Kommentare, Autoplay und Abspann bleiben dann, wie sie waren.
 
-Ist dein Video zu Ende, startet Autoplay kein weiteres, außer in einer Playlist. Abspann und Abspannelemente bleiben weg, im Vollbild auch das Raster mit weiteren Videos. Errand fragt, ob du gefunden hast, was du gesucht hast, und bietet an, den Tab zu schließen.
+Ist dein Video zu Ende, startet Autoplay kein weiteres, außer in einer Playlist oder einem Mix. Abspann und Abspannelemente bleiben weg, im Vollbild auch das Raster mit weiteren Videos. Errand fragt, ob du gefunden hast, was du gesucht hast, und bietet an, den Tab zu schließen.
 
 Was sich ändert
 
@@ -16,7 +16,7 @@ Was sich ändert
 • Shorts verschwinden von der Startseite, aus der Suche, den Abos, von Kanalseiten und aus der Seitenleiste. Ihre Links öffnen sich im normalen Player oder gar nicht, wenn du das so einstellst.
 • Videoseiten haben keine Empfehlungsspalte. Wenn du sie brauchst, klick auf "Empfehlungen anzeigen" und warte 10 Sekunden. Kommentare öffnest du mit dem Button "Kommentare anzeigen".
 • Hast du eingetippt, was du suchst, bringt dich am Ende "Zurück zu den Ergebnissen" wieder zur Suche.
-• Mit den Standardeinstellungen sind auch Mixes, die Vorschläge bei leerem Suchfeld und Empfehlungsleisten in den Suchergebnissen ausgeblendet. Im Menü kannst du außerdem Livechat, die Benachrichtigungsglocke und Aufrufe-, Like- und Abonnentenzahlen ausblenden oder Thumbnails abdunkeln, bis du mit der Maus darüberfährst.
+• Mit den Standardeinstellungen sind auch Mix-Kacheln, die Vorschläge bei leerem Suchfeld und Empfehlungsleisten in den Suchergebnissen ausgeblendet. Im Menü kannst du außerdem Livechat, die Benachrichtigungsglocke und Aufrufe-, Like- und Abonnentenzahlen ausblenden oder Thumbnails abdunkeln, bis du mit der Maus darüberfährst.
 • Der strenge Modus läuft nach Zeitplan, etwa werktags von 9 bis 18 Uhr, und nimmt in dieser Zeit die Buttons weg, die Ausgeblendetes wieder zeigen.
 • "15 Min. Pause" schaltet nach 10 Sekunden Wartezeit alles aus und von selbst wieder ein. Im strengen Modus gibt es keine Pause. Auch der strenge Modus geht erst nach 10 Sekunden aus, und nach Zeitplan nur bis zum Ende des Zeitfensters.
 • Das Menü zeigt, wie viele Besorgungen du in den letzten 7 Tagen erledigt hast.

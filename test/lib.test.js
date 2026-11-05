@@ -124,6 +124,26 @@ test("only real playlists count as playlists", () => {
   assert.equal(L.isRealPlaylist("?v=a"), false);
 });
 
+test("a list counts when YouTube shows its panel, Mixes included", () => {
+  assert.equal(L.inList("?v=a&list=RDa&start_radio=1", true), true);
+  assert.equal(L.inList("?v=a&list=RDMM", true), true);
+  assert.equal(L.inList("?v=a&list=RDCLAK5uy_x", true), true);
+  assert.equal(L.inList("?v=a&list=PL1", true), true);
+});
+
+test("a list link without a panel plays as a single video", () => {
+  assert.equal(L.inList("?v=a&list=RDa&start_radio=1", false), false);
+  assert.equal(L.inList("?v=a&list=PL1", false), false);
+  assert.equal(L.inList("?v=a", true), false);
+  assert.equal(L.inList("?v=a&list=", true), false);
+});
+
+test("without the watch element the URL decides", () => {
+  assert.equal(L.inList("?v=a&list=PL1", null), true);
+  assert.equal(L.inList("?v=a&list=RDa", null), false);
+  assert.equal(L.inList("?v=a", null), false);
+});
+
 test("home redirect follows the chosen target", () => {
   assert.equal(L.homeRedirect(L.mergeSettings()), null);
   assert.equal(L.homeRedirect(L.mergeSettings({ homeTarget: "subs" })), "/feed/subscriptions");

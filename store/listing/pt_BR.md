@@ -8,7 +8,7 @@ Resumo (extDescription, 126/132): O YouTube sempre tem mais um vídeo. O Errand 
 
 Um tutorial e lá se vai a noite inteira. Em inglês, "errand" é aquela saída rápida para resolver uma coisa só, tipo dar um pulo na padaria. Aqui você entra por um vídeo e vai embora quando já tem o que queria. É uma extensão grátis e de código aberto para usar o YouTube sem distrações, e não precisa de conta. Se você só quer tirar os Shorts, escolha "Só esconder Shorts" na primeira tela: o feed, as recomendações, os comentários, a reprodução automática e a tela final continuam como estavam.
 
-A reprodução automática fica desligada: quando o seu vídeo acaba, nenhum outro começa. A tela final e os cards não aparecem, nem a grade de vídeos em tela cheia. O Errand pergunta se você achou o que veio buscar e sugere fechar a aba. Numa playlist, os vídeos seguem tocando normalmente, sem a pergunta.
+A reprodução automática fica desligada: quando o seu vídeo acaba, nenhum outro começa. A tela final e os cards não aparecem, nem a grade de vídeos em tela cheia. O Errand pergunta se você achou o que veio buscar e sugere fechar a aba. Numa playlist ou num Mix, com a lista aberta ao lado do vídeo, tudo segue tocando normalmente, sem a pergunta.
 
 O que muda
 
@@ -16,7 +16,7 @@ O que muda
 • Os Shorts somem do Início, da pesquisa, das Inscrições, das páginas de canal e da barra lateral. Os links deles abrem no player normal ou nem abrem, se você escolher assim.
 • A página do vídeo não tem coluna de recomendações. Se precisar dela, clique em "Mostrar recomendações" e espere 10 segundos. Os comentários abrem com um botão "Mostrar comentários".
 • Se você digitou o que veio ver, no fim do vídeo o botão "Voltar aos resultados" leva à sua pesquisa.
-• Com as configurações padrão, os Mixes, as sugestões que aparecem com a caixa de pesquisa vazia e as seções de recomendações no meio dos resultados também ficam ocultos. No menu, dá para ocultar também o chat ao vivo, o sino de notificações e as contagens de visualizações, curtidas e inscritos, ou esmaecer as miniaturas até passar o mouse.
+• Com as configurações padrão, as miniaturas de Mix no feed, na pesquisa e nas recomendações, as sugestões que aparecem com a caixa de pesquisa vazia e as seções de recomendações no meio dos resultados também ficam ocultos. No menu, dá para ocultar também o chat ao vivo, o sino de notificações e as contagens de visualizações, curtidas e inscritos, ou esmaecer as miniaturas até passar o mouse.
 • O modo rígido pode seguir um horário, por exemplo de segunda a sexta, das 9h às 18h, e nesse período tira os botões de "mostrar".
 • "Pausar 15 min" desliga tudo depois de 10 segundos de espera e volta sozinho. No modo rígido não há pausa. Desligar o modo rígido também leva 10 segundos, e com horário ele fica desligado só até o fim daquele período.
 • O menu mostra quantas vezes, nos últimos 7 dias, você digitou o que veio ver e o vídeo chegou ao fim.

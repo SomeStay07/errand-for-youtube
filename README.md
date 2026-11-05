@@ -14,7 +14,7 @@ An alternative to Unhook, UnTrap and Remove YouTube Suggestions ([comparison](ht
 - Shorts are hidden on home, search, subscriptions, channel pages and the sidebar. Their links open in the normal player, or are blocked.
 - Video pages have no recommendations column. "Show recommendations" reveals it after 10 seconds. Comments are behind a button.
 - At the end of a video nothing autoplays, and the end screen, end cards and fullscreen "More videos" grid are hidden. Errand asks "Got what you came for?" and offers to close the tab.
-- With the default look, Mixes and empty-search suggestions are hidden too. Optional: live chat, the notification bell, view, like and subscriber counts, dimmed thumbnails.
+- With the default look, Mix tiles and empty-search suggestions are hidden too. Playlists and Mixes you open keep playing. Optional: live chat, the notification bell, view, like and subscriber counts, dimmed thumbnails.
 - "Just hide Shorts" on install hides only Shorts and leaves the rest of YouTube as it is.
 - Strict mode runs on a schedule and removes the "show" buttons during the hours you pick. Turning it off takes a 10-second wait, and on a schedule it skips only the current hours.
 - A weekly count of errands done and tabs closed right after, stored only in your browser.
@@ -47,7 +47,7 @@ License: GPL-3.0.
 
 ## По-русски
 
-YouTube всегда подсунет ещё одно видео. Errand прячет Shorts, главную ленту, рекомендации и конечную заставку. Вместо ленты главная спрашивает: "Что ищете?" В конце видео следующее не включается само, если это не плейлист, и Errand предлагает закрыть вкладку. Рекомендации и комментарии открываются по кнопке, рекомендации через 10 секунд ожидания.
+YouTube всегда подсунет ещё одно видео. Errand прячет Shorts, главную ленту, рекомендации и конечную заставку. Вместо ленты главная спрашивает: "Что ищете?" В конце видео следующее не включается само, если это не плейлист или микс, и Errand предлагает закрыть вкладку. Рекомендации и комментарии открываются по кнопке, рекомендации через 10 секунд ожидания.
 
 Бесплатно, код открыт, аккаунт не нужен. Запросов в сеть расширение не делает. Ставится из Chrome Web Store, в том числе в Яндекс Браузер, Brave и Vivaldi.
 

@@ -8,7 +8,7 @@ Resumen (extDescription, 132/132): YouTube siempre tiene otro vídeo para ti. Er
 
 Un tutorial y se te va la tarde entera. En inglés, errand quiere decir "recado": entras a buscar un vídeo, como quien sale a comprar el pan, y te vas cuando lo tienes. Es una extensión gratuita y de código abierto para usar YouTube sin distracciones, y no hace falta cuenta. Si solo quieres quitar los Shorts, elige "Quitar solo los Shorts" en la primera pantalla: el feed, las recomendaciones, los comentarios, la reproducción automática y la pantalla final se quedan como estaban.
 
-La reproducción automática está desactivada: al acabar tu vídeo no empieza otro, salvo en listas de reproducción. La pantalla final y sus tarjetas no aparecen, y en pantalla completa tampoco la cuadrícula de vídeos. Fuera de las listas, Errand te pregunta si encontraste lo que buscabas y te ofrece cerrar la pestaña.
+La reproducción automática está desactivada: al acabar tu vídeo no empieza otro, salvo en listas de reproducción y Mixes. La pantalla final y sus tarjetas no aparecen, y en pantalla completa tampoco la cuadrícula de vídeos. Fuera de las listas y los Mixes, Errand te pregunta si encontraste lo que buscabas y te ofrece cerrar la pestaña.
 
 Qué cambia
 
@@ -16,7 +16,7 @@ Qué cambia
 • Los Shorts desaparecen de Inicio, la búsqueda, Suscripciones, las páginas de canal y el menú lateral. Sus enlaces se abren en el reproductor normal o no se abren, si así lo eliges.
 • La página del vídeo no tiene columna de recomendaciones. Si la necesitas, haz clic en "Mostrar recomendaciones" y espera 10 segundos. Los comentarios se abren con un botón "Mostrar comentarios".
 • Si escribiste qué venías a ver, al final "Volver a los resultados" te devuelve a tu búsqueda.
-• Con los ajustes por defecto también se ocultan los Mixes, las sugerencias con el cuadro de búsqueda vacío y las secciones de recomendaciones dentro de los resultados. En el menú puedes ocultar además el chat en directo, la campana y los contadores de visualizaciones, "me gusta" y suscriptores, o atenuar las miniaturas hasta que pases el cursor por encima.
+• Con los ajustes por defecto también se ocultan las tarjetas de Mix, las sugerencias con el cuadro de búsqueda vacío y las secciones de recomendaciones dentro de los resultados. En el menú puedes ocultar además el chat en directo, la campana y los contadores de visualizaciones, "me gusta" y suscriptores, o atenuar las miniaturas hasta que pases el cursor por encima.
 • El modo estricto se activa según un horario, por ejemplo de lunes a viernes de 9 a 18, y en esas horas quita los botones de "mostrar".
 • "Pausar 15 min" lo desactiva todo tras 10 segundos de espera. A los 15 minutos, Errand se vuelve a activar sin que hagas nada. En modo estricto no hay pausa. Desactivar el modo estricto también lleva 10 segundos, y con horario solo queda desactivado hasta el final de esa franja.
 • El menú muestra cuántos recados terminaste en los últimos 7 días.
