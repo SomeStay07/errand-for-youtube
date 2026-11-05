@@ -4,7 +4,7 @@ YouTube always has one more video for you. **Errand for YouTube is a free, open-
 
 An alternative to Unhook, UnTrap and Remove YouTube Suggestions ([comparison](https://somestay07.github.io/errand-for-youtube/alternatives/)).
 
-[Chrome Web Store](https://github.com/SomeStay07/errand-for-youtube) · [Website](https://somestay07.github.io/errand-for-youtube) · [По-русски](#по-русски)
+[Chrome Web Store](https://chromewebstore.google.com/detail/jhpaobkpbnidoaemnkojmkmnddoegdhg) · [Website](https://somestay07.github.io/errand-for-youtube) · [По-русски](#по-русски)
 
 ![Errand: YouTube home asks what you came for](store/images/en/screenshot-1.png)
 
@@ -51,6 +51,6 @@ YouTube всегда подсунет ещё одно видео. Errand пря�
 
 Бесплатно, код открыт, аккаунт не нужен. Запросов в сеть расширение не делает. Ставится из Chrome Web Store, в том числе в Яндекс Браузер, Brave и Vivaldi.
 
-[Установить из Chrome Web Store](https://github.com/SomeStay07/errand-for-youtube)
+[Установить из Chrome Web Store](https://chromewebstore.google.com/detail/jhpaobkpbnidoaemnkojmkmnddoegdhg)
 
 Помочь с переводом: Errand есть на английском, русском, испанском, португальском (Бразилия) и немецком. Чтобы добавить язык или поправить строку, [напишите на GitHub](https://github.com/SomeStay07/errand-for-youtube/issues).
