@@ -238,7 +238,9 @@
   }
 
   function onPillLink(event) {
-    if (event.currentTarget.href === location.href && !event.metaKey && !event.ctrlKey && !event.shiftKey) {
+    const target = new URL(event.currentTarget.href);
+    const same = target.pathname === location.pathname && target.searchParams.get("search_query") === new URLSearchParams(location.search).get("search_query");
+    if (same && !event.metaKey && !event.ctrlKey && !event.shiftKey) {
       event.preventDefault();
       scrollTo({ top: 0 });
     }
