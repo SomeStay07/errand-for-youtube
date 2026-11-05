@@ -356,7 +356,7 @@ export async function launch({ name, locale = "en-US", extension = true, width =
 
 export async function consent(page) {
   const reject = page
-    .locator(["Reject", "Отклонить", "Rechazar", "Rejeitar", "ablehnen", "すべてを拒否"].flatMap((t) => [`ytd-consent-bump-v2-lightbox button:has-text("${t}")`, `form button:has-text("${t}")`]).join(", "))
+    .locator(["Reject", "Отклонить", "Rechazar", "Rejeitar", "Recusar", "ablehnen", "すべてを拒否"].flatMap((t) => [`ytd-consent-bump-v2-lightbox button:has-text("${t}")`, `form button:has-text("${t}")`]).join(", "))
     .first();
   await reject.waitFor({ state: "visible", timeout: 6000 }).catch(() => {});
   if (await reject.isVisible().catch(() => false)) {

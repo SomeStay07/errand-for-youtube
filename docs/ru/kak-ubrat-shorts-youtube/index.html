@@ -18,7 +18,7 @@
   <meta property="og:image:alt" content="Errand for YouTube">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="../../style.css">
-  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Как убрать Shorts на YouTube на компьютере", "description": "Выключить Shorts в настройках YouTube нельзя. Что дают встроенные кнопки, фильтр для uBlock Origin и бесплатное расширение, которое убирает шортсы везде.", "inLanguage": "ru", "datePublished": "2026-11-03", "dateModified": "2026-11-03", "url": "https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-shorts-youtube/", "image": "https://somestay07.github.io/errand-for-youtube/assets/og-ru.png", "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"}, "about": {"@type": "SoftwareApplication", "name": "Errand for YouTube", "url": "https://somestay07.github.io/errand-for-youtube/"}}, {"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "ru", "mainEntity": [{"@type": "Question", "name": "Можно смотреть шортс как обычное видео?", "acceptedAnswer": {"@type": "Answer", "text": "Да. В адресе замените /shorts/ на /watch?v= и оставьте номер видео. Errand делает это сам для каждой ссылки на Shorts."}}, {"@type": "Question", "name": "Это работает в приложении YouTube на телефоне?", "acceptedAnswer": {"@type": "Answer", "text": "Нет. Расширения работают только в браузерах на компьютере."}}]}]</script>
+  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Как убрать Shorts на YouTube на компьютере", "description": "Выключить Shorts в настройках YouTube нельзя. Что дают встроенные кнопки, фильтр для uBlock Origin и бесплатное расширение, которое убирает шортсы везде.", "inLanguage": "ru", "datePublished": "2026-11-03", "dateModified": "2026-11-05", "url": "https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-shorts-youtube/", "image": "https://somestay07.github.io/errand-for-youtube/assets/og-ru.png", "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"}, "about": {"@type": "SoftwareApplication", "name": "Errand for YouTube", "url": "https://somestay07.github.io/errand-for-youtube/"}}, {"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "ru", "mainEntity": [{"@type": "Question", "name": "Можно смотреть шортс как обычное видео?", "acceptedAnswer": {"@type": "Answer", "text": "Да. В адресе замените /shorts/ на /watch?v= и оставьте номер видео. Errand делает это сам для каждой ссылки на Shorts."}}, {"@type": "Question", "name": "Это работает в приложении YouTube на телефоне?", "acceptedAnswer": {"@type": "Answer", "text": "Нет. Расширения работают только в браузерах на компьютере."}}]}]</script>
 </head>
 <body>
   <header class="top">
@@ -41,13 +41,14 @@
 </ul>
 
 <h2>Способ 1: фильтр для uBlock Origin</h2>
-<p>Если uBlock Origin уже стоит, откройте его панель, вкладку "Мои фильтры", и вставьте:</p>
+<p>В Firefox откройте панель uBlock Origin, вкладку "Мои фильтры", и вставьте:</p>
 <pre>www.youtube.com##ytd-rich-shelf-renderer[is-shorts]
 www.youtube.com##ytd-reel-shelf-renderer
 www.youtube.com##ytd-rich-item-renderer:has(a[href^=&quot;/shorts/&quot;])
 www.youtube.com##grid-shelf-view-model:has(a[href^=&quot;/shorts/&quot;])
 www.youtube.com##ytd-guide-entry-renderer:has(a[href^=&quot;/shorts&quot;])
 www.youtube.com##ytd-mini-guide-entry-renderer:has(a[href^=&quot;/shorts&quot;])</pre>
+<p>В Chrome uBlock Origin не работает с 2025 года. Его версия для Chrome, uBlock Origin Lite, тоже принимает свои фильтры для скрытия элементов, но место для них зависит от версии, а эти правила в нём пока не проверены.</p>
 <p>Правила подходят к вёрстке YouTube на ноябрь 2026 года. Когда YouTube переименует эти элементы, фильтр перестанет работать без предупреждения, и обновлять его придётся самим.</p>
 
 <h2>Способ 2: расширение</h2>

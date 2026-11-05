@@ -209,7 +209,7 @@
       pill = el(
         "div",
         { id: "er-pill" },
-        el("a"),
+        el("a", { onclick: onPillLink }, searchIcon(), el("span")),
         el(
           "button",
           { type: "button", "aria-label": t("pillClear"), title: t("pillClear"), onclick: () => clearIntent(pill) },
@@ -220,13 +220,32 @@
     }
     const link = pill.firstChild;
     const back = t("pillBack", text);
-    link.textContent = t("pillLabel", text);
+    link.lastChild.textContent = t("pillLabel", text);
     link.setAttribute("href", L.searchUrl(text));
     if (back) link.setAttribute("title", back);
     else link.removeAttribute("title");
   }
 
+  function searchIcon() {
+    const ns = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(ns, "svg");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    const path = document.createElementNS(ns, "path");
+    path.setAttribute("d", "M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z");
+    svg.append(path);
+    return svg;
+  }
+
+  function onPillLink(event) {
+    if (event.currentTarget.href === location.href && !event.metaKey && !event.ctrlKey && !event.shiftKey) {
+      event.preventDefault();
+      scrollTo({ top: 0 });
+    }
+  }
+
   function clearIntent(pill) {
+    if (pill.contains(document.activeElement)) document.querySelector('input[name="search_query"]')?.focus();
     try {
       chrome.storage.local.remove("intent");
     } catch {

@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Errand para YouTube: oculta Shorts, inicio y recomendaciones"
+    "message": "Errand para YouTube: oculta Shorts, feed de inicio y recomendaciones"
   },
   "extDescription": {
     "message": "YouTube siempre tiene otro vídeo para ti. Errand oculta los Shorts y el feed y, al acabar el tuyo, ofrece cerrar la pestaña. Gratis."
@@ -9,7 +9,7 @@
     "message": "Ajustes de Errand"
   },
   "intentTitle": {
-    "message": "¿A qué vienes?"
+    "message": "¿Qué vienes a ver?"
   },
   "intentPlaceholder": {
     "message": "Escribe lo que quieres ver"
@@ -27,7 +27,7 @@
     "message": "Historial"
   },
   "pillLabel": {
-    "message": "Vienes por: $TEXT$",
+    "message": "Buscas: $TEXT$",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -35,7 +35,7 @@
     }
   },
   "pillClear": {
-    "message": "Borrar a qué vine"
+    "message": "Borrar lo que buscas"
   },
   "revealButton": {
     "message": "Mostrar recomendaciones"
@@ -49,10 +49,10 @@
     }
   },
   "endQuestion": {
-    "message": "Se acabó. ¿Has encontrado lo que buscabas?"
+    "message": "Fin del vídeo. ¿Encontraste lo que buscabas?"
   },
   "endQuestionWithIntent": {
-    "message": "¿Has encontrado lo que buscabas: \"$TEXT$\"?",
+    "message": "¿Encontraste lo que buscabas: \"$TEXT$\"?",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -75,7 +75,7 @@
     "message": "El modo estricto está siempre activado"
   },
   "statusStrictUntil": {
-    "message": "Modo estricto hasta las $TIME$",
+    "message": "Modo estricto hasta $TIME$",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -86,10 +86,10 @@
     "message": "Últimos 7 días"
   },
   "healthOk": {
-    "message": "Todos los filtros funcionan"
+    "message": "No hay problemas en esta página"
   },
   "healthBroken": {
-    "message": "YouTube ha cambiado algo. Falla: $NAMES$. Puede que algunos filtros no funcionen hasta la próxima actualización.",
+    "message": "YouTube cambió algo. Falla: $NAMES$. Puede durar hasta la próxima actualización de Errand.",
     "placeholders": {
       "names": {
         "content": "$1"
@@ -121,7 +121,7 @@
     "message": "Ocultar recomendaciones"
   },
   "hideEndscreen": {
-    "message": "Ocultar sugerencias al final"
+    "message": "Ocultar la pantalla final y sus tarjetas"
   },
   "hideComments": {
     "message": "Ocultar comentarios"
@@ -130,7 +130,7 @@
     "message": "Ocultar vistas, me gusta y suscriptores"
   },
   "hideThumbs": {
-    "message": "Atenuar miniaturas"
+    "message": "Atenuar miniaturas hasta pasar el cursor"
   },
   "optAutoplay": {
     "message": "Desactivar la reproducción automática"
@@ -154,7 +154,7 @@
     "message": "Siempre"
   },
   "modeRelaxed": {
-    "message": "Desactivado"
+    "message": "Nunca"
   },
   "strictFrom": {
     "message": "Desde"
@@ -166,7 +166,7 @@
     "message": "Ocultar chat en directo"
   },
   "hideNotifications": {
-    "message": "Ocultar la campana"
+    "message": "Ocultar la campana de notificaciones"
   },
   "healthEndscreen": {
     "message": "pantalla final"
@@ -175,7 +175,7 @@
     "message": "Inicio"
   },
   "homeAsk": {
-    "message": "Preguntar a qué vengo"
+    "message": "Preguntar qué vengo a ver"
   },
   "commentsButton": {
     "message": "Mostrar comentarios"
@@ -196,7 +196,7 @@
     "message": "Importar"
   },
   "importFailed": {
-    "message": "No se ha podido leer el archivo"
+    "message": "No se pudo leer el archivo"
   },
   "brandName": {
     "message": "Errand"
@@ -211,7 +211,7 @@
     "message": "Más"
   },
   "healthShorts": {
-    "message": "ocultar Shorts"
+    "message": "ocultación de Shorts"
   },
   "extNameShort": {
     "message": "Errand para YouTube: sin Shorts ni feed"
@@ -235,34 +235,34 @@
     "message": "Errand activado"
   },
   "welcomeQuestion": {
-    "message": "¿Cómo quieres YouTube?"
+    "message": "¿Cómo quieres ver YouTube?"
   },
   "presetAsk": {
-    "message": "Preguntar a qué vengo"
+    "message": "Preguntar qué vengo a ver"
   },
   "presetShorts": {
-    "message": "Solo quitar Shorts"
+    "message": "Quitar solo los Shorts"
   },
   "presetSubs": {
-    "message": "Primero suscripciones"
+    "message": "Empezar por Suscripciones"
   },
   "welcomeChanges": {
     "message": "Qué cambia en YouTube"
   },
   "welcomeAsk1": {
-    "message": "En Inicio verás \"¿A qué vienes?\" en vez del feed."
+    "message": "En Inicio verás \"¿Qué vienes a ver?\" en vez del feed."
   },
   "welcomeSubs1": {
     "message": "Inicio te lleva a tus suscripciones."
   },
   "welcomeHidden": {
-    "message": "Sin Shorts. Recomendaciones y comentarios, tras un botón."
+    "message": "Sin Shorts. Las recomendaciones y los comentarios se abren con un botón."
   },
   "welcomeEnd": {
-    "message": "Al acabar un vídeo, no empieza otro, salvo en listas de reproducción. Errand te pregunta si encontraste lo que buscabas."
+    "message": "Al acabar un vídeo, no empieza otro y Errand te pregunta si encontraste lo que buscabas. Las listas de reproducción siguen como siempre."
   },
   "welcomeShorts1": {
-    "message": "Shorts ocultos en inicio, búsqueda, suscripciones y canales."
+    "message": "Los Shorts se ocultan en Inicio, la búsqueda, Suscripciones y los canales."
   },
   "welcomeShorts2": {
     "message": "Los Shorts se abren como vídeos normales."
@@ -277,7 +277,7 @@
     "message": "Fija Errand desde el icono del puzle en la barra. Ahí están los ajustes e \"Informar de un problema\"."
   },
   "errandsSummary": {
-    "message": "Hecho: $DONE$ · cerrado al acabar: $CLOSED$",
+    "message": "Recados hechos: $DONE$ · pestañas cerradas: $CLOSED$",
     "placeholders": {
       "done": {
         "content": "$1"
@@ -288,13 +288,13 @@
     }
   },
   "errandsHint": {
-    "message": "Hecho: un vídeo terminó tras decir a qué venías. Cerrado: pulsaste \"Cerrar pestaña\"."
+    "message": "Hechos: el vídeo terminó después de que escribieras qué venías a ver. Pestañas cerradas: luego hiciste clic en \"Cerrar pestaña\"."
   },
   "pauseButton": {
     "message": "Pausar 15 min"
   },
   "pauseCountdown": {
-    "message": "Pausa en $SECONDS$…",
+    "message": "Se pausa en $SECONDS$…",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -302,7 +302,7 @@
     }
   },
   "statusPaused": {
-    "message": "En pausa hasta las $TIME$. YouTube tal cual.",
+    "message": "En pausa hasta $TIME$. No se oculta nada.",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -316,7 +316,7 @@
     "message": "Lista de fallos"
   },
   "intentFooter": {
-    "message": "Esto es Errand. Para cambiarlo, pulsa el icono del puzle en la barra y luego Errand."
+    "message": "Esto es Errand. Para cambiarlo, haz clic en el icono del puzle de la barra y luego en Errand."
   },
   "lookAgain": {
     "message": "Elegir otro estilo"
@@ -325,7 +325,7 @@
     "message": "Errand está activo"
   },
   "titlePaused": {
-    "message": "Errand en pausa hasta las $TIME$",
+    "message": "Errand en pausa hasta $TIME$",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -350,7 +350,7 @@
     }
   },
   "strictOffUntil": {
-    "message": "Desactivar modo estricto hasta las $TIME$",
+    "message": "Desactivar modo estricto hasta $TIME$",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -364,7 +364,7 @@
     "message": "Recarga las pestañas de YouTube que ya tengas abiertas."
   },
   "noteUpdated": {
-    "message": "Errand se ha actualizado a la $VERSION$.",
+    "message": "Errand se actualizó a la versión $VERSION$.",
     "placeholders": {
       "version": {
         "content": "$1"
@@ -372,7 +372,7 @@
     }
   },
   "noteUpdatedLink": {
-    "message": "Qué ha cambiado"
+    "message": "Novedades"
   },
   "noteRate": {
     "message": "Una valoración en la tienda ayuda a otros a encontrar Errand."
@@ -389,10 +389,10 @@
     }
   },
   "intentFooterOpera": {
-    "message": "Esto es Errand. Para cambiarlo, pulsa el icono de extensiones (un cubo) y luego Errand."
+    "message": "Esto es Errand. Para cambiarlo, haz clic en el icono de extensiones (un cubo) y luego en Errand."
   },
   "intentFooterYandex": {
-    "message": "Esto es Errand. Para cambiarlo, pulsa el icono de Errand a la derecha de la barra de direcciones."
+    "message": "Esto es Errand. Para cambiarlo, haz clic en el icono de Errand a la derecha de la barra de direcciones."
   },
   "intentFooterAny": {
     "message": "Esto es Errand. Para cambiarlo, abre Errand desde el menú de extensiones del navegador."

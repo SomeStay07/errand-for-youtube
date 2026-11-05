@@ -13,7 +13,7 @@ Errand does not collect, send or sell any data.
 - Uninstalling the extension deletes everything it stored.
 - "Report a problem" opens an anonymous Google Form in a new tab, prefilled with the extension version, browser name and language, page type, the names of broken filters, and your Errand mode, home page and Shorts settings. These fields are part of the form's link, so opening the form already sends them to Google. Your answer is sent only when you press Submit.
 - After uninstalling, the browser opens a short page asking what went wrong. It has no analytics.
-- To make problem reports useful, Errand keeps a short local log of filters that stopped working: time, page type (home, search, watch…) and filter names, last 30 entries, no addresses or video titles. It is added to the form only when you open "Report a problem" yourself.
+- To make problem reports useful, Errand keeps a short local log of filters that stopped working: time, page type (home, search, watch…) and filter names, last 30 entries, no addresses or video titles. Up to 12 recent entries are added to the form's link only when you open "Report a problem" yourself.
 
 Questions: https://github.com/SomeStay07/errand-for-youtube/issues
 
@@ -34,6 +34,6 @@ Errand не собирает, не отправляет и не продаёт �
 - При удалении расширения удаляется всё, что оно хранило.
 - Кнопка "Сообщить о проблеме" открывает анонимную форму Google в новой вкладке. В ней уже заполнены версия расширения, браузер и его язык, тип страницы, названия сломанных фильтров, а также ваш режим Errand и настройки главной и Shorts. Эти поля записаны в ссылке на форму, поэтому при открытии формы они уже уходят в Google. Ваш ответ отправится, только когда вы нажмёте "Отправить".
 - После удаления браузер откроет короткую страницу с вопросом, что пошло не так. Аналитики на ней нет.
-- Чтобы отчёты о проблемах были полезными, Errand ведёт короткий локальный журнал сломавшихся фильтров: время, тип страницы (главная, поиск, видео…) и названия фильтров, последние 30 записей, без адресов и названий видео. Он попадает в форму, только когда вы сами нажимаете "Сообщить о проблеме".
+- Чтобы отчёты о проблемах были полезными, Errand ведёт короткий локальный журнал сломавшихся фильтров: время, тип страницы (главная, поиск, видео…) и названия фильтров, последние 30 записей, без адресов и названий видео. До 12 последних записей попадают в ссылку формы, только когда вы сами нажимаете "Сообщить о проблеме".
 
 Вопросы: https://github.com/SomeStay07/errand-for-youtube/issues

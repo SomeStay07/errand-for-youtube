@@ -1,5 +1,7 @@
 import { join } from "node:path";
-import { launch, reporter, consent, sleep, storage, closeWelcome, finish, OUT, QUERY } from "./harness.mjs";
+import { launch, reporter, consent, sleep, storage, closeWelcome, finish, messages, OUT, QUERY } from "./harness.mjs";
+
+const SUMMARY = messages("en").M.errandsSummary.message.replace("$DONE$", "1").replace("$CLOSED$", "1");
 
 const { check, save } = reporter();
 const ctx = await launch({ name: "stats" });
@@ -39,7 +41,7 @@ await ext.reload();
 await sleep(600);
 const summary = await ext.evaluate(() => ({ hidden: document.getElementById("week").hidden, text: document.getElementById("summary").textContent }));
 await ext.screenshot({ path: join(OUT, "B-popup-stats.png"), fullPage: true });
-check("B popup shows 'Errands done: 1 · closed after: 1'", !summary.hidden && summary.text === "Errands done: 1 · closed after: 1", summary);
+check(`B popup shows '${SUMMARY}'`, !summary.hidden && summary.text === SUMMARY, summary);
 
 await ctx.worker.evaluate(() => chrome.storage.local.remove(["stats", "errandLast"]));
 const yt = context.pages().find((p) => !p.url().startsWith("chrome-extension://")) || (await context.newPage());
@@ -95,7 +97,7 @@ const t2 = await today();
 check("B content: Close tab in prompt closes the tab and counts closed once", wasClosed && t2.day.closed === 1 && t2.day.done === 1, `closed=${wasClosed} ${JSON.stringify(t2)}`);
 await ext.reload();
 await sleep(600);
-check("B popup after content flow: 'Errands done: 1 · closed after: 1'", (await ext.locator("#summary").textContent()) === "Errands done: 1 · closed after: 1" && !(await ext.locator("#week").isHidden()));
+check(`B popup after content flow: '${SUMMARY}'`, (await ext.locator("#summary").textContent()) === SUMMARY && !(await ext.locator("#week").isHidden()));
 check("B incognito not counted", null, "Playwright persistent context cannot open an incognito tab with the extension allowed; check by hand");
 
 await finish(ctx, check);

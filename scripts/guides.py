@@ -5,8 +5,9 @@ import os
 ROOT = os.path.join(os.path.dirname(__file__), "..", "docs")
 SITE = "https://somestay07.github.io/errand-for-youtube"
 GH = "https://github.com/SomeStay07/errand-for-youtube"
-UPDATED = "2026-11-03"
-STORE = {"chrome": GH, "firefox": GH, "edge": GH}
+PUBLISHED = "2026-11-03"
+UPDATED = "2026-11-05"
+STORE = {"chrome": "https://chromewebstore.google.com/detail/jhpaobkpbnidoaemnkojmkmnddoegdhg", "firefox": GH, "edge": GH}
 
 UBLOCK = """www.youtube.com##ytd-rich-shelf-renderer[is-shorts]
 www.youtube.com##ytd-reel-shelf-renderer
@@ -57,8 +58,9 @@ PAGES = [
 </ul>
 
 <h2>Option 1: a uBlock Origin filter</h2>
-<p>If you already use uBlock Origin, open its dashboard, go to <i>My filters</i> and paste:</p>
+<p>In Firefox, open the uBlock Origin dashboard, go to <i>My filters</i> and paste:</p>
 <pre>{html.escape(UBLOCK)}</pre>
+<p>Chrome stopped running uBlock Origin in 2025. Its Chrome version, uBlock Origin Lite, also takes custom element-hiding filters, but where you paste them depends on the version, and these rules haven't been tested in it.</p>
 <p>These rules match YouTube's layout as of November 2026. When YouTube renames these page elements, filters stop working without telling you, and you have to update them yourself.</p>
 
 <h2>Option 2: an extension</h2>
@@ -150,7 +152,7 @@ PAGES = [
             ("Is Errand free?", "Yes, and its code is open under GPL-3.0."),
             ("When was Unhook last updated?", "As of November 3, 2026: March 22, 2026 in the Chrome Web Store and April 9, 2026 on Firefox Add-ons."),
             ("Which of these are open source?", "Errand (GPL-3.0), Remove YouTube Suggestions (MPL-2.0) and BlockTube (GPL-3.0). Unhook and UnTrap are closed source. Control Panel for YouTube publishes its code on GitHub."),
-            ("Does Errand block ads?", "No. Use uBlock Origin for ads; the two work together."),
+            ("Does Errand block ads?", "No. Use uBlock Origin for ads (in Chrome, uBlock Origin Lite); the two work together."),
         ],
     },
     {
@@ -172,13 +174,14 @@ PAGES = [
 <p>The autoplay switch at the bottom of the player stops the next video. It doesn't touch the end screen or the video wall. Creators decide whether a video has an end screen at all, so on some videos you won't see one.</p>
 
 <h2>Option 1: a uBlock Origin filter</h2>
-<p>In uBlock Origin, open the dashboard, go to <i>My filters</i> and paste:</p>
+<p>In Firefox, open the uBlock Origin dashboard, go to <i>My filters</i> and paste:</p>
 <pre>{html.escape(UBLOCK_END)}</pre>
+<p>Chrome stopped running uBlock Origin in 2025. Its Chrome version, uBlock Origin Lite, also takes custom element-hiding filters, but where you paste them depends on the version, and these rules haven't been tested in it.</p>
 <p>These rules match YouTube's player as of November 2026. When YouTube renames these parts of the player, the filter stops working without telling you.</p>
 
 <h2>Option 2: an extension</h2>
 <p><a href="../">Errand</a> hides the end screen, end cards, the video wall and the fullscreen "More videos" grid, and keeps autoplay off outside playlists. When your video ends, it asks "Got what you came for?" and offers to close the tab. If YouTube changes the player and Errand can't find the end screen any more, its icon shows "!".</p>
-<p>If you picked "Just hide Shorts" on install, the end screen stays as YouTube shows it. Turn on "Hide end-of-video suggestions" in Errand's menu to hide it.</p>
+<p>If you picked "Just hide Shorts" on install, the end screen stays as YouTube shows it. Turn on "Hide end screen and end cards" in Errand's menu to hide it.</p>
 <p>More guides: <a href="../hide-youtube-shorts/">how to hide YouTube Shorts on desktop</a>, <a href="../alternatives/">Unhook and other extensions compared</a>.</p>
 <p class="cta"><a class="button primary" href="{STORE['chrome']}">Add to Chrome</a></p>
 """,
@@ -204,8 +207,9 @@ PAGES = [
 </ul>
 
 <h2>Способ 1: фильтр для uBlock Origin</h2>
-<p>Если uBlock Origin уже стоит, откройте его панель, вкладку "Мои фильтры", и вставьте:</p>
+<p>В Firefox откройте панель uBlock Origin, вкладку "Мои фильтры", и вставьте:</p>
 <pre>{html.escape(UBLOCK)}</pre>
+<p>В Chrome uBlock Origin не работает с 2025 года. Его версия для Chrome, uBlock Origin Lite, тоже принимает свои фильтры для скрытия элементов, но место для них зависит от версии, а эти правила в нём пока не проверены.</p>
 <p>Правила подходят к вёрстке YouTube на ноябрь 2026 года. Когда YouTube переименует эти элементы, фильтр перестанет работать без предупреждения, и обновлять его придётся самим.</p>
 
 <h2>Способ 2: расширение</h2>
@@ -237,7 +241,7 @@ PAGES = [
 <p>Переключатель внизу плеера выключает автовоспроизведение в этом браузере. Подборка видео в конце ролика всё равно появляется.</p>
 
 <h2>Расширение</h2>
-<p><a href="../">Errand</a> убирает колонку рекомендаций, конечную заставку, миксы и кнопку "Следующее видео" и держит автовоспроизведение выключенным везде, кроме плейлистов. Подробнее про конец видео: <a href="../kak-ubrat-konechnuyu-zastavku-youtube/">как убрать конечную заставку YouTube</a>. Вместо ленты главная спрашивает "Зачем вы здесь?". Если рекомендации нужны, кнопка "Показать рекомендации" откроет их через 10 секунд. Строгий режим убирает и эту кнопку в выбранные часы.</p>
+<p><a href="../">Errand</a> убирает колонку рекомендаций, конечную заставку, миксы и кнопку "Следующее видео" и держит автовоспроизведение выключенным везде, кроме плейлистов. Подробнее про конец видео: <a href="../kak-ubrat-konechnuyu-zastavku-youtube/">как убрать конечную заставку YouTube</a>. Вместо ленты главная спрашивает "Что ищете?". Если рекомендации нужны, кнопка "Показать рекомендации" откроет их через 10 секунд. Строгий режим убирает и эту кнопку в выбранные часы.</p>
 <p class="cta"><a class="button primary" href="{STORE['chrome']}">Установить в Chrome</a></p>
 """,
         "faq": [
@@ -264,13 +268,14 @@ PAGES = [
 <p>Переключатель автовоспроизведения внизу плеера останавливает следующее видео. Заставку и стену видео он не трогает. Ставить ли заставку, решает автор ролика, поэтому на части видео её нет.</p>
 
 <h2>Способ 1: фильтр для uBlock Origin</h2>
-<p>Откройте панель uBlock Origin, вкладку "Мои фильтры", и вставьте:</p>
+<p>В Firefox откройте панель uBlock Origin, вкладку "Мои фильтры", и вставьте:</p>
 <pre>{html.escape(UBLOCK_END)}</pre>
+<p>В Chrome uBlock Origin не работает с 2025 года. Его версия для Chrome, uBlock Origin Lite, тоже принимает свои фильтры для скрытия элементов, но место для них зависит от версии, а эти правила в нём пока не проверены.</p>
 <p>Правила подходят к плееру YouTube на ноябрь 2026 года. Когда YouTube переименует эти части плеера, фильтр перестанет работать без предупреждения.</p>
 
 <h2>Способ 2: расширение</h2>
 <p><a href="../">Errand</a> прячет конечную заставку, стену видео и сетку в полноэкранном режиме и держит автовоспроизведение выключенным везде, кроме плейлистов. Когда видео закончится, он спросит, получилось ли найти нужное, и предложит закрыть вкладку. Если YouTube поменяет плеер и Errand перестанет находить заставку, на его иконке появится "!".</p>
-<p>Если при установке вы выбрали "Просто убрать Shorts", заставка остаётся такой, как её показывает YouTube. Чтобы её спрятать, включите в меню Errand "Скрывать подборку в конце".</p>
+<p>Если при установке вы выбрали "Просто убрать Shorts", заставка остаётся такой, как её показывает YouTube. Чтобы её спрятать, включите в меню Errand "Скрывать конечную заставку".</p>
 <p>Ещё инструкции: <a href="../kak-ubrat-shorts-youtube/">как убрать Shorts на YouTube</a>, <a href="../../alternatives/">сравнение с Unhook и другими (на английском)</a>.</p>
 <p class="cta"><a class="button primary" href="{STORE['chrome']}">Установить в Chrome</a></p>
 """,
@@ -292,7 +297,7 @@ def page_html(p):
     ld = [
         {
             "@context": "https://schema.org", "@type": "TechArticle", "headline": p["h1"], "description": p["desc"],
-            "inLanguage": p["loc"], "datePublished": UPDATED, "dateModified": UPDATED, "url": url, "image": img,
+            "inLanguage": p["loc"], "datePublished": PUBLISHED, "dateModified": UPDATED, "url": url, "image": img,
             "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"},
             "about": {"@type": "SoftwareApplication", "name": "Errand for YouTube", "url": f"{SITE}/"},
         },
@@ -364,7 +369,7 @@ for p in PAGES:
         f.write(page_html(p))
     print(os.path.relpath(os.path.join(folder, "index.html"), ROOT))
 
-urls = [f"{SITE}/", f"{SITE}/ru/", f"{SITE}/breakage/"] + [f"{SITE}/{'ru/' if p['loc'] == 'ru' else ''}{p['slug']}/" for p in PAGES]
+urls = [f"{SITE}/", f"{SITE}/ru/", f"{SITE}/breakage/", f"{SITE}/changes/", f"{SITE}/ru/changes/"] + [f"{SITE}/{'ru/' if p['loc'] == 'ru' else ''}{p['slug']}/" for p in PAGES]
 with open(os.path.join(ROOT, "sitemap.xml"), "w") as f:
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
     for u in urls:

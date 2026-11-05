@@ -1,6 +1,6 @@
 {
   "extName": {
-    "message": "Errand für YouTube: Shorts, Startseite & Empfehlungen ausblenden"
+    "message": "Errand für YouTube: Shorts, Startseiten-Feed & Empfehlungen ausblenden"
   },
   "extDescription": {
     "message": "YouTube hat immer das nächste Video parat. Errand blendet Shorts und Feed aus und bietet am Ende an, den Tab zu schließen. Gratis."
@@ -9,13 +9,13 @@
     "message": "Errand-Einstellungen"
   },
   "intentTitle": {
-    "message": "Wofür bist du hier?"
+    "message": "Was suchst du?"
   },
   "intentPlaceholder": {
-    "message": "Was willst du dir ansehen?"
+    "message": "Tippe ein, was du dir ansehen willst"
   },
   "intentAria": {
-    "message": "Wofür du hier bist"
+    "message": "Was du suchst"
   },
   "linkSubscriptions": {
     "message": "Abos"
@@ -27,7 +27,7 @@
     "message": "Verlauf"
   },
   "pillLabel": {
-    "message": "Wofür du hier bist: $TEXT$",
+    "message": "Du suchst: $TEXT$",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -35,13 +35,13 @@
     }
   },
   "pillClear": {
-    "message": "Löschen, wofür ich da bin"
+    "message": "Löschen, was ich suche"
   },
   "revealButton": {
     "message": "Empfehlungen anzeigen"
   },
   "revealCountdown": {
-    "message": "Anzeige in $SECONDS$…",
+    "message": "Empfehlungen in $SECONDS$…",
     "placeholders": {
       "seconds": {
         "content": "$1"
@@ -49,7 +49,7 @@
     }
   },
   "endQuestion": {
-    "message": "Das war's. Hast du gefunden, was du gesucht hast?"
+    "message": "Das war's. Gefunden, was du gesucht hast?"
   },
   "endQuestionWithIntent": {
     "message": "Hast du \"$TEXT$\" gefunden?",
@@ -86,10 +86,10 @@
     "message": "Letzte 7 Tage"
   },
   "healthOk": {
-    "message": "Alle Filter funktionieren"
+    "message": "Auf dieser Seite keine Probleme gefunden"
   },
   "healthBroken": {
-    "message": "YouTube hat etwas geändert. Betroffen: $NAMES$. Manche Filter funktionieren eventuell erst nach dem nächsten Update wieder.",
+    "message": "YouTube hat etwas geändert. Funktioniert nicht: $NAMES$. Das kann bis zum nächsten Errand-Update so bleiben.",
     "placeholders": {
       "names": {
         "content": "$1"
@@ -121,16 +121,16 @@
     "message": "Empfehlungen ausblenden"
   },
   "hideEndscreen": {
-    "message": "Vorschläge am Ende ausblenden"
+    "message": "Abspann und Abspannelemente ausblenden"
   },
   "hideComments": {
     "message": "Kommentare ausblenden"
   },
   "hideMetrics": {
-    "message": "Aufrufe, Likes, Abos ausblenden"
+    "message": "Aufrufe, Likes, Abonnenten ausblenden"
   },
   "hideThumbs": {
-    "message": "Thumbnails abdunkeln"
+    "message": "Thumbnails abdunkeln, außer unter der Maus"
   },
   "optAutoplay": {
     "message": "Autoplay ausschalten"
@@ -142,7 +142,7 @@
     "message": "Strenger Modus"
   },
   "strictHint": {
-    "message": "Blendet Feed, Shorts, Empfehlungen und Kommentare aus, ohne Buttons zum Wiedereinblenden."
+    "message": "Blendet Feed, Shorts, Empfehlungen und Kommentare aus. Kein Button holt sie zurück."
   },
   "strictWhen": {
     "message": "Wann"
@@ -169,13 +169,13 @@
     "message": "Glocke ausblenden"
   },
   "healthEndscreen": {
-    "message": "Endbildschirm"
+    "message": "Abspann"
   },
   "optHomeTarget": {
     "message": "Startseite"
   },
   "homeAsk": {
-    "message": "Fragen, wofür ich da bin"
+    "message": "Fragen, was ich suche"
   },
   "commentsButton": {
     "message": "Kommentare anzeigen"
@@ -196,7 +196,7 @@
     "message": "Importieren"
   },
   "importFailed": {
-    "message": "Die Datei konnte nicht gelesen werden"
+    "message": "Errand kann diese Datei nicht lesen"
   },
   "brandName": {
     "message": "Errand"
@@ -211,7 +211,7 @@
     "message": "Mehr"
   },
   "healthShorts": {
-    "message": "Shorts-Filter"
+    "message": "Shorts-Ausblendung"
   },
   "extNameShort": {
     "message": "Errand für YouTube: ohne Shorts & Feed"
@@ -238,7 +238,7 @@
     "message": "Wie soll YouTube aussehen?"
   },
   "presetAsk": {
-    "message": "Fragen, wofür ich da bin"
+    "message": "Fragen, was ich suche"
   },
   "presetShorts": {
     "message": "Nur Shorts ausblenden"
@@ -250,22 +250,22 @@
     "message": "Was sich auf YouTube ändert"
   },
   "welcomeAsk1": {
-    "message": "Statt des Feeds fragt die Startseite, wofür du hier bist."
+    "message": "Statt des Feeds fragt die Startseite, was du suchst."
   },
   "welcomeSubs1": {
     "message": "Die Startseite öffnet deine Abos."
   },
   "welcomeHidden": {
-    "message": "Keine Shorts. Empfehlungen und Kommentare hinter einem Button."
+    "message": "Keine Shorts. Empfehlungen und Kommentare liegen hinter einem Button."
   },
   "welcomeEnd": {
-    "message": "Am Ende eines Videos startet kein weiteres, außer in Playlists. Errand fragt, ob du gefunden hast, was du gesucht hast."
+    "message": "Am Ende eines Videos startet kein weiteres, und Errand fragt, ob du gefunden hast, was du gesucht hast. Playlists laufen wie gewohnt weiter."
   },
   "welcomeShorts1": {
-    "message": "Keine Shorts auf Startseite, in Suche, Abos und Kanälen."
+    "message": "Keine Shorts auf der Startseite, in der Suche, in den Abos und auf Kanalseiten."
   },
   "welcomeShorts2": {
-    "message": "Shorts-Links öffnen als normale Videos."
+    "message": "Shorts-Links öffnen sich als normale Videos."
   },
   "welcomeShorts3": {
     "message": "Feed, Empfehlungen und Kommentare bleiben, wie sie sind."
@@ -274,10 +274,10 @@
     "message": "YouTube öffnen"
   },
   "welcomePin": {
-    "message": "Pinne Errand übers Puzzle-Symbol in der Leiste an. Dort sind Einstellungen und \"Problem melden\"."
+    "message": "Pinne Errand über das Puzzle-Symbol in der Symbolleiste an. Dort findest du die Einstellungen und \"Problem melden\"."
   },
   "errandsSummary": {
-    "message": "Erledigt: $DONE$ · danach geschlossen: $CLOSED$",
+    "message": "Erledigt: $DONE$ · Tabs geschlossen: $CLOSED$",
     "placeholders": {
       "done": {
         "content": "$1"
@@ -288,7 +288,7 @@
     }
   },
   "errandsHint": {
-    "message": "Erledigt: ein Video lief zu Ende, nachdem du dein Ziel genannt hast. Geschlossen: \"Tab schließen\" gedrückt."
+    "message": "Erledigt: Ein Video lief bis zum Ende, nachdem du eingetippt hast, was du suchst. Tabs geschlossen: Danach hast du \"Tab schließen\" gedrückt."
   },
   "pauseButton": {
     "message": "15 Min. Pause"
@@ -302,7 +302,7 @@
     }
   },
   "statusPaused": {
-    "message": "Pausiert bis $TIME$. YouTube wie immer.",
+    "message": "Pausiert bis $TIME$. Nichts ist ausgeblendet.",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -310,13 +310,13 @@
     }
   },
   "resumeButton": {
-    "message": "Einschalten"
+    "message": "Wieder einschalten"
   },
   "breakageLink": {
     "message": "Bekannte Fehler"
   },
   "intentFooter": {
-    "message": "Das ist Errand. Zum Ändern klick auf das Puzzle-Symbol in der Leiste, dann auf Errand."
+    "message": "Das ist Errand. Um das zu ändern, klick auf das Puzzle-Symbol in der Symbolleiste und dann auf Errand."
   },
   "lookAgain": {
     "message": "Aussehen neu wählen"
@@ -336,7 +336,7 @@
     "message": "Errand: strenger Modus"
   },
   "titleBroken": {
-    "message": "Errand: YouTube hat etwas geändert. Öffnen für Details."
+    "message": "Errand: YouTube hat etwas geändert. Klick für Details."
   },
   "strictOffButton": {
     "message": "Strengen Modus ausschalten"
@@ -350,7 +350,7 @@
     }
   },
   "strictOffUntil": {
-    "message": "Strengen Modus aus bis $TIME$",
+    "message": "Strengen Modus bis $TIME$ ausschalten",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -364,7 +364,7 @@
     "message": "Lade bereits offene YouTube-Tabs neu."
   },
   "noteUpdated": {
-    "message": "Errand ist jetzt auf $VERSION$.",
+    "message": "Errand ist jetzt auf Version $VERSION$.",
     "placeholders": {
       "version": {
         "content": "$1"
@@ -389,21 +389,21 @@
     }
   },
   "intentFooterOpera": {
-    "message": "Das ist Errand. Zum Ändern klick auf das Erweiterungssymbol (Würfel), dann auf Errand."
+    "message": "Das ist Errand. Um das zu ändern, klick auf das Erweiterungssymbol (Würfel) und dann auf Errand."
   },
   "intentFooterYandex": {
-    "message": "Das ist Errand. Zum Ändern klick auf das Errand-Symbol rechts neben der Adressleiste."
+    "message": "Das ist Errand. Um das zu ändern, klick auf das Errand-Symbol rechts neben der Adressleiste."
   },
   "intentFooterAny": {
-    "message": "Das ist Errand. Zum Ändern öffne Errand im Erweiterungsmenü deines Browsers."
+    "message": "Das ist Errand. Um das zu ändern, öffne Errand im Erweiterungsmenü deines Browsers."
   },
   "welcomePinOpera": {
-    "message": "Pinne Errand übers Erweiterungssymbol (Würfel) an. Dort sind Einstellungen und \"Problem melden\"."
+    "message": "Pinne Errand über das Erweiterungssymbol (Würfel) an. Dort findest du die Einstellungen und \"Problem melden\"."
   },
   "welcomePinYandex": {
-    "message": "Das Errand-Symbol sitzt rechts neben der Adressleiste. Dort sind Einstellungen und \"Problem melden\"."
+    "message": "Das Errand-Symbol sitzt rechts neben der Adressleiste. Dort findest du die Einstellungen und \"Problem melden\"."
   },
   "welcomePinAny": {
-    "message": "Errand findest du im Erweiterungsmenü deines Browsers. Dort sind Einstellungen und \"Problem melden\"."
+    "message": "Errand findest du im Erweiterungsmenü deines Browsers. Dort sind auch die Einstellungen und \"Problem melden\"."
   }
 }

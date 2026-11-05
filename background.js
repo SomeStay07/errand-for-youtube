@@ -8,6 +8,11 @@ function enqueue(job) {
   return queue;
 }
 
+async function clearIntent(id) {
+  const { intent } = await chrome.storage.local.get("intent");
+  if (intent?.ts === id) await chrome.storage.local.remove("intent");
+}
+
 async function recordErrand(kind, id) {
   const { stats = {}, errandLast } = await chrome.storage.local.get(["stats", "errandLast"]);
   const { count, last } = L.errandEvent(errandLast, kind, id);
@@ -92,6 +97,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (!incognito && message.errand !== null && message.errand !== undefined) {
       enqueue(() => recordErrand("closed", message.errand));
     }
+    if (message.errand !== null && message.errand !== undefined) enqueue(() => clearIntent(message.errand));
     chrome.tabs.remove(tabId).catch(() => {});
   }
   const fromExtension = typeof sender.url === "string" && sender.url.startsWith(chrome.runtime.getURL(""));

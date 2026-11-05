@@ -23,8 +23,8 @@
         "Every switch in one menu. Settings stay in your browser."
       ]
     ],
-    "tile": "In for one video,<br>out when it’s done.",
-    "marquee": "“Just one video”<br>turns into hours.",
+    "tile": "In for one video,<br>out when it's done.",
+    "marquee": "\"Just one video\"<br>turns into hours.",
     "marqueeSub": "Errand offers to close the tab when it ends."
   },
   "ru": {
@@ -32,7 +32,7 @@
     "screens": [
       [
         "home.png",
-        "Главная спрашивает, зачем вы пришли. Ленты нет."
+        "Ленты нет. Главная спрашивает, что вы ищете."
       ],
       [
         "search.png",
@@ -60,7 +60,7 @@
     "screens": [
       [
         "home.png",
-        "Inicio te pregunta a qué vienes. Sin feed."
+        "Inicio te pregunta qué vienes a ver. Sin feed."
       ],
       [
         "search.png",
@@ -72,16 +72,16 @@
       ],
       [
         "end.png",
-        "Se acabó el vídeo. La reproducción automática está desactivada y cerrar la pestaña está a un clic."
+        "Fin del vídeo. No empieza otro, y \"Cerrar pestaña\" está a un clic."
       ],
       [
         "popup.png",
-        "Todos los ajustes en un menú, guardados en tu navegador."
+        "Los ajustes, en un menú y guardados en tu navegador."
       ]
     ],
     "tile": "Entras a ver un vídeo<br>y sales cuando acaba.",
-    "marquee": "«Solo un vídeo»<br>y se van las horas.",
-    "marqueeSub": "Errand ofrece cerrar la pestaña cuando acaba."
+    "marquee": "\"Solo un vídeo\"<br>y se van las horas.",
+    "marqueeSub": "Errand te ofrece cerrar la pestaña cuando acaba el vídeo."
   },
   "pt_BR": {
     "tagline": "O YouTube sempre tem mais um vídeo.<br>O Errand oculta os Shorts e o feed.",
@@ -96,11 +96,11 @@
       ],
       [
         "watch.png",
-        "Sem coluna de recomendações. Um botão mostra a coluna em 10 s."
+        "Sem coluna de recomendações. Um clique e, em 10 s, ela volta."
       ],
       [
         "end.png",
-        "O vídeo acabou. A reprodução automática fica desligada, e fechar a aba está a um clique."
+        "O vídeo acabou. Nada começa sozinho, e \"Fechar aba\" está ali."
       ],
       [
         "popup.png",
@@ -108,7 +108,7 @@
       ]
     ],
     "tile": "Entre para ver um vídeo<br>e saia quando acabar.",
-    "marquee": "“Só um vídeo”<br>e lá se vão horas.",
+    "marquee": "\"Só um vídeo\"<br>e lá se foram três horas.",
     "marqueeSub": "No fim, o Errand sugere fechar a aba."
   },
   "de": {
@@ -116,7 +116,7 @@
     "screens": [
       [
         "home.png",
-        "Die Startseite fragt, wofür du hier bist. Kein Feed."
+        "Die Startseite fragt, was du suchst. Kein Feed."
       ],
       [
         "search.png",
@@ -124,7 +124,7 @@
       ],
       [
         "watch.png",
-        "Keine Empfehlungsspalte. Ein Button zeigt sie nach 10 s."
+        "Keine Empfehlungsspalte. Ein Button zeigt sie nach 10 Sekunden."
       ],
       [
         "end.png",
@@ -136,7 +136,7 @@
       ]
     ],
     "tile": "Für ein Video rein,<br>danach wieder raus.",
-    "marquee": "Aus „nur einem Video“<br>werden Stunden.",
-    "marqueeSub": "Am Ende bietet Errand „Tab schließen“ an."
+    "marquee": "Aus \"nur einem Video\"<br>werden Stunden.",
+    "marqueeSub": "Am Ende bietet Errand \"Tab schließen\" an."
   }
 }

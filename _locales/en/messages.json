@@ -52,7 +52,7 @@
     "message": "That's the end. Got what you came for?"
   },
   "endQuestionWithIntent": {
-    "message": "Got what you came for: \"$TEXT$\"?",
+    "message": "You came for \"$TEXT$\". Got it?",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -86,10 +86,10 @@
     "message": "Last 7 days"
   },
   "healthOk": {
-    "message": "All filters are working"
+    "message": "No problems found on this page"
   },
   "healthBroken": {
-    "message": "YouTube changed something. Not working: $NAMES$. Some filters may be off until the next update.",
+    "message": "YouTube changed something. Not working: $NAMES$. This may last until the next Errand update.",
     "placeholders": {
       "names": {
         "content": "$1"
@@ -121,7 +121,7 @@
     "message": "Hide recommendations"
   },
   "hideEndscreen": {
-    "message": "Hide end-of-video suggestions"
+    "message": "Hide end screen and end cards"
   },
   "hideComments": {
     "message": "Hide comments"
@@ -166,7 +166,7 @@
     "message": "Hide live chat"
   },
   "hideNotifications": {
-    "message": "Hide the notification bell"
+    "message": "Hide notification bell"
   },
   "healthEndscreen": {
     "message": "end screen"
@@ -259,7 +259,7 @@
     "message": "No Shorts. Recommendations and comments wait behind a button."
   },
   "welcomeEnd": {
-    "message": "When a video ends, the next one doesn't start, except in playlists. Errand asks if you got what you came for."
+    "message": "When a video ends, the next one doesn't start and Errand asks if you got what you came for. Playlists play on as usual."
   },
   "welcomeShorts1": {
     "message": "Shorts are hidden on home, search, subscriptions and channels."
@@ -277,7 +277,7 @@
     "message": "Pin Errand from the puzzle icon in the toolbar. Settings and \"Report a problem\" live there."
   },
   "errandsSummary": {
-    "message": "Errands done: $DONE$ · closed after: $CLOSED$",
+    "message": "Errands done: $DONE$ · tabs closed: $CLOSED$",
     "placeholders": {
       "done": {
         "content": "$1"
@@ -288,7 +288,7 @@
     }
   },
   "errandsHint": {
-    "message": "Done: a video ended after you said what you came for. Closed: you pressed Close tab."
+    "message": "Done: a video ended after you typed what you came for. Tabs closed: you then pressed Close tab."
   },
   "pauseButton": {
     "message": "Pause 15 min"
@@ -302,7 +302,7 @@
     }
   },
   "statusPaused": {
-    "message": "Paused until $TIME$. YouTube is as is.",
+    "message": "Paused until $TIME$. Nothing is hidden.",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -392,7 +392,7 @@
     "message": "This is Errand. To change it, click the extensions icon (a cube), then Errand."
   },
   "intentFooterYandex": {
-    "message": "This is Errand. To change it, click the Errand icon right of the address bar."
+    "message": "This is Errand. To change it, click the Errand icon to the right of the address bar."
   },
   "intentFooterAny": {
     "message": "This is Errand. To change it, open Errand from your browser's extensions menu."
@@ -401,7 +401,7 @@
     "message": "Pin Errand from the extensions icon (a cube). Settings and \"Report a problem\" live there."
   },
   "welcomePinYandex": {
-    "message": "Errand's icon sits right of the address bar. Settings and \"Report a problem\" live there."
+    "message": "Errand's icon sits to the right of the address bar. Settings and \"Report a problem\" live there."
   },
   "welcomePinAny": {
     "message": "Find Errand in your browser's extensions menu. Settings and \"Report a problem\" live there."

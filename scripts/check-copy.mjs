@@ -34,7 +34,7 @@ for (const lang of ["en", "ru", "es", "pt_BR", "de"]) {
   const msgs = JSON.parse(readFileSync(join(ROOT, `_locales/${lang}/messages.json`), "utf8"));
   const cap = allCaptions[lang];
   multi[`store/listing/${lang}.md`] = [lang, listingBody(lang)];
-  multi[`store/captions.json (${lang})`] = [lang, [cap.tagline, ...cap.screens.map(([, c]) => c)].join("\n")];
+  multi[`store/captions.json (${lang})`] = [lang, [cap.tagline, ...cap.screens.map(([, c]) => c), cap.tile, cap.marquee, cap.marqueeSub].filter(Boolean).join("\n")];
   multi[`_locales/${lang}`] = [lang, Object.values(msgs).map((m) => m.message).join("\n")];
 }
 multi["docs/index.html"] = ["en", strip(readFileSync(join(ROOT, "docs/index.html"), "utf8"))];

@@ -1,9 +1,9 @@
 {
   "extName": {
-    "message": "Errand para YouTube: oculte Shorts, página inicial e recomendações"
+    "message": "Errand para YouTube: ocultar Shorts, feed do Início e recomendações"
   },
   "extDescription": {
-    "message": "O YouTube sempre tem mais um vídeo para você. O Errand oculta os Shorts e o feed e, no fim do seu, sugere fechar a aba. Grátis."
+    "message": "O YouTube sempre tem mais um vídeo. O Errand oculta os Shorts e o feed e sugere fechar a aba quando o seu vídeo acaba. Grátis."
   },
   "actionTitle": {
     "message": "Configurações do Errand"
@@ -12,7 +12,7 @@
     "message": "O que você veio ver?"
   },
   "intentPlaceholder": {
-    "message": "Digite o que você quer assistir"
+    "message": "Digite o que você quer ver"
   },
   "intentAria": {
     "message": "O que você veio ver"
@@ -86,10 +86,10 @@
     "message": "Últimos 7 dias"
   },
   "healthOk": {
-    "message": "Todos os filtros estão funcionando"
+    "message": "Nenhum problema encontrado nesta página"
   },
   "healthBroken": {
-    "message": "O YouTube mudou alguma coisa. Com problema: $NAMES$. Alguns filtros podem não funcionar até a próxima atualização.",
+    "message": "O YouTube mudou alguma coisa. Com problema: $NAMES$. Isso pode durar até a próxima atualização do Errand.",
     "placeholders": {
       "names": {
         "content": "$1"
@@ -121,7 +121,7 @@
     "message": "Ocultar recomendações"
   },
   "hideEndscreen": {
-    "message": "Ocultar sugestões no final"
+    "message": "Ocultar tela final e cards"
   },
   "hideComments": {
     "message": "Ocultar comentários"
@@ -130,7 +130,7 @@
     "message": "Ocultar visualizações, curtidas e inscritos"
   },
   "hideThumbs": {
-    "message": "Esmaecer miniaturas"
+    "message": "Esmaecer miniaturas até passar o mouse"
   },
   "optAutoplay": {
     "message": "Desativar a reprodução automática"
@@ -142,7 +142,7 @@
     "message": "Modo rígido"
   },
   "strictHint": {
-    "message": "Esconde o feed, os Shorts, as recomendações e os comentários, sem botões para mostrar."
+    "message": "Esconde o feed, os Shorts, as recomendações e os comentários, sem botões para mostrá-los."
   },
   "strictWhen": {
     "message": "Quando"
@@ -166,7 +166,7 @@
     "message": "Ocultar chat ao vivo"
   },
   "hideNotifications": {
-    "message": "Ocultar o sino"
+    "message": "Ocultar o sino de notificações"
   },
   "healthEndscreen": {
     "message": "tela final"
@@ -184,7 +184,7 @@
     "message": "Shorts"
   },
   "shortsWatch": {
-    "message": "Como vídeos normais"
+    "message": "Abrir no player normal"
   },
   "shortsBlock": {
     "message": "Bloquear"
@@ -211,10 +211,10 @@
     "message": "Mais"
   },
   "healthShorts": {
-    "message": "ocultação de Shorts"
+    "message": "Shorts"
   },
   "extNameShort": {
-    "message": "Errand para YouTube: sem Shorts e feed"
+    "message": "Errand para YouTube: ocultar Shorts e feed"
   },
   "reportProblem": {
     "message": "Relatar um problema"
@@ -253,16 +253,16 @@
     "message": "O Início pergunta o que você veio ver, no lugar do feed."
   },
   "welcomeSubs1": {
-    "message": "O Início abre suas inscrições."
+    "message": "O Início abre suas Inscrições."
   },
   "welcomeHidden": {
-    "message": "Sem Shorts. Recomendações e comentários ficam atrás de um botão."
+    "message": "Sem Shorts. Recomendações e comentários só aparecem se você clicar num botão."
   },
   "welcomeEnd": {
-    "message": "Quando o vídeo acaba, nenhum outro começa, a não ser numa playlist. O Errand pergunta se você achou o que veio buscar."
+    "message": "Quando o vídeo acaba, nenhum outro começa e o Errand pergunta se você achou o que veio buscar. Playlists seguem normalmente."
   },
   "welcomeShorts1": {
-    "message": "Shorts ocultos no Início, na pesquisa, nas inscrições e nos canais."
+    "message": "Shorts ocultos no Início, na pesquisa, nas Inscrições e nos canais."
   },
   "welcomeShorts2": {
     "message": "Links de Shorts abrem como vídeos normais."
@@ -274,10 +274,10 @@
     "message": "Abrir o YouTube"
   },
   "welcomePin": {
-    "message": "Fixe o Errand pelo ícone de quebra-cabeça na barra. As configurações e \"Relatar um problema\" ficam lá."
+    "message": "Fixe o Errand pelo ícone de quebra-cabeça na barra de ferramentas. As configurações e \"Relatar um problema\" ficam lá."
   },
   "errandsSummary": {
-    "message": "Feitos: $DONE$ · fechados no fim: $CLOSED$",
+    "message": "Vídeos concluídos: $DONE$ · abas fechadas: $CLOSED$",
     "placeholders": {
       "done": {
         "content": "$1"
@@ -288,7 +288,7 @@
     }
   },
   "errandsHint": {
-    "message": "Feitos: um vídeo terminou depois de você dizer o que veio ver. Fechados: você clicou em \"Fechar aba\"."
+    "message": "Vídeos concluídos: um vídeo terminou depois de você digitar o que veio ver. Abas fechadas: depois disso, você clicou em \"Fechar aba\"."
   },
   "pauseButton": {
     "message": "Pausar 15 min"
@@ -302,7 +302,7 @@
     }
   },
   "statusPaused": {
-    "message": "Pausado até $TIME$. YouTube sem filtros.",
+    "message": "Pausado até $TIME$. Nada fica oculto.",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -313,10 +313,10 @@
     "message": "Ativar de novo"
   },
   "breakageLink": {
-    "message": "Lista de falhas"
+    "message": "Problemas conhecidos"
   },
   "intentFooter": {
-    "message": "Isto é o Errand. Para mudar, clique no ícone de quebra-cabeça na barra e depois em Errand."
+    "message": "Esta pergunta é do Errand. Para mudar isso, clique no ícone de quebra-cabeça na barra de ferramentas e depois em Errand."
   },
   "lookAgain": {
     "message": "Escolher outro visual"
@@ -350,7 +350,7 @@
     }
   },
   "strictOffUntil": {
-    "message": "Desligar modo rígido até $TIME$",
+    "message": "Desligar o modo rígido até $TIME$",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -364,7 +364,7 @@
     "message": "Recarregue as abas do YouTube já abertas."
   },
   "noteUpdated": {
-    "message": "Errand atualizado para a $VERSION$.",
+    "message": "Errand atualizado para a versão $VERSION$.",
     "placeholders": {
       "version": {
         "content": "$1"
@@ -389,13 +389,13 @@
     }
   },
   "intentFooterOpera": {
-    "message": "Isto é o Errand. Para mudar, clique no ícone de extensões (um cubo) e depois em Errand."
+    "message": "Esta pergunta é do Errand. Para mudar isso, clique no ícone de extensões (um cubo) e depois em Errand."
   },
   "intentFooterYandex": {
-    "message": "Isto é o Errand. Para mudar, clique no ícone do Errand à direita da barra de endereço."
+    "message": "Esta pergunta é do Errand. Para mudar isso, clique no ícone do Errand à direita da barra de endereço."
   },
   "intentFooterAny": {
-    "message": "Isto é o Errand. Para mudar, abra o Errand no menu de extensões do navegador."
+    "message": "Esta pergunta é do Errand. Para mudar isso, abra o Errand no menu de extensões do navegador."
   },
   "welcomePinOpera": {
     "message": "Fixe o Errand pelo ícone de extensões (um cubo). As configurações e \"Relatar um problema\" ficam lá."
