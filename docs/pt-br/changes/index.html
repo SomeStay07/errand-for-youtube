@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>O que mudou no Errand</title>
+  <meta name="description" content="As mudanças que você vai notar, versão por versão. Quando uma atualização do YouTube faz voltar algo que o Errand oculta, a correção entra no Registro de falhas.">
+  <link rel="canonical" href="https://somestay07.github.io/errand-for-youtube/pt-br/changes/">
+  <link rel="alternate" hreflang="en" href="https://somestay07.github.io/errand-for-youtube/changes/">
+  <link rel="alternate" hreflang="ru" href="https://somestay07.github.io/errand-for-youtube/ru/changes/">
+  <link rel="alternate" hreflang="es" href="https://somestay07.github.io/errand-for-youtube/es/changes/">
+  <link rel="alternate" hreflang="pt-BR" href="https://somestay07.github.io/errand-for-youtube/pt-br/changes/">
+  <link rel="alternate" hreflang="de" href="https://somestay07.github.io/errand-for-youtube/de/changes/">
+  <link rel="alternate" hreflang="x-default" href="https://somestay07.github.io/errand-for-youtube/changes/">
+  <link rel="icon" href="../../assets/favicon.png">
+  <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="../../"><img src="../../assets/icon.png" alt="" width="32" height="32"> Errand</a>
+    <nav><a href="../../changes/" hreflang="en" lang="en">English</a> · <a href="../../ru/changes/" hreflang="ru" lang="ru">Русский</a> · <a href="../../es/changes/" hreflang="es" lang="es">Español</a> · <a href="../../de/changes/" hreflang="de" lang="de">Deutsch</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>O que mudou no Errand</h1>
+      <p class="lead">As mudanças que você vai notar, versão por versão. Quando uma atualização do YouTube faz voltar algo que o Errand oculta, a correção entra no <a href="../../breakage/">Registro de falhas</a> (em inglês).</p>
+    </section>
+    <section id="v0.3">
+      <h2>0.3.0</h2>
+      <ul>
+        <li>A pergunta "O que você veio ver?" aparece assim que a página abre. As caixas cinza de carregamento do YouTube não piscam mais antes dela.</li>
+        <li>A etiqueta "Veio ver", no pé da página, ganhou uma lupa e agora leva de volta aos resultados da pesquisa do que você digitou. "Fechar aba", na pergunta do fim do vídeo, também apaga esse texto, então a próxima visita começa de novo com a pergunta.</li>
+        <li>Mixes e playlists seguem tocando. Quando o YouTube mostra a lista ao lado do vídeo, o Errand não impede o próximo de começar nem pergunta nada depois de cada vídeo.</li>
+        <li>Com "Ocultar recomendações" ligado (vem assim por padrão), os resultados da pesquisa não mostram mais faixas de recomendações. Desmarque a opção para trazê-las de volta.
+          <ul>
+            <li>A faixa com os vídeos mais recentes de um canal também fica oculta. O card do canal e os vídeos dele nos resultados continuam lá.</li>
+          </ul>
+        </li>
+        <li>Os Shorts ficam ocultos em mais lugares, como os cards com cara de vídeo comum ao lado ou embaixo de um vídeo. Também somem quando o YouTube está num idioma em que eles não se chamam "Shorts" (como o japonês), mas aí a aba Shorts nos canais e o filtro de Shorts na pesquisa podem piscar por um instante. Os Playables, os jogos do YouTube, somem junto com os Shorts.</li>
+        <li>O Errand entende o novo layout da página do vídeo, com as recomendações embaixo do player. Ali elas também ficam ocultas, e "Mostrar comentários" leva o foco do teclado para os comentários. Links que começam com /live/ funcionam como páginas de vídeo normais.</li>
+        <li>O "!" agora espera uma segunda verificação falhar, então ele aparece menos por causa de uma página lenta. Um problema de verdade aparece em uns 12 s. Quando está tudo certo, o menu diz "Nenhum problema encontrado nesta página".</li>
+        <li>Horários do modo rígido que passam da meia-noite agora seguem o dia em que começam: com a sexta marcada, 22:00-06:00 vai da noite de sexta até a manhã de sábado. Ao escolher "Por horário", as horas não ficam mais travadas antes de você defini-las.</li>
+        <li>A dica que aparece ao passar o mouse no ícone da barra de ferramentas se atualiza quando um horário ou uma pausa termina.</li>
+        <li>A pergunta do fim do vídeo fecha com Esc e devolve o foco ao player. Leitores de tela anunciam a contagem de 10 segundos uma vez só, em vez de a cada segundo.</li>
+        <li>A dica embaixo da pergunta do Início e na página de boas-vindas não manda mais todo navegador para o ícone de quebra-cabeça. Quando o Errand não reconhece o navegador, a dica é geral.</li>
+        <li>Depois de uma atualização como esta, o menu mostra "O que mudou" nas próximas vezes que você o abrir (no máximo 3). Depois de 5 vídeos concluídos, ele pede uma avaliação na loja, no máximo 3 vezes. O × encerra o pedido.</li>
+        <li>Textos mais claros no menu, na página de boas-vindas e na pergunta do Início, nos cinco idiomas.</li>
+        <li>Correções menores:
+          <ul>
+            <li>Depois de uma atualização, abas do YouTube que já estavam abertas não ficam mais com botões soltos da versão antiga.</li>
+            <li>O botão "Mostrar recomendações" não aparece mais enquanto o modo rígido está ligando.</li>
+            <li>O botão do YouTube para ocultar os cards finais não fica mais flutuando sozinho sobre os últimos segundos do vídeo.</li>
+            <li>Mudanças nas configurações não se perdem enquanto o modo rígido termina.</li>
+            <li>Um campo de horário apagado mantém o horário salvo.</li>
+            <li>Mixes continuam visíveis nas suas páginas de playlists e de biblioteca.</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+    <section id="v0.2">
+      <h2>0.2.0</h2>
+      <ul>
+        <li>Depois da instalação, uma tela nova deixa você escolher como o YouTube deve ficar: "Perguntar o que vim ver", "Só esconder Shorts" ou "Inscrições primeiro". Dá para escolher de novo depois, pelo menu.</li>
+        <li>"Pausar 15 min" no menu desliga o Errand por 15 minutos depois de uma espera de 10 segundos. Depois ele volta a ligar sozinho.</li>
+        <li>O modo rígido ficou mais difícil de desligar por impulso: para desligar, é preciso esperar 10 segundos e, por horário, ele fica desligado só até o fim do período atual. Com o modo rígido ligado, não dá para importar configurações.</li>
+        <li>O menu mostra quantos vídeos você concluiu nos últimos 7 dias.</li>
+        <li>Nas Inscrições, a faixa dos vídeos mais relevantes não aparece mais quando o feed está oculto.</li>
+        <li>Corrigido um "!" falso no ícone em páginas de vídeo normais. Agora o "!" some sozinho assim que a página volta ao normal.</li>
+        <li>O menu tem um link para o Registro de falhas, que é público.</li>
+        <li>A contagem antes de as recomendações aparecerem não pergunta mais se você tem certeza.</li>
+      </ul>
+    </section>
+  </main>
+  <footer><a href="../../">Errand</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Relatar um problema</a> · <a href="../../breakage/">Registro de falhas (em inglês)</a></footer>
+</body>
+</html>

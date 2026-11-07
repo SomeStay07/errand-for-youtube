@@ -12,7 +12,7 @@
     "message": "Was suchst du?"
   },
   "intentPlaceholder": {
-    "message": "Tippe ein, was du dir ansehen willst"
+    "message": "Tipp ein, was du dir ansehen willst"
   },
   "intentAria": {
     "message": "Was du suchst"
@@ -35,7 +35,7 @@
     }
   },
   "pillClear": {
-    "message": "Löschen, was ich suche"
+    "message": "Eingabe löschen"
   },
   "revealButton": {
     "message": "Empfehlungen anzeigen"
@@ -89,7 +89,7 @@
     "message": "Auf dieser Seite keine Probleme gefunden"
   },
   "healthBroken": {
-    "message": "YouTube hat etwas geändert. Funktioniert nicht: $NAMES$. Das kann bis zum nächsten Errand-Update so bleiben.",
+    "message": "YouTube hat vielleicht etwas geändert. Errand funktioniert nicht bei: $NAMES$. Das kann bis zum nächsten Errand-Update so bleiben.",
     "placeholders": {
       "names": {
         "content": "$1"
@@ -130,7 +130,7 @@
     "message": "Aufrufe, Likes, Abonnenten ausblenden"
   },
   "hideThumbs": {
-    "message": "Thumbnails abdunkeln, außer unter der Maus"
+    "message": "Thumbnails ausgrauen"
   },
   "optAutoplay": {
     "message": "Autoplay ausschalten"
@@ -211,7 +211,7 @@
     "message": "Mehr"
   },
   "healthShorts": {
-    "message": "Shorts-Ausblendung"
+    "message": "Shorts"
   },
   "extNameShort": {
     "message": "Errand für YouTube: ohne Shorts & Feed"
@@ -274,7 +274,7 @@
     "message": "YouTube öffnen"
   },
   "welcomePin": {
-    "message": "Pinne Errand über das Puzzle-Symbol in der Symbolleiste an. Dort findest du die Einstellungen und \"Problem melden\"."
+    "message": "Pinn Errand über das Puzzle-Symbol in der Symbolleiste an. Dort findest du die Einstellungen und \"Problem melden\"."
   },
   "errandsSummary": {
     "message": "Erledigt: $DONE$ · Tabs geschlossen: $CLOSED$",
@@ -288,7 +288,7 @@
     }
   },
   "errandsHint": {
-    "message": "Erledigt: Ein Video lief bis zum Ende, nachdem du eingetippt hast, was du suchst. Tabs geschlossen: Danach hast du \"Tab schließen\" gedrückt."
+    "message": "Erledigt: Ein Video lief nach deiner Eingabe zu Ende. Tabs geschlossen: Danach hast du \"Tab schließen\" gedrückt."
   },
   "pauseButton": {
     "message": "15 Min. Pause"
@@ -313,10 +313,10 @@
     "message": "Wieder einschalten"
   },
   "breakageLink": {
-    "message": "Bekannte Fehler"
+    "message": "Fehlerprotokoll"
   },
   "intentFooter": {
-    "message": "Das ist Errand. Um das zu ändern, klick auf das Puzzle-Symbol in der Symbolleiste und dann auf Errand."
+    "message": "Diese Frage kommt von Errand. Zum Ändern: Puzzle-Symbol in der Symbolleiste, dann Errand."
   },
   "lookAgain": {
     "message": "Aussehen neu wählen"
@@ -336,7 +336,7 @@
     "message": "Errand: strenger Modus"
   },
   "titleBroken": {
-    "message": "Errand: YouTube hat etwas geändert. Klick für Details."
+    "message": "Errand: YouTube hat vielleicht etwas geändert. Klick für Details."
   },
   "strictOffButton": {
     "message": "Strengen Modus ausschalten"
@@ -361,10 +361,10 @@
     "message": "Im strengen Modus nicht verfügbar"
   },
   "welcomeReloadOpen": {
-    "message": "Lade bereits offene YouTube-Tabs neu."
+    "message": "Lad bereits offene YouTube-Tabs neu."
   },
   "noteUpdated": {
-    "message": "Errand ist jetzt auf Version $VERSION$.",
+    "message": "Errand wurde auf $VERSION$ aktualisiert.",
     "placeholders": {
       "version": {
         "content": "$1"
@@ -389,16 +389,16 @@
     }
   },
   "intentFooterOpera": {
-    "message": "Das ist Errand. Um das zu ändern, klick auf das Erweiterungssymbol (Würfel) und dann auf Errand."
+    "message": "Diese Frage kommt von Errand. Zum Ändern: Erweiterungssymbol (Würfel), dann Errand."
   },
   "intentFooterYandex": {
-    "message": "Das ist Errand. Um das zu ändern, klick auf das Errand-Symbol rechts neben der Adressleiste."
+    "message": "Diese Frage kommt von Errand. Zum Ändern: Errand-Symbol rechts neben der Adressleiste."
   },
   "intentFooterAny": {
-    "message": "Das ist Errand. Um das zu ändern, öffne Errand im Erweiterungsmenü deines Browsers."
+    "message": "Diese Frage kommt von Errand. Zum Ändern: Errand im Erweiterungsmenü deines Browsers."
   },
   "welcomePinOpera": {
-    "message": "Pinne Errand über das Erweiterungssymbol (Würfel) an. Dort findest du die Einstellungen und \"Problem melden\"."
+    "message": "Pinn Errand über das Erweiterungssymbol (Würfel) an. Dort findest du die Einstellungen und \"Problem melden\"."
   },
   "welcomePinYandex": {
     "message": "Das Errand-Symbol sitzt rechts neben der Adressleiste. Dort findest du die Einstellungen und \"Problem melden\"."

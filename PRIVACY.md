@@ -1,19 +1,19 @@
 # Privacy policy: Errand for YouTube
 
-Last updated: 2026-11-05
+Last updated: 2026-11-07
 
-Errand does not collect, send or sell any data.
+Errand does not collect or sell data and makes no network requests. The one exception is a problem report: if you open one yourself, its link passes the details listed under "Report a problem" below to Google.
 
 - It runs only on `www.youtube.com`, where it hides page elements and adds its own buttons.
-- Your settings, the goal you type on the home page, daily counts of errands done and closed for the last 30 days, the id of the last counted errand, and the end time of a pause are stored in your browser's extension storage. Errand sends none of it anywhere. The goal is deleted once it is older than three hours, the next time you open YouTube.
+- Your settings, your answer to "What are you here for?" on the home page, daily counts of errands done and tabs closed for the last 30 days, the id of the last counted errand, and the end time of a pause are stored in your browser's extension storage. Your answer is deleted once it is older than three hours, the next time you open YouTube.
 - For strict mode, two more times are stored: when a 10-second turn-off wait ends, and when the skipped scheduled hours end.
 - Also stored: which version's update note you saw and how often, how many times the rating note was shown and whether it is finished (you rated or closed it), and when a 10-second wait before a pause ends.
-- Until the browser closes, Errand keeps for each open YouTube tab the page type, the names of broken filters and when it last checked.
-- Errand makes no network requests. There is no analytics, no account and no remote code.
+- Until the browser closes, Errand keeps for each open YouTube tab the page type, what stopped working there and when it last checked.
+- There is no analytics, no account and no remote code.
 - Uninstalling the extension deletes everything it stored.
-- "Report a problem" opens an anonymous Google Form in a new tab, prefilled with the extension version, browser name and language, page type, the names of broken filters, and your Errand mode, home page and Shorts settings. These fields are part of the form's link, so opening the form already sends them to Google. Your answer is sent only when you press Submit.
+- "Report a problem" opens an anonymous Google Form in a new tab. Its link already carries the extension version, your browser's name, version and language, the page type, what stopped working, your Errand mode, home page and Shorts settings, and the date and time (UTC) of up to 12 recent breakages with their page type and what broke. Opening the form sends these to Google. What you write in the form is sent only when you press Submit.
+- To make problem reports useful, Errand keeps a short list of recent breakages in your browser: date and time, page type (home, search, video page…) and what stopped working, last 30 entries, no addresses or video titles. The last 12 go into the form's link, and only when you open "Report a problem" yourself.
 - After uninstalling, the browser opens a short page asking what went wrong. It has no analytics.
-- To make problem reports useful, Errand keeps a short local log of filters that stopped working: time, page type (home, search, watch…) and filter names, last 30 entries, no addresses or video titles. Up to 12 recent entries are added to the form's link only when you open "Report a problem" yourself.
 
 Questions: https://github.com/SomeStay07/errand-for-youtube/issues
 
@@ -21,19 +21,19 @@ Questions: https://github.com/SomeStay07/errand-for-youtube/issues
 
 # Политика конфиденциальности: Errand для YouTube
 
-Обновлено: 5 ноября 2026 года
+Обновлено: 7 ноября 2026 года
 
-Errand не собирает, не отправляет и не продаёт данные.
+Errand сам ничего не собирает, не продаёт и не отправляет в сеть. Исключение одно: отчёт о проблеме, который вы открываете сами. Его ссылка передаёт Google поля из пункта "Сообщить о проблеме" ниже.
 
 - Расширение работает только на `www.youtube.com`: прячет элементы страницы и добавляет свои кнопки.
-- Настройки, цель, которую вы пишете на главной, счётчики сделанных дел и закрытий по дням за последние 30 дней, метка последнего засчитанного дела и время окончания паузы хранятся в хранилище расширения в вашем браузере. Errand никуда их не отправляет. Цель удаляется, когда ей больше трёх часов, при следующем заходе на YouTube.
+- Настройки, ваш ответ на вопрос "Что ищете?" на главной, счётчики сделанных дел и закрытых вкладок по дням за последние 30 дней, метка последнего засчитанного дела и время окончания паузы лежат в хранилище расширения в вашем браузере. Ответ удаляется, когда ему больше трёх часов, при следующем заходе на YouTube.
 - Для строгого режима хранятся ещё два времени: когда закончится 10-секундное ожидание перед выключением и до какого момента пропущены текущие часы по расписанию.
 - Ещё хранятся: о какой версии была заметка об обновлении и сколько раз она показывалась, сколько раз показывалась просьба об оценке и закрыта ли она (оценкой или крестиком). Для паузы хранится, когда закончится 10-секундное ожидание.
-- До закрытия браузера Errand помнит для каждой открытой вкладки YouTube тип страницы, названия сломанных фильтров и время последней проверки.
-- Errand не делает запросов в сеть. Нет аналитики, аккаунтов и загружаемого кода.
+- До закрытия браузера Errand помнит для каждой открытой вкладки YouTube тип страницы, что на ней перестало работать и время последней проверки.
+- Нет аналитики, аккаунтов и загружаемого кода.
 - При удалении расширения удаляется всё, что оно хранило.
-- Кнопка "Сообщить о проблеме" открывает анонимную форму Google в новой вкладке. В ней уже заполнены версия расширения, браузер и его язык, тип страницы, названия сломанных фильтров, а также ваш режим Errand и настройки главной и Shorts. Эти поля записаны в ссылке на форму, поэтому при открытии формы они уже уходят в Google. Ваш ответ отправится, только когда вы нажмёте "Отправить".
+- "Сообщить о проблеме" открывает анонимную форму Google в новой вкладке. В её ссылке уже записаны версия расширения, название, версия и язык браузера, тип страницы, что перестало работать, ваш режим Errand, настройки главной и Shorts, дата и время (UTC) до 12 последних поломок с типом страницы и тем, что сломалось. Поэтому при открытии формы эти поля уже уходят в Google. То, что вы напишете в форме, отправится, только когда вы нажмёте "Отправить".
+- Чтобы отчёты о проблемах были полезными, Errand хранит в браузере список последних поломок: дата и время, тип страницы (главная, поиск, страница видео…) и что перестало работать, последние 30 записей, без адресов и названий видео. В ссылку формы попадают только 12 последних, и только когда вы сами открываете "Сообщить о проблеме".
 - После удаления браузер откроет короткую страницу с вопросом, что пошло не так. Аналитики на ней нет.
-- Чтобы отчёты о проблемах были полезными, Errand ведёт короткий локальный журнал сломавшихся фильтров: время, тип страницы (главная, поиск, видео…) и названия фильтров, последние 30 записей, без адресов и названий видео. До 12 последних записей попадают в ссылку формы, только когда вы сами нажимаете "Сообщить о проблеме".
 
 Вопросы: https://github.com/SomeStay07/errand-for-youtube/issues

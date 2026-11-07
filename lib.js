@@ -487,8 +487,16 @@
     return (Number(note.shown) || 0) < NOTE_MAX_SHOWS;
   }
 
-  function changesUrl(version) {
-    return `${SITE_URL}/changes/#v${version}`;
+  const CHANGES_PATHS = { en: "/changes/", ru: "/ru/changes/", es: "/es/changes/", pt_BR: "/pt-br/changes/", de: "/de/changes/" };
+
+  function changesLocale(locale) {
+    const [lang = "", region = ""] = String(locale || "").split(/[-_]/);
+    const key = region && lang.toLowerCase() === "pt" ? `pt_${region.toUpperCase()}` : lang.toLowerCase();
+    return CHANGES_PATHS[key] ? key : "en";
+  }
+
+  function changesUrl(version, locale) {
+    return `${SITE_URL}${CHANGES_PATHS[changesLocale(locale)]}#v${version}`;
   }
 
   function errandTotals(stats, date) {
@@ -533,6 +541,8 @@
     noteVersion,
     updateNote,
     shouldShowUpdateNote,
+    CHANGES_PATHS,
+    changesLocale,
     changesUrl,
     mergeSettings,
     patchSettings,

@@ -30,6 +30,7 @@ const CLICHES = {
 const listingBody = (lang) => readFileSync(join(ROOT, `store/listing/${lang}.md`), "utf8").split(/\n## [^\n]*\n/)[1] || "";
 const allCaptions = JSON.parse(readFileSync(join(ROOT, "store/captions.json"), "utf8"));
 const multi = {};
+let failed = 0;
 for (const lang of ["en", "ru", "es", "pt_BR", "de"]) {
   const msgs = JSON.parse(readFileSync(join(ROOT, `_locales/${lang}/messages.json`), "utf8"));
   const cap = allCaptions[lang];
@@ -42,8 +43,15 @@ for (const page of ["hide-youtube-shorts", "youtube-without-recommendations", "a
   const file = join(ROOT, "docs", page, "index.html");
   if (existsSync(file)) multi[`docs/${page}`] = ["en", strip(readFileSync(file, "utf8"))];
 }
+for (const [lang, dir] of [["es", "es"], ["pt_BR", "pt-br"], ["de", "de"]]) {
+  const file = join(ROOT, "docs", dir, "changes", "index.html");
+  if (existsSync(file)) multi[`docs/${dir}/changes`] = [lang, strip(readFileSync(file, "utf8"))];
+  else {
+    console.log(`FAIL docs/${dir}/changes missing`);
+    failed += 1;
+  }
+}
 for (const doc of ["README.md", "PRIVACY.md"]) multi[doc] = ["en", readFileSync(join(ROOT, doc), "utf8")];
-let failed = 0;
 for (const [name, [lang, text]] of Object.entries(multi)) {
   const hits = [];
   text.split("\n").forEach((line, i) => {

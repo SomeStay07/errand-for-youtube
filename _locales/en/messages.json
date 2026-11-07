@@ -3,7 +3,7 @@
     "message": "Errand for YouTube: Hide Shorts, Feed & Recommendations"
   },
   "extDescription": {
-    "message": "YouTube always has one more video for you. Errand hides Shorts and the feed and offers to close the tab when yours ends. Free."
+    "message": "YouTube always has one more video for you. Errand hides Shorts and the feed and offers to close the tab when your video ends. Free."
   },
   "actionTitle": {
     "message": "Errand settings"
@@ -89,7 +89,7 @@
     "message": "No problems found on this page"
   },
   "healthBroken": {
-    "message": "YouTube changed something. Not working: $NAMES$. This may last until the next Errand update.",
+    "message": "YouTube may have changed something. Errand isn't working on: $NAMES$. This can last until the next Errand update.",
     "placeholders": {
       "names": {
         "content": "$1"
@@ -97,7 +97,7 @@
     }
   },
   "healthPlayer": {
-    "message": "player"
+    "message": "video player"
   },
   "healthRelated": {
     "message": "recommendations"
@@ -211,7 +211,7 @@
     "message": "More"
   },
   "healthShorts": {
-    "message": "Shorts hiding"
+    "message": "Shorts"
   },
   "extNameShort": {
     "message": "Errand for YouTube: Hide Shorts & Feed"
@@ -313,7 +313,7 @@
     "message": "Turn back on"
   },
   "breakageLink": {
-    "message": "Known issues"
+    "message": "Breakage log"
   },
   "intentFooter": {
     "message": "This is Errand. To change it, click the puzzle icon in the toolbar, then Errand."
@@ -336,7 +336,7 @@
     "message": "Errand: strict mode"
   },
   "titleBroken": {
-    "message": "Errand: YouTube changed something. Open for details."
+    "message": "Errand: YouTube may have changed something. Open for details."
   },
   "strictOffButton": {
     "message": "Turn off strict mode"

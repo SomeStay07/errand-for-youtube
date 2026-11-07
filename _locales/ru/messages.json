@@ -3,7 +3,7 @@
     "message": "Errand для YouTube: скрыть Shorts, ленту и рекомендации"
   },
   "extDescription": {
-    "message": "YouTube всегда подсунет ещё одно видео. Errand прячет Shorts (шортсы) и ленту. После видео предложит закрыть вкладку. Бесплатно."
+    "message": "YouTube всегда подсунет ещё одно видео. Errand прячет Shorts (шортсы) и ленту, а после видео предложит закрыть вкладку. Бесплатно."
   },
   "actionTitle": {
     "message": "Настройки Errand"
@@ -89,7 +89,7 @@
     "message": "На этой странице проблем не нашлось"
   },
   "healthBroken": {
-    "message": "YouTube что-то поменял. Не работает: $NAMES$. Так может быть до следующего обновления Errand.",
+    "message": "Похоже, YouTube что-то поменял, и часть Errand не работает: $NAMES$. Это может продлиться до следующего обновления Errand.",
     "placeholders": {
       "names": {
         "content": "$1"
@@ -211,7 +211,7 @@
     "message": "Ещё"
   },
   "healthShorts": {
-    "message": "скрытие Shorts"
+    "message": "Shorts"
   },
   "extNameShort": {
     "message": "Errand для YouTube: без Shorts и ленты"
@@ -302,7 +302,7 @@
     }
   },
   "statusPaused": {
-    "message": "На паузе до $TIME$. YouTube как есть.",
+    "message": "На паузе до $TIME$. Errand ничего не прячет.",
     "placeholders": {
       "time": {
         "content": "$1"
@@ -316,7 +316,7 @@
     "message": "Журнал поломок"
   },
   "intentFooter": {
-    "message": "Этот вопрос задаёт Errand. Чтобы поменять главную, нажмите значок пазла справа от адресной строки, затем Errand."
+    "message": "Этот вопрос задаёт Errand. Чтобы поменять главную, нажмите значок пазла, затем Errand."
   },
   "lookAgain": {
     "message": "Выбрать вид YouTube"
@@ -336,7 +336,7 @@
     "message": "Errand: строгий режим"
   },
   "titleBroken": {
-    "message": "Errand: YouTube что-то поменял. Откройте, чтобы узнать что."
+    "message": "Errand: похоже, YouTube что-то поменял. Откройте, чтобы узнать что."
   },
   "strictOffButton": {
     "message": "Выключить строгий режим"

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Как убрать Shorts на YouTube на компьютере</title>
-  <meta name="description" content="Выключить Shorts в настройках YouTube нельзя. Что дают встроенные кнопки, фильтр для uBlock Origin и бесплатное расширение, которое убирает шортсы везде.">
+  <meta name="description" content="Выключить Shorts в настройках YouTube нельзя. Что дают встроенные кнопки, фильтр для uBlock Origin и бесплатное расширение, которое убирает шортсы с главной, из поиска, подписок и каналов.">
   <link rel="canonical" href="https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-shorts-youtube/">
   <link rel="alternate" hreflang="en" href="https://somestay07.github.io/errand-for-youtube/hide-youtube-shorts/">
   <link rel="alternate" hreflang="x-default" href="https://somestay07.github.io/errand-for-youtube/hide-youtube-shorts/">
@@ -12,13 +12,13 @@
   <link rel="icon" href="../../assets/favicon.png">
   <meta property="og:type" content="article">
   <meta property="og:title" content="Как убрать Shorts на YouTube на компьютере">
-  <meta property="og:description" content="Выключить Shorts в настройках YouTube нельзя. Что дают встроенные кнопки, фильтр для uBlock Origin и бесплатное расширение, которое убирает шортсы везде.">
+  <meta property="og:description" content="Выключить Shorts в настройках YouTube нельзя. Что дают встроенные кнопки, фильтр для uBlock Origin и бесплатное расширение, которое убирает шортсы с главной, из поиска, подписок и каналов.">
   <meta property="og:url" content="https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-shorts-youtube/">
   <meta property="og:image" content="https://somestay07.github.io/errand-for-youtube/assets/og-ru.png">
   <meta property="og:image:alt" content="Errand for YouTube">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="../../style.css">
-  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Как убрать Shorts на YouTube на компьютере", "description": "Выключить Shorts в настройках YouTube нельзя. Что дают встроенные кнопки, фильтр для uBlock Origin и бесплатное расширение, которое убирает шортсы везде.", "inLanguage": "ru", "datePublished": "2026-11-03", "dateModified": "2026-11-05", "url": "https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-shorts-youtube/", "image": "https://somestay07.github.io/errand-for-youtube/assets/og-ru.png", "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"}, "about": {"@type": "SoftwareApplication", "name": "Errand for YouTube", "url": "https://somestay07.github.io/errand-for-youtube/"}}, {"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "ru", "mainEntity": [{"@type": "Question", "name": "Можно смотреть шортс как обычное видео?", "acceptedAnswer": {"@type": "Answer", "text": "Да. В адресе замените /shorts/ на /watch?v= и оставьте номер видео. Errand делает это сам для каждой ссылки на Shorts."}}, {"@type": "Question", "name": "Это работает в приложении YouTube на телефоне?", "acceptedAnswer": {"@type": "Answer", "text": "Нет. Расширения работают только в браузерах на компьютере."}}]}]</script>
+  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Как убрать Shorts на YouTube на компьютере", "description": "Выключить Shorts в настройках YouTube нельзя. Что дают встроенные кнопки, фильтр для uBlock Origin и бесплатное расширение, которое убирает шортсы с главной, из поиска, подписок и каналов.", "inLanguage": "ru", "datePublished": "2026-11-03", "dateModified": "2026-11-07", "url": "https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-shorts-youtube/", "image": "https://somestay07.github.io/errand-for-youtube/assets/og-ru.png", "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"}, "about": {"@type": "SoftwareApplication", "name": "Errand for YouTube", "url": "https://somestay07.github.io/errand-for-youtube/"}}, {"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "ru", "mainEntity": [{"@type": "Question", "name": "Можно смотреть шортс как обычное видео?", "acceptedAnswer": {"@type": "Answer", "text": "Да. В адресе замените /shorts/ на /watch?v= и оставьте номер видео. С настройками по умолчанию Errand делает это сам."}}, {"@type": "Question", "name": "Это работает в приложении YouTube на телефоне?", "acceptedAnswer": {"@type": "Answer", "text": "Нет. Приложение YouTube расширения не меняют. Errand пока работает только в браузерах на компьютере."}}]}]</script>
 </head>
 <body>
   <header class="top">
@@ -48,11 +48,11 @@ www.youtube.com##ytd-rich-item-renderer:has(a[href^=&quot;/shorts/&quot;])
 www.youtube.com##grid-shelf-view-model:has(a[href^=&quot;/shorts/&quot;])
 www.youtube.com##ytd-guide-entry-renderer:has(a[href^=&quot;/shorts&quot;])
 www.youtube.com##ytd-mini-guide-entry-renderer:has(a[href^=&quot;/shorts&quot;])</pre>
-<p>В Chrome uBlock Origin не работает с 2025 года. Его версия для Chrome, uBlock Origin Lite, тоже принимает свои фильтры для скрытия элементов, но место для них зависит от версии, а эти правила в нём пока не проверены.</p>
+<p>В Chrome uBlock Origin не работает с 2025 года. Его версия для Chrome, uBlock Origin Lite, тоже принимает свои фильтры для скрытия элементов, но место для них зависит от версии, и эти правила в нём пока не проверены.</p>
 <p>Правила подходят к вёрстке YouTube на ноябрь 2026 года. Когда YouTube переименует эти элементы, фильтр перестанет работать без предупреждения, и обновлять его придётся самим.</p>
 
 <h2>Способ 2: расширение</h2>
-<p><a href="../">Errand</a> убирает Shorts с главной, из поиска, подписок, страниц каналов и меню. Ссылки на шортсы открываются как обычные видео с перемоткой или не открываются вовсе, как настроите. После загрузки страницы расширение проверяет, не проскочили ли шортсы, и показывает "!" на иконке, если YouTube что-то поменял.</p>
+<p><a href="../">Errand</a> убирает Shorts с главной, из поиска, подписок, страниц каналов и меню. Ссылки на шортсы открываются как обычные видео с перемоткой или не открываются вовсе, как настроите. На главной, в поиске, подписках, на каналах и страницах видео расширение проверяет, не проскочили ли шортсы. Если проскочили, на значке появится "!".</p>
 <p>Если мешают только шортсы, при установке выберите "Просто убрать Shorts". Лента, рекомендации, комментарии и конечная заставка останутся такими, как их показывает YouTube.</p>
 <p>Ещё инструкции: <a href="../kak-ubrat-konechnuyu-zastavku-youtube/">как убрать конечную заставку YouTube</a>, <a href="../../alternatives/">сравнение с Unhook и другими (на английском)</a>.</p>
 <p class="cta"><a class="button primary" href="https://chromewebstore.google.com/detail/jhpaobkpbnidoaemnkojmkmnddoegdhg">Установить в Chrome</a></p>
@@ -63,11 +63,11 @@ www.youtube.com##ytd-mini-guide-entry-renderer:has(a[href^=&quot;/shorts&quot;])
       </section>
       <section>
         <h2>Вопросы</h2>
-        <h3>Можно смотреть шортс как обычное видео?</h3><p>Да. В адресе замените /shorts/ на /watch?v= и оставьте номер видео. Errand делает это сам для каждой ссылки на Shorts.</p><h3>Это работает в приложении YouTube на телефоне?</h3><p>Нет. Расширения работают только в браузерах на компьютере.</p>
+        <h3>Можно смотреть шортс как обычное видео?</h3><p>Да. В адресе замените /shorts/ на /watch?v= и оставьте номер видео. С настройками по умолчанию Errand делает это сам.</p><h3>Это работает в приложении YouTube на телефоне?</h3><p>Нет. Приложение YouTube расширения не меняют. Errand пока работает только в браузерах на компьютере.</p>
         <p class="small">Бесплатно, код открыт, аккаунт не нужен. Errand не делает запросов в сеть.</p>
       </section>
     </article>
   </main>
-  <footer><a href="../">Errand</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Сообщить о проблеме</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Помочь с переводом</a> · <a href="https://somestay07.github.io/errand-for-youtube/breakage/">Журнал поломок (англ.)</a></footer>
+  <footer><a href="../">Errand</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Написать на GitHub</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Помочь с переводом</a> · <a href="https://somestay07.github.io/errand-for-youtube/breakage/">Журнал поломок (англ.)</a></footer>
 </body>
 </html>

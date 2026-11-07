@@ -651,6 +651,40 @@ test("the update note shows up to three times and gives way to a broken filter o
   assert.equal(L.changesUrl("0.3"), `${L.SITE_URL}/changes/#v0.3`);
 });
 
+test("the What changed link opens the page in the menu's language", () => {
+  const cases = {
+    en: "/changes/",
+    en_US: "/changes/",
+    "en-GB": "/changes/",
+    ru: "/ru/changes/",
+    ru_RU: "/ru/changes/",
+    "ru-RU": "/ru/changes/",
+    es: "/es/changes/",
+    es_419: "/es/changes/",
+    "es-MX": "/es/changes/",
+    pt_BR: "/pt-br/changes/",
+    "pt-BR": "/pt-br/changes/",
+    pt_br: "/pt-br/changes/",
+    pt: "/changes/",
+    pt_PT: "/changes/",
+    de: "/de/changes/",
+    "de-AT": "/de/changes/",
+    DE: "/de/changes/",
+    fr: "/changes/",
+    ja: "/changes/",
+    "": "/changes/",
+  };
+  for (const [locale, path] of Object.entries(cases)) assert.equal(L.changesUrl("0.4", locale), `${L.SITE_URL}${path}#v0.4`, locale);
+  assert.equal(L.changesUrl("0.4", undefined), `${L.SITE_URL}/changes/#v0.4`);
+  assert.equal(L.changesUrl("0.4", null), `${L.SITE_URL}/changes/#v0.4`);
+  assert.deepEqual(Object.values(L.CHANGES_PATHS).sort(), ["/changes/", "/de/changes/", "/es/changes/", "/pt-br/changes/", "/ru/changes/"]);
+});
+
+test("the popup passes the locale Chrome picked for Errand's messages to the changes link", () => {
+  const popup = require("node:fs").readFileSync(require("node:path").join(__dirname, "..", "popup.js"), "utf8");
+  assert.match(popup, /L\.changesUrl\(note\.version, chrome\.i18n\.getMessage\("@@ui_locale"\)\)/);
+});
+
 test("the pill text is a link that keeps its colour and shows a focus ring", () => {
   const css = hideCss();
   assert.match(css, /#er-pill :is\(span, a\) \{[^}]*text-overflow: ellipsis/);

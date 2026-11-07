@@ -248,7 +248,7 @@ function renderRate(stats, rateNote, flags) {
 function renderUpdateNote(node) {
   const note = state.updateNote;
   chrome.storage.local.set({ updateNote: { ...note, shown: (Number(note.shown) || 0) + 1 } });
-  const link = el("a", { href: L.changesUrl(note.version), target: "_blank", rel: "noopener" }, t("noteUpdatedLink"));
+  const link = el("a", { href: L.changesUrl(note.version, chrome.i18n.getMessage("@@ui_locale")), target: "_blank", rel: "noopener" }, t("noteUpdatedLink"));
   link.addEventListener("click", () => chrome.storage.local.remove("updateNote"));
   node.className = "";
   node.replaceChildren(t("noteUpdated", note.version), " ", link);

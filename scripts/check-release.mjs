@@ -2,9 +2,12 @@ import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+const L = createRequire(import.meta.url)("../lib.js");
+const OFFLINE = process.argv.includes("--offline") || process.env.CHECK_RELEASE_OFFLINE === "1";
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const walk = (dir) => readdirSync(join(ROOT, dir), { recursive: true }).map((f) => join(dir, String(f)));
 const git = (...args) => {
@@ -73,10 +76,29 @@ else {
 }
 
 const [major, minor] = version.split(".");
-const changesPage = "docs/changes/index.html";
-if (!existsSync(join(ROOT, changesPage))) fail(`${changesPage} missing`);
-else if (read(changesPage).includes(`id="v${major}.${minor}"`)) pass(`${changesPage} has the #v${major}.${minor} anchor the update note links to`);
-else fail(`${changesPage} has no id="v${major}.${minor}": the update note for ${version} would link to a missing anchor`);
+const anchor = `id="v${major}.${minor}"`;
+const changesPages = Object.values(L.CHANGES_PATHS).map((path) => [path, `docs${path}index.html`]);
+const localOff = changesPages.flatMap(([, file]) => (!existsSync(join(ROOT, file)) ? [`${file} missing`] : read(file).includes(anchor) ? [] : [`${file} has no ${anchor}`]));
+if (localOff.length) fail(`changes pages: ${localOff.join("; ")}: the update note for ${version} would link to a missing page or anchor`);
+else pass(`all ${changesPages.length} changes pages have the #v${major}.${minor} anchor the update note links to`);
+if (OFFLINE) info(`live changes pages NOT checked (--offline / CHECK_RELEASE_OFFLINE=1): check ${changesPages.length} URLs under ${L.SITE_URL} before submitting to the store`);
+else {
+  const liveOff = await Promise.all(
+    changesPages.map(async ([path]) => {
+      const url = `${L.SITE_URL}${path}`;
+      try {
+        const res = await fetch(url, { signal: AbortSignal.timeout(10000), cache: "no-store" });
+        if (res.status !== 200) return `${url} HTTP ${res.status}`;
+        return (await res.text()).includes(anchor) ? null : `${url} has no ${anchor}`;
+      } catch (e) {
+        return `${url} unreachable (${e.name})`;
+      }
+    }),
+  );
+  const bad = liveOff.filter(Boolean);
+  if (bad.length) fail(`live changes pages: ${bad.join("; ")}: push the site before submitting to the store`);
+  else pass(`live changes pages: ${changesPages.length} URLs return 200 with ${anchor}`);
+}
 
 const DIST = join(ROOT, "dist/chrome");
 const BUILD_FILES = [...(/const FILES = \[([^\]]*)\]/.exec(read("scripts/build.mjs"))?.[1] || "").matchAll(/"([^"]+)"/g)].map((m) => m[1]);

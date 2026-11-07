@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Novedades de Errand</title>
+  <meta name="description" content="Los cambios que vas a notar, versión a versión. Si un cambio de YouTube rompe algo de Errand, el arreglo queda anotado en el Registro de fallos.">
+  <link rel="canonical" href="https://somestay07.github.io/errand-for-youtube/es/changes/">
+  <link rel="alternate" hreflang="en" href="https://somestay07.github.io/errand-for-youtube/changes/">
+  <link rel="alternate" hreflang="ru" href="https://somestay07.github.io/errand-for-youtube/ru/changes/">
+  <link rel="alternate" hreflang="es" href="https://somestay07.github.io/errand-for-youtube/es/changes/">
+  <link rel="alternate" hreflang="pt-BR" href="https://somestay07.github.io/errand-for-youtube/pt-br/changes/">
+  <link rel="alternate" hreflang="de" href="https://somestay07.github.io/errand-for-youtube/de/changes/">
+  <link rel="alternate" hreflang="x-default" href="https://somestay07.github.io/errand-for-youtube/changes/">
+  <link rel="icon" href="../../assets/favicon.png">
+  <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="../../"><img src="../../assets/icon.png" alt="" width="32" height="32"> Errand</a>
+    <nav><a href="../../changes/" hreflang="en" lang="en">English</a> · <a href="../../ru/changes/" hreflang="ru" lang="ru">Русский</a> · <a href="../../pt-br/changes/" hreflang="pt-BR" lang="pt-BR">Português</a> · <a href="../../de/changes/" hreflang="de" lang="de">Deutsch</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a></nav>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>Novedades de Errand</h1>
+      <p class="lead">Los cambios que vas a notar, versión a versión. Si un cambio de YouTube rompe algo de Errand, el arreglo queda anotado en el <a href="../../breakage/">Registro de fallos</a> (en inglés).</p>
+    </section>
+    <section id="v0.3">
+      <h2>0.3.0</h2>
+      <ul>
+        <li>La pregunta "¿Qué vienes a ver?" aparece en cuanto se abre la página, sin que antes asomen los recuadros grises de carga de YouTube.</li>
+        <li>La etiqueta "Buscas" de la parte de abajo lleva una lupa y ahora te devuelve a los resultados de búsqueda de lo que escribiste. "Cerrar pestaña", en el aviso del final del video, también borra lo que escribiste, así que en tu próxima visita vuelve la pregunta.</li>
+        <li>Los Mixes y las listas de reproducción siguen reproduciéndose. Cuando YouTube muestra la lista junto al video, Errand no detiene el siguiente ni pregunta después de cada video.</li>
+        <li>Con "Ocultar recomendaciones" activado (viene así por defecto), los resultados de búsqueda ya no muestran secciones de recomendaciones, como la de videos que también vieron otras personas. Desmárcalo para volver a verlas.
+          <ul>
+            <li>También se oculta la sección con los videos más recientes de un canal. La tarjeta del canal y sus videos siguen en los resultados.</li>
+          </ul>
+        </li>
+        <li>Los Shorts se ocultan también cuando aparecen como tarjetas normales junto a un video o debajo de él, y con YouTube en un idioma donde no se llaman "Shorts" (como el japonés). Ahí la pestaña Shorts y su filtro en la búsqueda pueden asomar un momento. Los Playables, los juegos de YouTube, se ocultan junto con los Shorts.</li>
+        <li>Errand ya funciona con el nuevo diseño de la página del video, con las recomendaciones debajo del reproductor. Ahí también se ocultan, y "Mostrar comentarios" lleva el foco del teclado a los comentarios. Los enlaces que empiezan por /live/ funcionan como páginas de video normales.</li>
+        <li>El "!" ahora espera a que falle una segunda comprobación, así que salta menos en páginas lentas. Un problema real se ve en unos 12 s. Si Errand no encuentra ningún fallo, el menú dice "No se encontraron problemas en esta página".</li>
+        <li>Los horarios del modo estricto que pasan de medianoche ahora siguen el día en que empiezan: con el viernes marcado, 22:00-06:00 va de la noche del viernes a la mañana del sábado. Al elegir "Con horario", las horas ya no se bloquean antes de que las pongas.</li>
+        <li>El texto que sale al pasar el cursor por el icono de la barra se actualiza cuando acaba una franja del horario o una pausa.</li>
+        <li>El aviso del final del video se cierra con Esc y devuelve el foco al reproductor. Los lectores de pantalla anuncian la espera de 10 segundos una sola vez en lugar de cada segundo.</li>
+        <li>El texto de ayuda bajo la pregunta de Inicio y en la página de bienvenida ya no señala siempre el icono de extensiones de Chrome. Si Errand no reconoce tu navegador, da una indicación general.</li>
+        <li>Tras una actualización como esta, el menú muestra "Novedades" como mucho las 3 próximas veces que lo abras. Después de 5 recados hechos, pide una valoración en la tienda, como mucho 3 veces. Con la × deja de pedirla.</li>
+        <li>Textos más claros en el menú, la página de bienvenida y la pregunta de Inicio, en los cinco idiomas.</li>
+        <li>Arreglos menores:
+          <ul>
+            <li>Tras una actualización, las pestañas de YouTube que tenías abiertas no se quedan con botones sueltos de la versión anterior.</li>
+            <li>El botón "Mostrar recomendaciones" no se cuela mientras se activa el modo estricto.</li>
+            <li>El botón de YouTube que oculta las tarjetas ya no queda flotando sobre los últimos segundos del video.</li>
+            <li>Los cambios de ajustes no se pierden mientras termina el modo estricto.</li>
+            <li>Si vacías un campo de hora, se queda la hora guardada.</li>
+            <li>Los Mixes siguen visibles en tus páginas de listas y de biblioteca.</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+    <section id="v0.2">
+      <h2>0.2.0</h2>
+      <ul>
+        <li>Después de instalar, una pantalla nueva te deja elegir cómo ver YouTube: "Preguntar qué vengo a ver", "Quitar solo los Shorts" o "Empezar por Suscripciones". Puedes volver a elegir más tarde desde el menú.</li>
+        <li>"Pausar 15 min" en el menú apaga Errand un cuarto de hora tras una espera de 10 segundos. Luego vuelve a activarse solo.</li>
+        <li>Cuesta más quitar el modo estricto en un arrebato: para desactivarlo hay que esperar 10 segundos y, con horario, solo queda apagado hasta que acaba la franja actual. Con el modo estricto activo no se pueden importar ajustes.</li>
+        <li>El menú muestra cuántos recados hiciste en los últimos 7 días.</li>
+        <li>En Suscripciones ya no aparece la fila de videos más relevantes cuando el feed está oculto.</li>
+        <li>Arreglado un "!" falso en el icono en páginas de video normales. Ahora el "!" se quita solo en cuanto la página vuelve a verse bien.</li>
+        <li>El menú enlaza al Registro de fallos, una página pública.</li>
+        <li>La espera antes de mostrar las recomendaciones ya no pide confirmación.</li>
+      </ul>
+    </section>
+  </main>
+  <footer><a href="../../">Errand</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Informar de un problema</a> · <a href="../../breakage/">Registro de fallos (en inglés)</a></footer>
+</body>
+</html>

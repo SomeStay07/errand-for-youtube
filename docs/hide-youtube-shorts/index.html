@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>How to hide YouTube Shorts on desktop in Chrome</title>
-  <meta name="description" content="YouTube has no switch to turn Shorts off. What the built-in options really do, a uBlock Origin filter, and a free extension that removes Shorts everywhere.">
+  <meta name="description" content="YouTube has no switch to turn Shorts off. What the built-in options do, a uBlock Origin filter, and a free extension that removes Shorts from home, search, subscriptions and channels.">
   <link rel="canonical" href="https://somestay07.github.io/errand-for-youtube/hide-youtube-shorts/">
   <link rel="alternate" hreflang="en" href="https://somestay07.github.io/errand-for-youtube/hide-youtube-shorts/">
   <link rel="alternate" hreflang="ru" href="https://somestay07.github.io/errand-for-youtube/ru/kak-ubrat-shorts-youtube/">
@@ -12,13 +12,13 @@
   <link rel="icon" href="../assets/favicon.png">
   <meta property="og:type" content="article">
   <meta property="og:title" content="How to hide YouTube Shorts on desktop in Chrome">
-  <meta property="og:description" content="YouTube has no switch to turn Shorts off. What the built-in options really do, a uBlock Origin filter, and a free extension that removes Shorts everywhere.">
+  <meta property="og:description" content="YouTube has no switch to turn Shorts off. What the built-in options do, a uBlock Origin filter, and a free extension that removes Shorts from home, search, subscriptions and channels.">
   <meta property="og:url" content="https://somestay07.github.io/errand-for-youtube/hide-youtube-shorts/">
   <meta property="og:image" content="https://somestay07.github.io/errand-for-youtube/assets/og-en.png">
   <meta property="og:image:alt" content="Errand for YouTube">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="../style.css">
-  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "TechArticle", "headline": "How to hide YouTube Shorts on desktop", "description": "YouTube has no switch to turn Shorts off. What the built-in options really do, a uBlock Origin filter, and a free extension that removes Shorts everywhere.", "inLanguage": "en", "datePublished": "2026-11-03", "dateModified": "2026-11-05", "url": "https://somestay07.github.io/errand-for-youtube/hide-youtube-shorts/", "image": "https://somestay07.github.io/errand-for-youtube/assets/og-en.png", "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"}, "about": {"@type": "SoftwareApplication", "name": "Errand for YouTube", "url": "https://somestay07.github.io/errand-for-youtube/"}}, {"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "en", "mainEntity": [{"@type": "Question", "name": "Can I watch a Short as a normal video?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. In the address, replace /shorts/ with /watch?v= and keep the video ID. Errand does this automatically for every Shorts link."}}, {"@type": "Question", "name": "Does hiding Shorts change what YouTube recommends?", "acceptedAnswer": {"@type": "Answer", "text": "Not directly. Hiding only stops Shorts from being shown to you; YouTube's recommendations are unchanged."}}, {"@type": "Question", "name": "Does this work in the YouTube app on my phone?", "acceptedAnswer": {"@type": "Answer", "text": "No. Browser extensions work in desktop browsers; the YouTube app on phones can't be changed by extensions."}}]}]</script>
+  <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "TechArticle", "headline": "How to hide YouTube Shorts on desktop", "description": "YouTube has no switch to turn Shorts off. What the built-in options do, a uBlock Origin filter, and a free extension that removes Shorts from home, search, subscriptions and channels.", "inLanguage": "en", "datePublished": "2026-11-03", "dateModified": "2026-11-07", "url": "https://somestay07.github.io/errand-for-youtube/hide-youtube-shorts/", "image": "https://somestay07.github.io/errand-for-youtube/assets/og-en.png", "author": {"@type": "Person", "name": "Timur Cheberda", "url": "https://github.com/SomeStay07"}, "about": {"@type": "SoftwareApplication", "name": "Errand for YouTube", "url": "https://somestay07.github.io/errand-for-youtube/"}}, {"@context": "https://schema.org", "@type": "FAQPage", "inLanguage": "en", "mainEntity": [{"@type": "Question", "name": "Can I watch a Short as a normal video?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. In the address, replace /shorts/ with /watch?v= and keep the video ID. With default settings Errand does this for you."}}, {"@type": "Question", "name": "Does hiding Shorts change what YouTube recommends?", "acceptedAnswer": {"@type": "Answer", "text": "Not directly. Hiding only stops Shorts from being shown to you; YouTube's recommendations are unchanged."}}, {"@type": "Question", "name": "Does this work in the YouTube app on my phone?", "acceptedAnswer": {"@type": "Answer", "text": "No. Extensions can't change the YouTube app, and Errand works only in browsers on a computer for now."}}]}]</script>
 </head>
 <body>
   <header class="top">
@@ -52,7 +52,7 @@ www.youtube.com##ytd-mini-guide-entry-renderer:has(a[href^=&quot;/shorts&quot;])
 <p>These rules match YouTube's layout as of November 2026. When YouTube renames these page elements, filters stop working without telling you, and you have to update them yourself.</p>
 
 <h2>Option 2: an extension</h2>
-<p><a href="../">Errand</a> hides Shorts on the home page, in search, in subscriptions, on channel pages and in the sidebar. Links to Shorts open as normal videos with regular controls, or can be blocked completely. After each page load it checks whether any Shorts slipped through and shows "!" on its icon if YouTube changed something.</p>
+<p><a href="../">Errand</a> hides Shorts on the home page, in search, in subscriptions, on channel pages and in the sidebar. Links to Shorts open as normal videos with regular controls, or can be blocked completely. On home, search, subscriptions, channel and video pages it checks that no Shorts slipped through. If some did, its icon shows "!".</p>
 <p>If Shorts are all you want gone, pick "Just hide Shorts" when you install. The feed, recommendations, comments and the end screen stay the way YouTube shows them.</p>
 <p class="cta"><a class="button primary" href="https://chromewebstore.google.com/detail/jhpaobkpbnidoaemnkojmkmnddoegdhg">Add to Chrome</a></p>
 <p>Other extensions that hide Shorts: Unhook, UnTrap, Remove YouTube Suggestions, Control Panel for YouTube. See the <a href="../alternatives/">comparison</a>. The end of a video has its own guide: <a href="../hide-youtube-end-screen/">how to hide the YouTube end screen</a>.</p>
@@ -74,11 +74,11 @@ www.youtube.com##ytd-mini-guide-entry-renderer:has(a[href^=&quot;/shorts&quot;])
       </section>
       <section>
         <h2>Questions</h2>
-        <h3>Can I watch a Short as a normal video?</h3><p>Yes. In the address, replace /shorts/ with /watch?v= and keep the video ID. Errand does this automatically for every Shorts link.</p><h3>Does hiding Shorts change what YouTube recommends?</h3><p>Not directly. Hiding only stops Shorts from being shown to you; YouTube&#x27;s recommendations are unchanged.</p><h3>Does this work in the YouTube app on my phone?</h3><p>No. Browser extensions work in desktop browsers; the YouTube app on phones can&#x27;t be changed by extensions.</p>
+        <h3>Can I watch a Short as a normal video?</h3><p>Yes. In the address, replace /shorts/ with /watch?v= and keep the video ID. With default settings Errand does this for you.</p><h3>Does hiding Shorts change what YouTube recommends?</h3><p>Not directly. Hiding only stops Shorts from being shown to you; YouTube&#x27;s recommendations are unchanged.</p><h3>Does this work in the YouTube app on my phone?</h3><p>No. Extensions can&#x27;t change the YouTube app, and Errand works only in browsers on a computer for now.</p>
         <p class="small">Free and open source, no account needed. Errand makes no network requests.</p>
       </section>
     </article>
   </main>
-  <footer><a href="../">Errand</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Report a problem</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Help translate</a> · <a href="https://somestay07.github.io/errand-for-youtube/breakage/">Breakage log</a></footer>
+  <footer><a href="../">Errand</a> · <a href="https://github.com/SomeStay07/errand-for-youtube">GitHub</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Open an issue</a> · <a href="https://github.com/SomeStay07/errand-for-youtube/issues">Help translate</a> · <a href="https://somestay07.github.io/errand-for-youtube/breakage/">Breakage log</a></footer>
 </body>
 </html>

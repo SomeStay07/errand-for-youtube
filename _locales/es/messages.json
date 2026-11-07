@@ -3,7 +3,7 @@
     "message": "Errand para YouTube: oculta Shorts, feed de inicio y recomendaciones"
   },
   "extDescription": {
-    "message": "YouTube siempre tiene otro vídeo para ti. Errand oculta los Shorts y el feed y, al acabar el tuyo, ofrece cerrar la pestaña. Gratis."
+    "message": "YouTube siempre tiene otro video para ti. Errand oculta Shorts y el feed y, al acabar tu video, ofrece cerrar la pestaña. Gratis."
   },
   "actionTitle": {
     "message": "Ajustes de Errand"
@@ -49,10 +49,10 @@
     }
   },
   "endQuestion": {
-    "message": "Fin del vídeo. ¿Encontraste lo que buscabas?"
+    "message": "Fin del video. ¿Encontraste lo que buscabas?"
   },
   "endQuestionWithIntent": {
-    "message": "¿Encontraste lo que buscabas: \"$TEXT$\"?",
+    "message": "Venías a ver \"$TEXT$\". ¿Lo encontraste?",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -72,7 +72,7 @@
     "message": "Errand está activo"
   },
   "statusStrictAlways": {
-    "message": "El modo estricto está siempre activado"
+    "message": "Modo estricto siempre activo"
   },
   "statusStrictUntil": {
     "message": "Modo estricto hasta $TIME$",
@@ -86,10 +86,10 @@
     "message": "Últimos 7 días"
   },
   "healthOk": {
-    "message": "No hay problemas en esta página"
+    "message": "No se encontraron problemas en esta página"
   },
   "healthBroken": {
-    "message": "YouTube cambió algo. Falla: $NAMES$. Puede durar hasta la próxima actualización de Errand.",
+    "message": "Parece que YouTube cambió algo. Errand no funciona en: $NAMES$. Puede seguir así hasta la próxima actualización de Errand.",
     "placeholders": {
       "names": {
         "content": "$1"
@@ -115,13 +115,13 @@
     "message": "resultados de búsqueda"
   },
   "sectionHide": {
-    "message": "Página del vídeo"
+    "message": "Página del video"
   },
   "hideRelated": {
     "message": "Ocultar recomendaciones"
   },
   "hideEndscreen": {
-    "message": "Ocultar la pantalla final y sus tarjetas"
+    "message": "Ocultar pantalla final y tarjetas"
   },
   "hideComments": {
     "message": "Ocultar comentarios"
@@ -133,10 +133,10 @@
     "message": "Atenuar miniaturas hasta pasar el cursor"
   },
   "optAutoplay": {
-    "message": "Desactivar la reproducción automática"
+    "message": "Sin reproducción automática"
   },
   "optEndPrompt": {
-    "message": "Preguntar al acabar un vídeo"
+    "message": "Preguntar al acabar un video"
   },
   "sectionStrict": {
     "message": "Modo estricto"
@@ -163,10 +163,10 @@
     "message": "Hasta"
   },
   "hideChat": {
-    "message": "Ocultar chat en directo"
+    "message": "Ocultar chat en vivo"
   },
   "hideNotifications": {
-    "message": "Ocultar la campana de notificaciones"
+    "message": "Ocultar la campana"
   },
   "healthEndscreen": {
     "message": "pantalla final"
@@ -184,7 +184,7 @@
     "message": "Shorts"
   },
   "shortsWatch": {
-    "message": "Como vídeos normales"
+    "message": "Como videos normales"
   },
   "shortsBlock": {
     "message": "Bloquear"
@@ -211,7 +211,7 @@
     "message": "Más"
   },
   "healthShorts": {
-    "message": "ocultación de Shorts"
+    "message": "Shorts"
   },
   "extNameShort": {
     "message": "Errand para YouTube: sin Shorts ni feed"
@@ -232,7 +232,7 @@
     "message": "Informar"
   },
   "welcomeTitle": {
-    "message": "Errand activado"
+    "message": "Errand está activo"
   },
   "welcomeQuestion": {
     "message": "¿Cómo quieres ver YouTube?"
@@ -253,19 +253,19 @@
     "message": "En Inicio verás \"¿Qué vienes a ver?\" en vez del feed."
   },
   "welcomeSubs1": {
-    "message": "Inicio te lleva a tus suscripciones."
+    "message": "Inicio te lleva a Suscripciones."
   },
   "welcomeHidden": {
     "message": "Sin Shorts. Las recomendaciones y los comentarios se abren con un botón."
   },
   "welcomeEnd": {
-    "message": "Al acabar un vídeo, no empieza otro y Errand te pregunta si encontraste lo que buscabas. Las listas de reproducción y los Mixes siguen como siempre."
+    "message": "Al acabar un video, no empieza otro y Errand te pregunta si encontraste lo que buscabas. Las listas de reproducción y los Mixes siguen como siempre."
   },
   "welcomeShorts1": {
     "message": "Los Shorts se ocultan en Inicio, la búsqueda, Suscripciones y los canales."
   },
   "welcomeShorts2": {
-    "message": "Los Shorts se abren como vídeos normales."
+    "message": "Los Shorts se abren como videos normales."
   },
   "welcomeShorts3": {
     "message": "El feed, las recomendaciones y los comentarios quedan igual."
@@ -274,7 +274,7 @@
     "message": "Abrir YouTube"
   },
   "welcomePin": {
-    "message": "Fija Errand desde el icono del puzle en la barra. Ahí están los ajustes e \"Informar de un problema\"."
+    "message": "Fija Errand desde el icono de extensiones de la barra. Ahí están los ajustes e \"Informar de un problema\"."
   },
   "errandsSummary": {
     "message": "Recados hechos: $DONE$ · pestañas cerradas: $CLOSED$",
@@ -288,7 +288,7 @@
     }
   },
   "errandsHint": {
-    "message": "Hechos: el vídeo terminó después de que escribieras qué venías a ver. Pestañas cerradas: luego hiciste clic en \"Cerrar pestaña\"."
+    "message": "Hechos: el video terminó después de que escribieras qué venías a ver. Pestañas cerradas: luego hiciste clic en \"Cerrar pestaña\"."
   },
   "pauseButton": {
     "message": "Pausar 15 min"
@@ -313,13 +313,13 @@
     "message": "Reactivar"
   },
   "breakageLink": {
-    "message": "Lista de fallos"
+    "message": "Registro de fallos"
   },
   "intentFooter": {
-    "message": "Esto es Errand. Para cambiarlo, haz clic en el icono del puzle de la barra y luego en Errand."
+    "message": "Esto es Errand. Para cambiarlo, haz clic en el icono de extensiones de la barra y luego en Errand."
   },
   "lookAgain": {
-    "message": "Elegir otro estilo"
+    "message": "Cambiar cómo ves YouTube"
   },
   "titleOn": {
     "message": "Errand está activo"
@@ -336,7 +336,7 @@
     "message": "Errand: modo estricto"
   },
   "titleBroken": {
-    "message": "Errand: YouTube cambió algo. Ábrelo para ver qué."
+    "message": "Errand: parece que YouTube cambió algo. Ábrelo para ver qué."
   },
   "strictOffButton": {
     "message": "Desactivar modo estricto"
@@ -375,7 +375,7 @@
     "message": "Novedades"
   },
   "noteRate": {
-    "message": "Una valoración en la tienda ayuda a otros a encontrar Errand."
+    "message": "Una valoración en la tienda ayuda a otras personas a encontrar Errand."
   },
   "noteDismiss": {
     "message": "No volver a mostrar"

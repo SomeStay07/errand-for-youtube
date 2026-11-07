@@ -52,7 +52,7 @@
     "message": "Acabou. Achou o que veio buscar?"
   },
   "endQuestionWithIntent": {
-    "message": "Achou o que veio buscar: \"$TEXT$\"?",
+    "message": "Você veio ver \"$TEXT$\". Achou?",
     "placeholders": {
       "text": {
         "content": "$1"
@@ -66,10 +66,10 @@
     "message": "Voltar aos resultados"
   },
   "endStay": {
-    "message": "Ficar"
+    "message": "Ficar aqui"
   },
   "statusNormal": {
-    "message": "Errand está ativo"
+    "message": "O Errand está ativo"
   },
   "statusStrictAlways": {
     "message": "Modo rígido sempre ativado"
@@ -89,7 +89,7 @@
     "message": "Nenhum problema encontrado nesta página"
   },
   "healthBroken": {
-    "message": "O YouTube mudou alguma coisa. Com problema: $NAMES$. Isso pode durar até a próxima atualização do Errand.",
+    "message": "Parece que o YouTube mudou alguma coisa. O Errand não está funcionando em: $NAMES$. Isso pode durar até a próxima atualização do Errand.",
     "placeholders": {
       "names": {
         "content": "$1"
@@ -97,7 +97,7 @@
     }
   },
   "healthPlayer": {
-    "message": "player"
+    "message": "player de vídeo"
   },
   "healthRelated": {
     "message": "recomendações"
@@ -109,7 +109,7 @@
     "message": "botão de reprodução automática"
   },
   "healthHome": {
-    "message": "página inicial"
+    "message": "Início"
   },
   "healthResults": {
     "message": "resultados da pesquisa"
@@ -130,10 +130,10 @@
     "message": "Ocultar visualizações, curtidas e inscritos"
   },
   "hideThumbs": {
-    "message": "Esmaecer miniaturas até passar o mouse"
+    "message": "Desbotar miniaturas até passar o mouse"
   },
   "optAutoplay": {
-    "message": "Desativar a reprodução automática"
+    "message": "Desativar reprodução automática"
   },
   "optEndPrompt": {
     "message": "Perguntar quando o vídeo acabar"
@@ -142,7 +142,7 @@
     "message": "Modo rígido"
   },
   "strictHint": {
-    "message": "Esconde o feed, os Shorts, as recomendações e os comentários, sem botões para mostrá-los."
+    "message": "Oculta o feed, os Shorts, as recomendações e os comentários, sem botões para mostrá-los."
   },
   "strictWhen": {
     "message": "Quando"
@@ -172,7 +172,7 @@
     "message": "tela final"
   },
   "optHomeTarget": {
-    "message": "Página inicial"
+    "message": "Início"
   },
   "homeAsk": {
     "message": "Perguntar o que vim ver"
@@ -265,7 +265,7 @@
     "message": "Shorts ocultos no Início, na pesquisa, nas Inscrições e nos canais."
   },
   "welcomeShorts2": {
-    "message": "Links de Shorts abrem como vídeos normais."
+    "message": "Links de Shorts abrem no player normal."
   },
   "welcomeShorts3": {
     "message": "Feed, recomendações e comentários continuam como estão."
@@ -288,7 +288,7 @@
     }
   },
   "errandsHint": {
-    "message": "Vídeos concluídos: um vídeo terminou depois de você digitar o que veio ver. Abas fechadas: depois disso, você clicou em \"Fechar aba\"."
+    "message": "Vídeos concluídos: o vídeo acabou depois de você digitar o que veio ver. Abas fechadas: depois você clicou em \"Fechar aba\"."
   },
   "pauseButton": {
     "message": "Pausar 15 min"
@@ -313,16 +313,16 @@
     "message": "Ativar de novo"
   },
   "breakageLink": {
-    "message": "Problemas conhecidos"
+    "message": "Registro de falhas"
   },
   "intentFooter": {
-    "message": "Esta pergunta é do Errand. Para mudar isso, clique no ícone de quebra-cabeça na barra de ferramentas e depois em Errand."
+    "message": "Esta pergunta é do Errand. Para mudar, clique no ícone de quebra-cabeça na barra de ferramentas e em Errand."
   },
   "lookAgain": {
     "message": "Escolher outro visual"
   },
   "titleOn": {
-    "message": "Errand está ativo"
+    "message": "O Errand está ativo"
   },
   "titlePaused": {
     "message": "Errand pausado até $TIME$",
@@ -336,7 +336,7 @@
     "message": "Errand: modo rígido"
   },
   "titleBroken": {
-    "message": "Errand: o YouTube mudou algo. Abra para ver o quê."
+    "message": "Errand: parece que o YouTube mudou algo. Abra para ver detalhes."
   },
   "strictOffButton": {
     "message": "Desligar o modo rígido"
@@ -389,13 +389,13 @@
     }
   },
   "intentFooterOpera": {
-    "message": "Esta pergunta é do Errand. Para mudar isso, clique no ícone de extensões (um cubo) e depois em Errand."
+    "message": "Esta pergunta é do Errand. Para mudar, clique no ícone de extensões (um cubo) e em Errand."
   },
   "intentFooterYandex": {
-    "message": "Esta pergunta é do Errand. Para mudar isso, clique no ícone do Errand à direita da barra de endereço."
+    "message": "Esta pergunta é do Errand. Para mudar, clique no ícone do Errand à direita da barra de endereço."
   },
   "intentFooterAny": {
-    "message": "Esta pergunta é do Errand. Para mudar isso, abra o Errand no menu de extensões do navegador."
+    "message": "Esta pergunta é do Errand. Para mudar, abra o Errand no menu de extensões do navegador."
   },
   "welcomePinOpera": {
     "message": "Fixe o Errand pelo ícone de extensões (um cubo). As configurações e \"Relatar um problema\" ficam lá."

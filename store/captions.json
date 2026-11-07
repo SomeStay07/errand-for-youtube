@@ -29,14 +29,14 @@
     ],
     "tile": "In for one video,<br>out when it ends.",
     "marquee": "One video turns<br>into a whole evening.",
-    "marqueeSub": "Errand offers to close the tab when it ends."
+    "marqueeSub": "Errand offers to close the tab when the video ends."
   },
   "ru": {
     "tagline": "YouTube всегда подсунет ещё одно видео.<br>Errand прячет Shorts и ленту.",
     "screens": [
       [
         "home.png",
-        "Вместо ленты один вопрос: что вы ищете."
+        "Вместо ленты один вопрос: \"Что ищете?\""
       ],
       [
         "welcome-shorts.png",
@@ -56,7 +56,7 @@
       ],
       [
         "popup.png",
-        "Настройки в одном меню и хранятся в браузере."
+        "Настройки в одном меню. Хранятся в браузере."
       ]
     ],
     "tile": "Сходить за одним видео<br>и обратно.",
@@ -64,7 +64,7 @@
     "marqueeSub": "После видео Errand предложит закрыть вкладку."
   },
   "es": {
-    "tagline": "YouTube siempre tiene otro vídeo.<br>Errand oculta los Shorts y el feed.",
+    "tagline": "YouTube siempre tiene otro video.<br>Errand oculta los Shorts y el feed.",
     "screens": [
       [
         "home.png",
@@ -84,16 +84,16 @@
       ],
       [
         "end.png",
-        "Fin del vídeo. No empieza otro: cierra la pestaña con un clic."
+        "Fin del video. No empieza otro: cierra la pestaña con un clic."
       ],
       [
         "popup.png",
         "Los ajustes se quedan en tu navegador."
       ]
     ],
-    "tile": "Entras a ver un vídeo<br>y sales cuando acaba.",
-    "marquee": "\"Solo un vídeo\"<br>y se van las horas.",
-    "marqueeSub": "Errand te ofrece cerrar la pestaña cuando acaba el vídeo."
+    "tile": "Entras a ver un video<br>y sales cuando acaba.",
+    "marquee": "\"Solo un video\"<br>y se van las horas.",
+    "marqueeSub": "Errand te ofrece cerrar la pestaña cuando acaba el video."
   },
   "pt_BR": {
     "tagline": "O YouTube sempre tem mais um vídeo.<br>O Errand oculta os Shorts e o feed.",
@@ -120,7 +120,7 @@
       ],
       [
         "popup.png",
-        "Tudo num menu só, salvo no seu navegador."
+        "Tudo num menu só, guardado no seu navegador."
       ]
     ],
     "tile": "Entre para ver um vídeo<br>e saia quando acabar.",
@@ -148,11 +148,11 @@
       ],
       [
         "end.png",
-        "Das Video ist zu Ende. Autoplay ist aus, und der Tab ist mit einem Klick zu."
+        "Das Video ist zu Ende. Autoplay ist aus, und \"Tab schließen\" ist gleich da."
       ],
       [
         "popup.png",
-        "Ein Menü, nur in deinem Browser gespeichert."
+        "Alle Schalter in einem Menü, gespeichert in deinem Browser."
       ]
     ],
     "tile": "Für ein Video rein,<br>danach wieder raus.",
